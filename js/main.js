@@ -1,6 +1,7 @@
 /**
- * Hangul Hub — Main Application Logic & View Routing
- * UI Redesign: Clean Light Theme, Stacked Progression Track Cards, Tab Switchers.
+ * Hangul Hub — Main Application Logic, View Routing & Quiz Engine
+ * Note: Quiz scores and session progress are deliberately kept in-memory without localStorage 
+ * persistence per current zero-dependency scope.
  */
 
 const App = {
@@ -12,20 +13,32 @@ const App = {
 
   state: {
     currentView: 'home',
+
     // Jamo Flashcard Deck State
     jamoDeck: [],
     jamoIndex: 0,
     jamoFlipped: false,
     jamoCategoryFilter: 'all',
+
     // Syllable Flashcard Deck State
     syllableDeck: [],
     syllableIndex: 0,
     syllableFlipped: false,
-    syllableCategoryFilter: 'all'
+    syllableCategoryFilter: 'all',
+
+    // Quiz Engine State
+    activeQuizVariant: null,   // 'jamo-hangul-to-rom' | 'jamo-rom-to-hangul' | 'syl-hangul-to-rom' | 'syl-rom-to-hangul'
+    quizItems: [],             // Array of current round item objects
+    quizIndex: 0,
+    quizScore: 0,
+    quizSubmitted: false,
+    quizMissedItems: [],       // Array of { item, prompt, expected, userAnswer }
+    isRetryRound: false
   },
 
   async init() {
     this.bindEvents();
+    this.initScrollListeners();
     
     try {
       // Async data loading via DataLoader
@@ -44,10 +57,19 @@ const App = {
       this.initSyllableDeck('all');
 
       console.log('Hangul Hub initialized successfully.');
-      console.log(`Loaded ${this.getJamoFlatList().length} Jamo entries and ${syllables.practice_items.length} syllable practice items.`);
     } catch (err) {
       console.error('App initialization failed due to data loading error:', err);
     }
+  },
+
+  // Fisher-Yates Shuffle Algorithm for randomizing quiz item order
+  shuffleArray(array) {
+    const arr = [...array];
+    for (let i = arr.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [arr[i], arr[j]] = [arr[j], arr[i]];
+    }
+    return arr;
   },
 
   // Flatten all 4 jamo categories into a single ordered array of 40 entries
@@ -78,19 +100,33 @@ const App = {
     if (tabPractice2) tabPractice2.addEventListener('click', () => this.navigateTo('home'));
     if (tabLearning2) tabLearning2.addEventListener('click', () => this.navigateTo('learning-hub'));
 
-    // Stacked Track Cards in Practice Hub
-    document.getElementById('card-jamo-list').addEventListener('click', () => this.navigateTo('jamo-list'));
-    document.getElementById('card-jamo-flashcard').addEventListener('click', () => this.navigateTo('jamo-flashcard'));
-    document.getElementById('card-syllable-list').addEventListener('click', () => this.navigateTo('syllable-list'));
-    document.getElementById('card-syllable-flashcard').addEventListener('click', () => this.navigateTo('syllable-flashcard'));
-    document.getElementById('card-quiz-mode').addEventListener('click', () => this.navigateTo('coming-soon', 'Quiz Mode'));
-    document.getElementById('card-writing-mode').addEventListener('click', () => this.navigateTo('coming-soon', 'Assembly & Writing Mode'));
+    // Practice Hub Cards
+    const quizCard = document.getElementById('card-quiz-mode');
+    const writingCard = document.getElementById('card-writing-mode');
+    if (quizCard) quizCard.addEventListener('click', () => this.navigateTo('quiz-select'));
+    if (writingCard) writingCard.addEventListener('click', () => this.navigateTo('coming-soon', 'Assembly & Writing Mode'));
 
-    // Stacked Track Cards in Learning Hub
-    document.getElementById('card-learning-jamo-list').addEventListener('click', () => this.navigateTo('jamo-list'));
-    document.getElementById('card-learning-jamo-flashcard').addEventListener('click', () => this.navigateTo('jamo-flashcard'));
-    document.getElementById('card-learning-syllable-list').addEventListener('click', () => this.navigateTo('syllable-list'));
-    document.getElementById('card-learning-syllable-flashcard').addEventListener('click', () => this.navigateTo('syllable-flashcard'));
+    // Quiz Variant Selection Cards
+    const qvJamo1 = document.getElementById('quiz-variant-jamo-hangul-to-rom');
+    const qvJamo2 = document.getElementById('quiz-variant-jamo-rom-to-hangul');
+    const qvSyl1 = document.getElementById('quiz-variant-syl-hangul-to-rom');
+    const qvSyl2 = document.getElementById('quiz-variant-syl-rom-to-hangul');
+
+    if (qvJamo1) qvJamo1.addEventListener('click', () => this.startQuizVariant('jamo-hangul-to-rom'));
+    if (qvJamo2) qvJamo2.addEventListener('click', () => this.startQuizVariant('jamo-rom-to-hangul'));
+    if (qvSyl1) qvSyl1.addEventListener('click', () => this.startQuizVariant('syl-hangul-to-rom'));
+    if (qvSyl2) qvSyl2.addEventListener('click', () => this.startQuizVariant('syl-rom-to-hangul'));
+
+    // Learning Hub Cards
+    const lJamoList = document.getElementById('card-learning-jamo-list');
+    const lJamoCard = document.getElementById('card-learning-jamo-flashcard');
+    const lSylList = document.getElementById('card-learning-syllable-list');
+    const lSylCard = document.getElementById('card-learning-syllable-flashcard');
+
+    if (lJamoList) lJamoList.addEventListener('click', () => this.navigateTo('jamo-list'));
+    if (lJamoCard) lJamoCard.addEventListener('click', () => this.navigateTo('jamo-flashcard'));
+    if (lSylList) lSylList.addEventListener('click', () => this.navigateTo('syllable-list'));
+    if (lSylCard) lSylCard.addEventListener('click', () => this.navigateTo('syllable-flashcard'));
 
     // Jamo List Category Filters
     const jamoFilterNav = document.getElementById('jamo-list-filters');
@@ -140,7 +176,7 @@ const App = {
       this.initSyllableDeck(e.target.value);
     });
 
-    // Global Keyboard Navigation for Flashcards
+    // Global Keyboard Navigation
     document.addEventListener('keydown', (e) => {
       if (this.state.currentView === 'jamo-flashcard') {
         if (e.key === 'ArrowLeft') this.prevJamoCard();
@@ -156,12 +192,56 @@ const App = {
           e.preventDefault();
           this.toggleSyllableFlip();
         }
+      } else if (this.state.currentView === 'quiz-active') {
+        if (e.key === 'Enter' && this.state.quizSubmitted) {
+          e.preventDefault();
+          this.nextQuizQuestion();
+        }
+      }
+    });
+  },
+
+  /* Scroll Listener for Sticky Navigation & Scroll-to-Top */
+  initScrollListeners() {
+    const btnScrollTop = document.getElementById('btn-scroll-top');
+    const stickySubnav = document.getElementById('sticky-subnav-bar');
+
+    if (btnScrollTop) {
+      btnScrollTop.addEventListener('click', () => {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      });
+    }
+
+    window.addEventListener('scroll', () => {
+      const scrollPos = window.scrollY || document.documentElement.scrollTop;
+      const isLongPage = this.state.currentView === 'jamo-list' || this.state.currentView === 'syllable-list' || this.state.currentView === 'quiz-results';
+
+      if (btnScrollTop) {
+        if (scrollPos > 300) {
+          btnScrollTop.style.display = 'flex';
+        } else {
+          btnScrollTop.style.display = 'none';
+        }
+      }
+
+      if (stickySubnav) {
+        if (isLongPage && scrollPos > 400) {
+          stickySubnav.style.display = 'flex';
+        } else {
+          stickySubnav.style.display = 'none';
+        }
       }
     });
   },
 
   navigateTo(viewId, extraParam = null) {
     this.state.currentView = viewId;
+
+    // Hide sticky navigation when switching views
+    const stickySubnav = document.getElementById('sticky-subnav-bar');
+    if (stickySubnav) stickySubnav.style.display = 'none';
+    const btnScrollTop = document.getElementById('btn-scroll-top');
+    if (btnScrollTop) btnScrollTop.style.display = 'none';
 
     // Update View visibility
     document.querySelectorAll('.view').forEach(view => view.classList.remove('active'));
@@ -170,17 +250,13 @@ const App = {
 
     // Update Header Active State
     document.querySelectorAll('.nav-link').forEach(link => link.classList.remove('active'));
-    if (viewId === 'home') {
+    if (viewId === 'home' || viewId.startsWith('quiz')) {
       document.getElementById('nav-practice-hub').classList.add('active');
-    } else if (viewId === 'learning-hub') {
+    } else if (viewId === 'learning-hub' || viewId.startsWith('jamo') || viewId.startsWith('syllable')) {
       document.getElementById('nav-learning-hub').classList.add('active');
-    } else if (viewId.startsWith('jamo') || viewId.startsWith('syllable')) {
-      document.getElementById('nav-learning-hub').classList.add('active');
-    } else if (viewId === 'coming-soon') {
-      document.getElementById('nav-practice-hub').classList.add('active');
     }
 
-    // Scroll to top
+    // Scroll to top on navigation
     window.scrollTo({ top: 0, behavior: 'smooth' });
 
     // Render View Content
@@ -194,6 +270,260 @@ const App = {
       this.renderSyllableCard();
     } else if (viewId === 'coming-soon' && extraParam) {
       document.getElementById('coming-soon-title').textContent = `${extraParam} — Coming Soon`;
+    }
+  },
+
+  /* ==========================================================================
+     QUIZ ENGINE LOGIC
+     ========================================================================== */
+  
+  startQuizVariant(variant) {
+    this.state.activeQuizVariant = variant;
+    this.state.isRetryRound = false;
+
+    let baseItems = [];
+    if (variant.startsWith('jamo')) {
+      baseItems = this.getJamoFlatList();
+    } else if (variant.startsWith('syl')) {
+      baseItems = this.data.syllables ? (this.data.syllables.practice_items || []) : [];
+    }
+
+    // Shuffle item order per quiz session
+    this.state.quizItems = this.shuffleArray(baseItems);
+    this.state.quizIndex = 0;
+    this.state.quizScore = 0;
+    this.state.quizMissedItems = [];
+
+    this.navigateTo('quiz-active');
+    this.renderQuizQuestion();
+  },
+
+  startRetryRound() {
+    if (this.state.quizMissedItems.length === 0) return;
+
+    this.state.isRetryRound = true;
+    const retryBase = this.state.quizMissedItems.map(m => m.item);
+    this.state.quizItems = this.shuffleArray(retryBase);
+    this.state.quizIndex = 0;
+    this.state.quizScore = 0;
+    this.state.quizMissedItems = [];
+
+    this.navigateTo('quiz-active');
+    this.renderQuizQuestion();
+  },
+
+  confirmQuitQuiz() {
+    if (confirm('Are you sure you want to quit this quiz? Your current session progress will be lost.')) {
+      this.navigateTo('quiz-select');
+    }
+  },
+
+  getQuizItemDetails(item, variant) {
+    let prompt = '';
+    let expected = '';
+    let isDirection2 = false; // Direction 2 = Romanization -> Hangul (requires Korean IME)
+
+    if (variant === 'jamo-hangul-to-rom') {
+      prompt = item.jamo;
+      expected = item.type === 'consonant' ? (item.romanization_initial || '') : item.romanization_initial;
+      isDirection2 = false;
+    } else if (variant === 'jamo-rom-to-hangul') {
+      prompt = item.type === 'consonant' ? (item.romanization_initial || '(silent initial)') : item.romanization_initial;
+      expected = item.jamo;
+      isDirection2 = true;
+    } else if (variant === 'syl-hangul-to-rom') {
+      prompt = item.composed;
+      expected = item.expected_romanization;
+      isDirection2 = false;
+    } else if (variant === 'syl-rom-to-hangul') {
+      prompt = item.expected_romanization;
+      expected = item.composed;
+      isDirection2 = true;
+    }
+
+    return { prompt, expected, isDirection2 };
+  },
+
+  renderQuizQuestion() {
+    const item = this.state.quizItems[this.state.quizIndex];
+    if (!item) {
+      this.renderQuizResults();
+      return;
+    }
+
+    this.state.quizSubmitted = false;
+    const variant = this.state.activeQuizVariant;
+    const { prompt, expected, isDirection2 } = this.getQuizItemDetails(item, variant);
+
+    const variantTitles = {
+      'jamo-hangul-to-rom': 'Jamo: Hangul → Romanization',
+      'jamo-rom-to-hangul': 'Jamo: Romanization → Hangul',
+      'syl-hangul-to-rom': 'Syllables: Hangul → Romanization',
+      'syl-rom-to-hangul': 'Syllables: Romanization → Hangul'
+    };
+
+    document.getElementById('quiz-active-title').textContent = `${variantTitles[variant]} ${this.state.isRetryRound ? '(Retry Round)' : ''}`;
+    
+    const currentNum = this.state.quizIndex + 1;
+    const totalNum = this.state.quizItems.length;
+    document.getElementById('quiz-active-subtitle').textContent = `Question ${currentNum} of ${totalNum}`;
+    document.getElementById('quiz-active-progress-text').textContent = `Question ${currentNum} of ${totalNum}`;
+    document.getElementById('quiz-active-score-text').textContent = `Score: ${this.state.quizScore}`;
+
+    const pct = (currentNum / totalNum) * 100;
+    document.getElementById('quiz-active-progress-fill').style.width = `${pct}%`;
+
+    // Prompt Box
+    document.getElementById('quiz-prompt-label').textContent = isDirection2 
+      ? 'Type the corresponding Korean Hangul character:'
+      : 'Type the English romanization:';
+    document.getElementById('quiz-prompt-display').textContent = prompt;
+
+    // Keyboard Hint Box for Direction 2
+    const kbHint = document.getElementById('quiz-keyboard-hint');
+    if (kbHint) {
+      kbHint.style.display = isDirection2 ? 'block' : 'none';
+    }
+
+    // Input & Feedback Reset
+    const inputElem = document.getElementById('quiz-answer-input');
+    const submitBtn = document.getElementById('btn-quiz-submit');
+    const feedbackBox = document.getElementById('quiz-feedback-box');
+
+    inputElem.value = '';
+    inputElem.disabled = false;
+    submitBtn.disabled = false;
+    feedbackBox.style.display = 'none';
+
+    setTimeout(() => {
+      inputElem.focus();
+    }, 50);
+  },
+
+  handleQuizSubmit() {
+    if (this.state.quizSubmitted) return;
+
+    const item = this.state.quizItems[this.state.quizIndex];
+    if (!item) return;
+
+    const variant = this.state.activeQuizVariant;
+    const { prompt, expected, isDirection2 } = this.getQuizItemDetails(item, variant);
+
+    const inputElem = document.getElementById('quiz-answer-input');
+    const submitBtn = document.getElementById('btn-quiz-submit');
+    const rawInput = inputElem.value;
+
+    let isCorrect = false;
+
+    if (isDirection2) {
+      // Direction 2 (Romanization -> Hangul): CRITICAL Unicode NFC Normalization Comparison
+      const normInput = rawInput.normalize('NFC').trim();
+      const normExpected = expected.normalize('NFC').trim();
+      isCorrect = (normInput === normExpected);
+    } else {
+      // Direction 1 (Hangul -> Romanization): Lowercase & Trim Exact String Comparison
+      const normInput = rawInput.toLowerCase().trim();
+      const normExpected = expected.toLowerCase().trim();
+      isCorrect = (normInput === normExpected);
+    }
+
+    this.state.quizSubmitted = true;
+    inputElem.disabled = true;
+    submitBtn.disabled = true;
+
+    if (isCorrect) {
+      this.state.quizScore++;
+    } else {
+      this.state.quizMissedItems.push({
+        item: item,
+        prompt: prompt,
+        expected: expected,
+        userAnswer: rawInput.trim() || '(empty)'
+      });
+    }
+
+    // Update Header Score Display
+    document.getElementById('quiz-active-score-text').textContent = `Score: ${this.state.quizScore}`;
+
+    // Feedback Box
+    const feedbackBox = document.getElementById('quiz-feedback-box');
+    const feedbackContent = document.getElementById('quiz-feedback-content');
+    feedbackBox.style.display = 'block';
+
+    if (isCorrect) {
+      feedbackBox.className = 'quiz-feedback-box feedback-correct';
+      feedbackContent.innerHTML = `
+        <div class="feedback-title">✓ Correct!</div>
+        <div class="feedback-detail">Prompt: <strong>${prompt}</strong> &bull; Correct Answer: <strong>${expected}</strong></div>
+      `;
+    } else {
+      feedbackBox.className = 'quiz-feedback-box feedback-incorrect';
+      feedbackContent.innerHTML = `
+        <div class="feedback-title">✗ Incorrect</div>
+        <div class="feedback-detail">Prompt: <strong>${prompt}</strong></div>
+        <div class="feedback-detail" style="margin-top: 0.25rem;">Your Answer: <span style="text-decoration: line-through;">"${rawInput.trim() || '(empty)'}"</span> &bull; Correct Answer: <strong>"${expected}"</strong></div>
+      `;
+    }
+
+    // Focus Next button
+    const nextBtn = document.getElementById('btn-quiz-next');
+    if (nextBtn) {
+      setTimeout(() => nextBtn.focus(), 50);
+    }
+  },
+
+  nextQuizQuestion() {
+    this.state.quizIndex++;
+    if (this.state.quizIndex < this.state.quizItems.length) {
+      this.renderQuizQuestion();
+    } else {
+      this.renderQuizResults();
+    }
+  },
+
+  renderQuizResults() {
+    this.navigateTo('quiz-results');
+
+    const total = this.state.quizItems.length;
+    const score = this.state.quizScore;
+    const pct = Math.round((score / total) * 100);
+
+    const variantTitles = {
+      'jamo-hangul-to-rom': 'Jamo: Hangul → Romanization',
+      'jamo-rom-to-hangul': 'Jamo: Romanization → Hangul',
+      'syl-hangul-to-rom': 'Syllables: Hangul → Romanization',
+      'syl-rom-to-hangul': 'Syllables: Romanization → Hangul'
+    };
+
+    document.getElementById('quiz-results-variant-title').textContent = `${variantTitles[this.state.activeQuizVariant]} ${this.state.isRetryRound ? '(Retry Round)' : ''}`;
+    document.getElementById('quiz-score-circle').textContent = `${pct}%`;
+    document.getElementById('quiz-score-heading').textContent = (pct === 100) ? '🎉 Perfect Score!' : 'Quiz Completed!';
+    document.getElementById('quiz-score-detail').textContent = `You scored ${score} out of ${total} correct.`;
+
+    // Missed Items Section
+    const missedSection = document.getElementById('quiz-missed-section');
+    const missedGrid = document.getElementById('quiz-missed-items-grid');
+    const retryBtn = document.getElementById('btn-quiz-retry-missed');
+
+    if (this.state.quizMissedItems.length > 0) {
+      missedSection.style.display = 'block';
+      retryBtn.style.display = 'inline-flex';
+
+      let html = '';
+      this.state.quizMissedItems.forEach(m => {
+        html += `
+          <div class="jamo-card" style="border-color: var(--rose); text-align: left; align-items: flex-start;">
+            <div style="font-size: 0.8rem; font-weight: 700; color: var(--rose-text); text-transform: uppercase;">Prompt</div>
+            <div style="font-family: var(--font-hangul); font-size: 2.4rem; font-weight: 800; color: var(--text-main); margin-bottom: 0.4rem;">${m.prompt}</div>
+            <div style="font-size: 0.9rem; color: var(--rose-text); margin-bottom: 0.2rem;">Your Answer: <span style="text-decoration: line-through;">"${m.userAnswer}"</span></div>
+            <div style="font-size: 0.95rem; font-weight: 800; color: var(--teal-text);">Correct Answer: "${m.expected}"</div>
+          </div>
+        `;
+      });
+      missedGrid.innerHTML = html;
+    } else {
+      missedSection.style.display = 'none';
+      retryBtn.style.display = 'none';
     }
   },
 
@@ -269,7 +599,7 @@ const App = {
       batchimBox.innerHTML = `
         <h4>Batchim Placement Rule</h4>
         <p><strong>${bRule.description}</strong></p>
-        <p style="font-size: 0.85rem; margin-top: 0.25rem; color: var(--teal-text);">
+        <p style="font-size: 0.9rem; margin-top: 0.25rem; color: var(--teal-text);">
           Example Syllable: <strong>${bRule.example_syllable}</strong> — ${bRule.example_breakdown}
         </p>
       `;
@@ -391,9 +721,9 @@ const App = {
     const nameStr = card.name_korean ? `${card.name_korean} (${card.name_romanized})` : '';
 
     const backContent = `
-      <div style="font-size: 2rem; font-weight: 800; color: var(--teal); font-family: var(--font-hangul); margin-bottom: 0.25rem;">${card.jamo}</div>
-      ${nameStr ? `<div style="font-size: 1.1rem; font-weight: 700; color: var(--text-main); margin-bottom: 0.4rem;">${nameStr}</div>` : ''}
-      <div style="font-size: 0.95rem; color: var(--primary-text); font-weight: 600; margin-bottom: 0.75rem;">${romDisplay}</div>
+      <div class="card-back-header-char">${card.jamo}</div>
+      ${nameStr ? `<div style="font-size: 1.15rem; font-weight: 800; color: var(--text-main); margin-bottom: 0.4rem;">${nameStr}</div>` : ''}
+      <div style="font-size: 1rem; color: var(--primary-text); font-weight: 700; margin-bottom: 0.75rem;">${romDisplay}</div>
       <div class="jamo-note">${card.pronunciation_note}</div>
       <div style="margin-top: 0.75rem;"><span class="category-tag">${card.type} &bull; ${card.category}</span></div>
     `;
@@ -472,7 +802,7 @@ const App = {
 
     // Back
     const backContent = `
-      <div style="font-size: 2.2rem; font-weight: 800; color: var(--text-main); font-family: var(--font-hangul); margin-bottom: 0.5rem;">${card.composed}</div>
+      <div class="card-back-header-char">${card.composed}</div>
       <div class="syllable-breakdown" style="justify-content: center; margin-bottom: 1rem;">
         <div class="breakdown-pill">
           <label>Initial</label>
@@ -488,7 +818,7 @@ const App = {
         </div>
       </div>
       <div style="margin-bottom: 0.5rem;"><span class="category-tag">Layout: ${card.vowel_category}</span></div>
-      <div class="jamo-note" style="font-size: 0.8rem;">${catDesc}</div>
+      <div class="jamo-note" style="font-size: 0.85rem;">${catDesc}</div>
     `;
 
     document.getElementById('syllable-card-back-content').innerHTML = backContent;

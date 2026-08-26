@@ -19,7 +19,7 @@
   <!-- Application Header & Global Navigation -->
   <header class="app-header">
     <div class="header-container">
-      <a class="brand-title" id="nav-brand">
+      <a class="brand-title" id="nav-brand" tabIndex="0" role="button" aria-label="Hangul Hub Home">
         <div class="brand-icon">한</div>
         <span class="brand-title-text">Hangul Hub</span>
       </a>
@@ -36,7 +36,7 @@
   <!-- Main View Container -->
   <main class="app-main">
 
-    <!-- VIEW 1: PRACTICE HUB (Home View) -->
+    <!-- VIEW 1: PRACTICE HUB (Active Recall & Drills) -->
     <section id="view-home" class="view active">
       <!-- HUB MODE SWITCHER TABS -->
       <div class="hub-switcher-wrapper">
@@ -47,128 +47,58 @@
       </div>
 
       <div class="hub-header">
-        <h1 class="hub-title">Select Your Practice Track</h1>
-        <p class="hub-subtitle">Master Korean Hangul characters and syllable block assembly step-by-step.</p>
+        <h1 class="hub-title">Practice & Active Recall Hub</h1>
+        <p class="hub-subtitle">Test your memory and stroke precision with interactive quizzes and assembly drills.</p>
       </div>
 
-      <!-- STACKED PROGRESSION MENU -->
+      <!-- STACKED PROGRESSION MENU (PRACTICE ACTIVITIES) -->
       <div class="stacked-menu-container">
         
-        <!-- SECTION 1: FOUNDATIONS -->
         <div class="menu-section-header">
-          <span class="section-badge">Part 1</span>
-          <h2 class="section-title">Character Foundations</h2>
-          <p class="section-subtitle">Master basic consonants, vowels, double tense sounds, and compound vowels.</p>
-        </div>
-
-        <div class="stacked-tracks-list">
-          
-          <!-- STEP 1: JAMO LIST -->
-          <div class="stacked-track-card" id="card-jamo-list">
-            <div class="step-indicator">STEP 1</div>
-            <div class="stacked-symbol">ㄱ ㄴ ㄷ</div>
-            <div class="stacked-info">
-              <div class="stacked-header">
-                <h3 class="stacked-title">Jamo Reference List</h3>
-                <span class="track-badge">Fundamentals</span>
-              </div>
-              <p class="stacked-desc">Browse all 40 Jamo characters with initial & final romanizations, Korean names, and pronunciation notes.</p>
-            </div>
-            <div class="stacked-action-btn">Study Jamo List →</div>
-          </div>
-
-          <!-- STEP 2: JAMO FLASHCARDS -->
-          <div class="stacked-track-card" id="card-jamo-flashcard">
-            <div class="step-indicator">STEP 2</div>
-            <div class="stacked-symbol">ㅏ ㅓ ㅗ</div>
-            <div class="stacked-info">
-              <div class="stacked-header">
-                <h3 class="stacked-title">Jamo Flashcards</h3>
-                <span class="track-badge">Self-Study</span>
-              </div>
-              <p class="stacked-desc">Interactive flip cards for passive recall of Jamo characters, sounds, and names.</p>
-            </div>
-            <div class="stacked-action-btn">Start Jamo Deck →</div>
-          </div>
-
-        </div>
-
-        <!-- SECTION 2: SYLLABLE ASSEMBLY -->
-        <div class="menu-section-header" style="margin-top: 2rem;">
-          <span class="section-badge teal-badge">Part 2</span>
-          <h2 class="section-title">Syllable Block Assembly</h2>
-          <p class="section-subtitle">Learn geometric vowel positioning categories and final batchim rules.</p>
-        </div>
-
-        <div class="stacked-tracks-list">
-
-          <!-- STEP 3: SYLLABLE LIST -->
-          <div class="stacked-track-card teal-track" id="card-syllable-list">
-            <div class="step-indicator teal-indicator">STEP 3</div>
-            <div class="stacked-symbol">가 고 과</div>
-            <div class="stacked-info">
-              <div class="stacked-header">
-                <h3 class="stacked-title">Syllables Reference List</h3>
-                <span class="track-badge">Block Rules</span>
-              </div>
-              <p class="stacked-desc">Explore 28 practice syllables categorized by geometric vowel positioning rules and batchim placement.</p>
-            </div>
-            <div class="stacked-action-btn">Study Syllable List →</div>
-          </div>
-
-          <!-- STEP 4: SYLLABLE FLASHCARDS -->
-          <div class="stacked-track-card teal-track" id="card-syllable-flashcard">
-            <div class="step-indicator teal-indicator">STEP 4</div>
-            <div class="stacked-symbol">각 산 물</div>
-            <div class="stacked-info">
-              <div class="stacked-header">
-                <h3 class="stacked-title">Syllables Flashcards</h3>
-                <span class="track-badge">Decomposition</span>
-              </div>
-              <p class="stacked-desc">Practice syllable block decomposition (initial + medial + final) across all 4 layout rules.</p>
-            </div>
-            <div class="stacked-action-btn">Start Syllables Deck →</div>
-          </div>
-
-        </div>
-
-        <!-- SECTION 3: INTERACTIVE DRILLS -->
-        <div class="menu-section-header" style="margin-top: 2rem;">
-          <span class="section-badge amber-badge">Part 3</span>
+          <span class="section-badge amber-badge">Part 1 & 2 Practice</span>
           <h2 class="section-title">Interactive Drills & Quizzes</h2>
-          <p class="section-subtitle">Test your recall with timed quizzes and interactive stroke assembly.</p>
+          <p class="section-subtitle">Practice activities unlock as you study consonants, vowels, and block rules in the Learning Hub.</p>
         </div>
 
         <div class="stacked-tracks-list">
 
-          <!-- QUIZ MODE -->
-          <div class="stacked-track-card disabled" id="card-quiz-mode">
-            <div class="step-indicator amber-indicator">DRILLS</div>
+          <!-- QUIZ MODE TRACK (UNLOCKED & ACTIVE) -->
+          <div class="stacked-track-card" id="card-quiz-mode">
+            <div class="step-indicator amber-indicator">DRILL 1</div>
             <div class="stacked-symbol" style="color: var(--amber);">퀴즈</div>
             <div class="stacked-info">
               <div class="stacked-header">
-                <h3 class="stacked-title">Quiz Mode</h3>
-                <span class="track-badge">Coming Soon</span>
+                <h3 class="stacked-title">Quiz Mode (Typed Recall)</h3>
+                <span class="track-badge amber-badge">4 Variants Available</span>
               </div>
-              <p class="stacked-desc">Multiple-choice and sound recognition drills with instant scoring and performance tracking.</p>
+              <p class="stacked-desc">Test Jamo and Syllable recall in both directions: Hangul to Romanization or Romanization to Hangul.</p>
             </div>
-            <div class="stacked-action-btn" style="color: var(--text-dim);">Locked</div>
+            <div class="stacked-action-btn" style="color: var(--amber);">Select Quiz Track →</div>
           </div>
 
-          <!-- WRITING MODE -->
+          <!-- WRITING MODE TRACK -->
           <div class="stacked-track-card disabled" id="card-writing-mode">
-            <div class="step-indicator amber-indicator">CANVAS</div>
+            <div class="step-indicator amber-indicator">DRILL 2</div>
             <div class="stacked-symbol" style="color: var(--amber);">조립</div>
             <div class="stacked-info">
               <div class="stacked-header">
-                <h3 class="stacked-title">Assembly & Writing Mode</h3>
-                <span class="track-badge">Coming Soon</span>
+                <h3 class="stacked-title">Assembly & Writing Canvas</h3>
+                <span class="track-badge">Requires Syllable Study</span>
               </div>
-              <p class="stacked-desc">Drag-and-drop syllable block assembly and stroke order practice canvas.</p>
+              <p class="stacked-desc">Drag-and-drop syllable block builder and guided stroke order canvas.</p>
             </div>
-            <div class="stacked-action-btn" style="color: var(--text-dim);">Locked</div>
+            <div class="stacked-action-btn" style="color: var(--text-dim);">Coming Soon</div>
           </div>
 
+        </div>
+
+        <!-- Callout Banner to Learning Hub -->
+        <div class="hub-callout-box">
+          <div class="hub-callout-text">
+            <h4>Ready to study Hangul foundations?</h4>
+            <p>Switch to the <strong>Learning Hub</strong> to browse the 40 Jamo characters, block positioning rules, and study flashcards.</p>
+          </div>
+          <button class="btn-back" onclick="App.navigateTo('learning-hub')" style="background-color: var(--primary); color: white; border-color: var(--primary);">Go to Learning Hub →</button>
         </div>
 
       </div>
@@ -192,15 +122,16 @@
       <!-- STACKED PROGRESSION MENU FOR LEARNING HUB -->
       <div class="stacked-menu-container">
         
+        <!-- SECTION 1: JAMO STUDY -->
         <div class="menu-section-header">
           <span class="section-badge teal-badge">Part 1</span>
           <h2 class="section-title">Jamo Character Reference</h2>
-          <p class="section-subtitle">Review 40 basic and compound consonants and vowels with audio/pronunciation notes.</p>
+          <p class="section-subtitle">Review 40 basic and compound consonants and vowels with romanizations and sound notes.</p>
         </div>
 
         <div class="stacked-tracks-list">
           <div class="stacked-track-card teal-track" id="card-learning-jamo-list">
-            <div class="step-indicator teal-indicator">STUDY 1</div>
+            <div class="step-indicator teal-indicator">STEP 1</div>
             <div class="stacked-symbol">ㄱ ㄴ ㄷ</div>
             <div class="stacked-info">
               <div class="stacked-header">
@@ -213,7 +144,7 @@
           </div>
 
           <div class="stacked-track-card teal-track" id="card-learning-jamo-flashcard">
-            <div class="step-indicator teal-indicator">STUDY 2</div>
+            <div class="step-indicator teal-indicator">STEP 2</div>
             <div class="stacked-symbol">ㅏ ㅓ ㅗ</div>
             <div class="stacked-info">
               <div class="stacked-header">
@@ -226,6 +157,7 @@
           </div>
         </div>
 
+        <!-- SECTION 2: SYLLABLE POSITIONING -->
         <div class="menu-section-header" style="margin-top: 2rem;">
           <span class="section-badge teal-badge">Part 2</span>
           <h2 class="section-title">Syllable Block Positioning</h2>
@@ -234,7 +166,7 @@
 
         <div class="stacked-tracks-list">
           <div class="stacked-track-card teal-track" id="card-learning-syllable-list">
-            <div class="step-indicator teal-indicator">STUDY 3</div>
+            <div class="step-indicator teal-indicator">STEP 3</div>
             <div class="stacked-symbol">가 고 과</div>
             <div class="stacked-info">
               <div class="stacked-header">
@@ -247,7 +179,7 @@
           </div>
 
           <div class="stacked-track-card teal-track" id="card-learning-syllable-flashcard">
-            <div class="step-indicator teal-indicator">STUDY 4</div>
+            <div class="step-indicator teal-indicator">STEP 4</div>
             <div class="stacked-symbol">각 산 물</div>
             <div class="stacked-info">
               <div class="stacked-header">
@@ -263,10 +195,184 @@
       </div>
     </section>
 
-    <!-- VIEW 3: JAMO LIST VIEW -->
+    <!-- VIEW 3: QUIZ VARIANT SELECTION VIEW -->
+    <section id="view-quiz-select" class="view">
+      <div class="view-header">
+        <button class="btn-back" onclick="App.navigateTo('home')">← Back to Practice Hub</button>
+        <div class="view-title-group">
+          <h2>Select Quiz Variant</h2>
+          <p>Choose your target content (Jamo or Syllables) and question direction</p>
+        </div>
+      </div>
+
+      <div class="stacked-menu-container">
+        
+        <!-- JAMO QUIZZES -->
+        <div class="menu-section-header">
+          <span class="section-badge amber-badge">Part 1 Quizzes</span>
+          <h2 class="section-title">Jamo Character Quizzes (40 Items)</h2>
+          <p class="section-subtitle">Test individual consonant and vowel sound mappings.</p>
+        </div>
+
+        <div class="stacked-tracks-list">
+          <div class="stacked-track-card" id="quiz-variant-jamo-hangul-to-rom">
+            <div class="step-indicator amber-indicator">DIRECTION 1</div>
+            <div class="stacked-symbol" style="color: var(--amber);">ㄱ → g</div>
+            <div class="stacked-info">
+              <div class="stacked-header">
+                <h3 class="stacked-title">Jamo: Hangul → Romanization</h3>
+                <span class="track-badge">Type English</span>
+              </div>
+              <p class="stacked-desc">See the Korean Jamo character (e.g. ㄱ) and type its English romanization (e.g. g).</p>
+            </div>
+            <div class="stacked-action-btn" style="color: var(--amber);">Start Quiz →</div>
+          </div>
+
+          <div class="stacked-track-card" id="quiz-variant-jamo-rom-to-hangul">
+            <div class="step-indicator amber-indicator">DIRECTION 2</div>
+            <div class="stacked-symbol" style="color: var(--amber);">g → ㄱ</div>
+            <div class="stacked-info">
+              <div class="stacked-header">
+                <h3 class="stacked-title">Jamo: Romanization → Hangul</h3>
+                <span class="track-badge">Type Korean</span>
+              </div>
+              <p class="stacked-desc">See the English romanization (e.g. g) and type the corresponding Korean Jamo (e.g. ㄱ).</p>
+            </div>
+            <div class="stacked-action-btn" style="color: var(--amber);">Start Quiz →</div>
+          </div>
+        </div>
+
+        <!-- SYLLABLE QUIZZES -->
+        <div class="menu-section-header" style="margin-top: 2rem;">
+          <span class="section-badge amber-badge">Part 2 Quizzes</span>
+          <h2 class="section-title">Syllable Block Quizzes (28 Items)</h2>
+          <p class="section-subtitle">Test full composed syllable block reading and spelling.</p>
+        </div>
+
+        <div class="stacked-tracks-list">
+          <div class="stacked-track-card" id="quiz-variant-syl-hangul-to-rom">
+            <div class="step-indicator amber-indicator">DIRECTION 1</div>
+            <div class="stacked-symbol" style="color: var(--amber);">가 → ga</div>
+            <div class="stacked-info">
+              <div class="stacked-header">
+                <h3 class="stacked-title">Syllables: Hangul → Romanization</h3>
+                <span class="track-badge">Type English</span>
+              </div>
+              <p class="stacked-desc">See the composed syllable block (e.g. 가 or 완) and type its English romanization (e.g. ga or wan).</p>
+            </div>
+            <div class="stacked-action-btn" style="color: var(--amber);">Start Quiz →</div>
+          </div>
+
+          <div class="stacked-track-card" id="quiz-variant-syl-rom-to-hangul">
+            <div class="step-indicator amber-indicator">DIRECTION 2</div>
+            <div class="stacked-symbol" style="color: var(--amber);">ga → 가</div>
+            <div class="stacked-info">
+              <div class="stacked-header">
+                <h3 class="stacked-title">Syllables: Romanization → Hangul</h3>
+                <span class="track-badge">Type Korean</span>
+              </div>
+              <p class="stacked-desc">See the English romanization (e.g. ga or wan) and type the composed Korean syllable (e.g. 가 or 완).</p>
+            </div>
+            <div class="stacked-action-btn" style="color: var(--amber);">Start Quiz →</div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- VIEW 4: ACTIVE QUIZ VIEW -->
+    <section id="view-quiz-active" class="view">
+      <div class="view-header">
+        <button class="btn-back" onclick="App.confirmQuitQuiz()">← Quit Quiz</button>
+        <div class="view-title-group">
+          <h2 id="quiz-active-title">Quiz Mode</h2>
+          <p id="quiz-active-subtitle">Question 1 of 40</p>
+        </div>
+      </div>
+
+      <div class="quiz-card-container">
+        <!-- Progress Bar -->
+        <div class="deck-progress-bar">
+          <span class="progress-text" id="quiz-active-progress-text">Question 1 of 40</span>
+          <div class="progress-track">
+            <div class="progress-fill" id="quiz-active-progress-fill"></div>
+          </div>
+          <span class="progress-text" id="quiz-active-score-text" style="color: var(--amber); font-weight: 800;">Score: 0</span>
+        </div>
+
+        <!-- Question Card Box -->
+        <div class="quiz-question-box">
+          <div class="quiz-prompt-label" id="quiz-prompt-label">Translate into Romanization:</div>
+          <div class="quiz-prompt-display" id="quiz-prompt-display">ㄱ</div>
+
+          <!-- Keyboard Hint for Direction 2 -->
+          <div class="keyboard-hint-box" id="quiz-keyboard-hint" style="display: none;">
+            <span>⌨️ Requires a Korean (2-beolsik) keyboard enabled on your device.</span>
+          </div>
+
+          <!-- Answer Form -->
+          <form id="quiz-answer-form" onsubmit="event.preventDefault(); App.handleQuizSubmit();" autocomplete="off">
+            <div class="quiz-input-group">
+              <input type="text" id="quiz-answer-input" class="quiz-input" placeholder="Type your answer here..." autocomplete="off" spellcheck="false" autofocus />
+              <button type="submit" id="btn-quiz-submit" class="ctrl-btn ctrl-btn-primary" style="flex: initial; padding: 0.85rem 1.8rem;">Submit Answer</button>
+            </div>
+          </form>
+
+          <!-- Feedback Banner -->
+          <div id="quiz-feedback-box" class="quiz-feedback-box" style="display: none;">
+            <div id="quiz-feedback-content"></div>
+            <button id="btn-quiz-next" class="ctrl-btn ctrl-btn-primary" onclick="App.nextQuizQuestion()" style="margin-top: 1rem; width: 100%;">Next Question →</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- VIEW 5: QUIZ RESULTS VIEW -->
+    <section id="view-quiz-results" class="view">
+      <div class="view-header">
+        <button class="btn-back" onclick="App.navigateTo('quiz-select')">← Select Variant</button>
+        <div class="view-title-group">
+          <h2>Quiz Results</h2>
+          <p id="quiz-results-variant-title">Jamo: Hangul → Romanization</p>
+        </div>
+      </div>
+
+      <div class="quiz-results-container">
+        <!-- Score Banner Card -->
+        <div class="quiz-score-card">
+          <div class="quiz-score-circle" id="quiz-score-circle">100%</div>
+          <h3 style="font-size: 1.8rem; font-weight: 800; margin-bottom: 0.3rem;" id="quiz-score-heading">Quiz Completed!</h3>
+          <p style="color: var(--text-muted); font-size: 1.1rem;" id="quiz-score-detail">You scored 40 out of 40 correct!</p>
+        </div>
+
+        <!-- Missed Items List -->
+        <div id="quiz-missed-section" style="display: none; margin-top: 2rem;">
+          <div class="list-section-header">
+            <h3 style="color: var(--rose);">Missed Items Review</h3>
+            <p>Review the questions you got wrong in this round:</p>
+          </div>
+          <div class="jamo-grid" id="quiz-missed-items-grid"></div>
+        </div>
+
+        <!-- Result Action Bar -->
+        <div class="quiz-action-bar-row">
+          <button id="btn-quiz-retry-missed" class="ctrl-btn ctrl-btn-primary" onclick="App.startRetryRound()" style="display: none; background-color: var(--rose); border-color: var(--rose);">
+            🔄 Retry Missed Items Only
+          </button>
+          <button class="ctrl-btn" onclick="App.startQuizVariant(App.state.activeQuizVariant)">
+            🔁 Restart Full Quiz
+          </button>
+          <button class="ctrl-btn" onclick="App.navigateTo('quiz-select')">
+            📋 Choose Another Variant
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- VIEW 6: JAMO LIST VIEW -->
     <section id="view-jamo-list" class="view">
       <div class="view-header">
-        <button class="btn-back" onclick="App.navigateTo('home')">← Back to Hub</button>
+        <button class="btn-back" onclick="App.navigateTo('learning-hub')">← Back to Learning Hub</button>
         <div class="view-title-group">
           <h2>Part 1: Jamo Reference List</h2>
           <p>40 entries (14 basic consonants, 10 basic vowels, 5 double consonants, 11 compound vowels)</p>
@@ -285,10 +391,10 @@
       <div id="jamo-list-content"></div>
     </section>
 
-    <!-- VIEW 4: JAMO FLASHCARD VIEW -->
+    <!-- VIEW 7: JAMO FLASHCARD VIEW -->
     <section id="view-jamo-flashcard" class="view">
       <div class="view-header">
-        <button class="btn-back" onclick="App.navigateTo('home')">← Back to Hub</button>
+        <button class="btn-back" onclick="App.navigateTo('learning-hub')">← Back to Learning Hub</button>
         <div class="view-title-group">
           <h2>Part 1: Jamo Flashcards</h2>
           <p>Click or tap card to flip & reveal sound rules</p>
@@ -296,7 +402,6 @@
       </div>
 
       <div class="flashcard-container">
-        <!-- Deck Progress -->
         <div class="deck-progress-bar">
           <span class="progress-text" id="jamo-card-count">Card 1 of 40</span>
           <div class="progress-track">
@@ -311,15 +416,12 @@
           </select>
         </div>
 
-        <!-- 3D Flip Card Component -->
         <div class="flashcard-wrapper" id="jamo-card-wrapper" tabindex="0" role="button" aria-label="Jamo flashcard flip">
           <div class="flashcard-inner">
-            <!-- Card Front -->
             <div class="card-face card-front">
               <div class="flashcard-display-char" id="jamo-card-front-char">ㄱ</div>
               <div class="flip-hint">Click or press Space to flip</div>
             </div>
-            <!-- Card Back -->
             <div class="card-face card-back">
               <div id="jamo-card-back-content"></div>
               <div class="flip-hint">Click to flip back</div>
@@ -327,7 +429,6 @@
           </div>
         </div>
 
-        <!-- Controls -->
         <div class="flashcard-controls">
           <button class="ctrl-btn" id="btn-jamo-prev">Previous</button>
           <button class="ctrl-btn ctrl-btn-primary" id="btn-jamo-flip">Flip Card</button>
@@ -337,20 +438,18 @@
       </div>
     </section>
 
-    <!-- VIEW 5: SYLLABLE LIST VIEW -->
+    <!-- VIEW 8: SYLLABLE LIST VIEW -->
     <section id="view-syllable-list" class="view">
       <div class="view-header">
-        <button class="btn-back" onclick="App.navigateTo('home')">← Back to Hub</button>
+        <button class="btn-back" onclick="App.navigateTo('learning-hub')">← Back to Learning Hub</button>
         <div class="view-title-group">
           <h2>Part 2: Syllables Reference List</h2>
           <p>28 practice syllables categorized by geometric vowel positioning rules</p>
         </div>
       </div>
 
-      <!-- Batchim Rule Intro Box -->
       <div class="batchim-rule-box" id="batchim-rule-intro"></div>
 
-      <!-- Category Filter Pills -->
       <div class="category-nav" id="syllable-list-filters">
         <button class="filter-btn active" data-category="all">All Rules (28)</button>
         <button class="filter-btn" data-category="vertical_right">Vertical Right (8)</button>
@@ -362,10 +461,10 @@
       <div id="syllable-list-content"></div>
     </section>
 
-    <!-- VIEW 6: SYLLABLE FLASHCARD VIEW -->
+    <!-- VIEW 9: SYLLABLE FLASHCARD VIEW -->
     <section id="view-syllable-flashcard" class="view">
       <div class="view-header">
-        <button class="btn-back" onclick="App.navigateTo('home')">← Back to Hub</button>
+        <button class="btn-back" onclick="App.navigateTo('learning-hub')">← Back to Learning Hub</button>
         <div class="view-title-group">
           <h2>Part 2: Syllable Flashcards</h2>
           <p>Practice block decomposition across geometric positioning categories</p>
@@ -373,7 +472,6 @@
       </div>
 
       <div class="flashcard-container">
-        <!-- Deck Progress -->
         <div class="deck-progress-bar">
           <span class="progress-text" id="syllable-card-count">Card 1 of 28</span>
           <div class="progress-track">
@@ -388,15 +486,12 @@
           </select>
         </div>
 
-        <!-- 3D Flip Card Component -->
         <div class="flashcard-wrapper" id="syllable-card-wrapper" tabindex="0" role="button" aria-label="Syllable flashcard flip">
           <div class="flashcard-inner">
-            <!-- Card Front -->
             <div class="card-face card-front">
               <div class="flashcard-display-char" id="syllable-card-front-char">가</div>
               <div class="flip-hint">Click or press Space to flip</div>
             </div>
-            <!-- Card Back -->
             <div class="card-face card-back">
               <div id="syllable-card-back-content"></div>
               <div class="flip-hint">Click to flip back</div>
@@ -404,7 +499,6 @@
           </div>
         </div>
 
-        <!-- Controls -->
         <div class="flashcard-controls">
           <button class="ctrl-btn" id="btn-syllable-prev">Previous</button>
           <button class="ctrl-btn ctrl-btn-primary" id="btn-syllable-flip">Flip Card</button>
@@ -414,24 +508,33 @@
       </div>
     </section>
 
-    <!-- VIEW 7: COMING SOON VIEW (Practice Hub) -->
+    <!-- VIEW 10: COMING SOON VIEW -->
     <section id="view-coming-soon" class="view">
       <div class="view-header">
-        <button class="btn-back" onclick="App.navigateTo('home')">← Back to Hub</button>
+        <button class="btn-back" onclick="App.navigateTo('home')">← Back to Practice Hub</button>
         <div class="view-title-group">
-          <h2>Practice Hub — Feature Under Development</h2>
+          <h2>Practice Activity Under Development</h2>
         </div>
       </div>
-      <div style="text-align: center; padding: 4rem 1rem; background-color: var(--bg-card); border-radius: var(--radius-lg); border: 1px solid var(--border-color); box-shadow: var(--shadow-sm);">
-        <h3 style="font-size: 1.6rem; margin-bottom: 0.5rem;" id="coming-soon-title">Interactive Drills Coming Soon</h3>
-        <p style="color: var(--text-muted); max-width: 600px; margin: 0 auto 1.5rem auto;">
-          Quiz Mode (multiple-choice drills, sound identification) and Assembly Mode (drag-and-drop stroke order canvas) are scheduled for future development phases.
+      <div style="text-align: center; padding: 4rem 1.5rem; background-color: var(--bg-card); border-radius: var(--radius-lg); border: 2px solid var(--border-color); box-shadow: var(--shadow-sm);">
+        <h3 style="font-size: 1.8rem; margin-bottom: 0.5rem;" id="coming-soon-title">Interactive Drills Coming Soon</h3>
+        <p style="color: var(--text-muted); max-width: 650px; margin: 0 auto 1.5rem auto; font-size: 1.05rem;">
+          Assembly Mode (drag-and-drop stroke order canvas) is scheduled for future development phases.
         </p>
         <button class="btn-back" onclick="App.navigateTo('home')">Return to Practice Hub</button>
       </div>
     </section>
 
   </main>
+
+  <!-- Sticky Sub-Navigation Bar for Long Pages -->
+  <div id="sticky-subnav-bar" class="sticky-subnav-bar" style="display: none;">
+    <button class="sticky-subnav-btn" onclick="App.navigateTo('learning-hub')">← Back to Learning Hub</button>
+    <button class="sticky-subnav-btn" onclick="window.scrollTo({ top: 0, behavior: 'smooth' })">↑ Top</button>
+  </div>
+
+  <!-- Floating Scroll-To-Top Button -->
+  <button id="btn-scroll-top" class="scroll-top-btn" aria-label="Scroll to top">↑</button>
 
   <!-- Footer -->
   <footer class="app-footer">

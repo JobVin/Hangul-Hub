@@ -6,6 +6,7 @@
       "initial": "ㄱ",
       "medial": "ㅏ",
       "final": null,
+      "expected_romanization": "ga",
       "vowel_category": "vertical_right"
     },
     {
@@ -14,6 +15,7 @@
       "initial": "ㄴ",
       "medial": "ㅏ",
       "final": null,
+      "expected_romanization": "na",
       "vowel_category": "vertical_right"
     },
     {
@@ -22,6 +24,7 @@
       "initial": "ㄷ",
       "medial": "ㅓ",
       "final": null,
+      "expected_romanization": "deo",
       "vowel_category": "vertical_right"
     },
     {
@@ -30,6 +33,7 @@
       "initial": "ㅂ",
       "medial": "ㅣ",
       "final": null,
+      "expected_romanization": "bi",
       "vowel_category": "vertical_right"
     },
     {
@@ -38,6 +42,7 @@
       "initial": "ㄱ",
       "medial": "ㅏ",
       "final": "ㄱ",
+      "expected_romanization": "gak",
       "vowel_category": "vertical_right"
     },
     {
@@ -46,6 +51,7 @@
       "initial": "ㅅ",
       "medial": "ㅏ",
       "final": "ㄴ",
+      "expected_romanization": "san",
       "vowel_category": "vertical_right"
     },
     {
@@ -54,6 +60,7 @@
       "initial": "ㄷ",
       "medial": "ㅏ",
       "final": "ㄹ",
+      "expected_romanization": "dal",
       "vowel_category": "vertical_right"
     },
     {
@@ -62,6 +69,7 @@
       "initial": "ㅂ",
       "medial": "ㅏ",
       "final": "ㅂ",
+      "expected_romanization": "bap",
       "vowel_category": "vertical_right"
     },
     {
@@ -70,6 +78,7 @@
       "initial": "ㄱ",
       "medial": "ㅗ",
       "final": null,
+      "expected_romanization": "go",
       "vowel_category": "horizontal_below"
     },
     {
@@ -78,6 +87,7 @@
       "initial": "ㄷ",
       "medial": "ㅜ",
       "final": null,
+      "expected_romanization": "du",
       "vowel_category": "horizontal_below"
     },
     {
@@ -86,6 +96,7 @@
       "initial": "ㅅ",
       "medial": "ㅗ",
       "final": null,
+      "expected_romanization": "so",
       "vowel_category": "horizontal_below"
     },
     {
@@ -94,6 +105,7 @@
       "initial": "ㄱ",
       "medial": "ㅡ",
       "final": null,
+      "expected_romanization": "geu",
       "vowel_category": "horizontal_below"
     },
     {
@@ -102,6 +114,7 @@
       "initial": "ㄱ",
       "medial": "ㅗ",
       "final": "ㅁ",
+      "expected_romanization": "gom",
       "vowel_category": "horizontal_below"
     },
     {
@@ -110,6 +123,7 @@
       "initial": "ㅁ",
       "medial": "ㅜ",
       "final": "ㄴ",
+      "expected_romanization": "mun",
       "vowel_category": "horizontal_below"
     },
     {
@@ -118,6 +132,7 @@
       "initial": "ㅁ",
       "medial": "ㅜ",
       "final": "ㄹ",
+      "expected_romanization": "mul",
       "vowel_category": "horizontal_below"
     },
     {
@@ -126,6 +141,7 @@
       "initial": "ㄷ",
       "medial": "ㅡ",
       "final": "ㅇ",
+      "expected_romanization": "deung",
       "vowel_category": "horizontal_below"
     },
     {
@@ -134,6 +150,7 @@
       "initial": "ㅇ",
       "medial": "ㅘ",
       "final": null,
+      "expected_romanization": "wa",
       "vowel_category": "diphthong_wrap"
     },
     {
@@ -142,6 +159,7 @@
       "initial": "ㄱ",
       "medial": "ㅘ",
       "final": null,
+      "expected_romanization": "gwa",
       "vowel_category": "diphthong_wrap"
     },
     {
@@ -150,6 +168,7 @@
       "initial": "ㄱ",
       "medial": "ㅟ",
       "final": null,
+      "expected_romanization": "gwi",
       "vowel_category": "diphthong_wrap"
     },
     {
@@ -158,6 +177,7 @@
       "initial": "ㄷ",
       "medial": "ㅙ",
       "final": null,
+      "expected_romanization": "dwae",
       "vowel_category": "diphthong_wrap"
     },
     {
@@ -166,6 +186,7 @@
       "initial": "ㅇ",
       "medial": "ㅘ",
       "final": "ㄴ",
+      "expected_romanization": "wan",
       "vowel_category": "diphthong_wrap"
     },
     {
@@ -174,6 +195,7 @@
       "initial": "ㄱ",
       "medial": "ㅘ",
       "final": "ㅇ",
+      "expected_romanization": "gwang",
       "vowel_category": "diphthong_wrap"
     },
     {
@@ -182,6 +204,7 @@
       "initial": "ㅇ",
       "medial": "ㅝ",
       "final": "ㄴ",
+      "expected_romanization": "won",
       "vowel_category": "diphthong_wrap"
     },
     {
@@ -190,6 +213,7 @@
       "initial": "ㅇ",
       "medial": "ㅝ",
       "final": "ㄹ",
+      "expected_romanization": "wol",
       "vowel_category": "diphthong_wrap"
     },
     {
@@ -198,6 +222,7 @@
       "initial": "ㅇ",
       "medial": "ㅢ",
       "final": null,
+      "expected_romanization": "ui",
       "vowel_category": "ui_special_case"
     },
     {
@@ -206,6 +231,7 @@
       "initial": "ㅎ",
       "medial": "ㅢ",
       "final": null,
+      "expected_romanization": "hui",
       "vowel_category": "ui_special_case"
     },
     {
@@ -214,6 +240,7 @@
       "initial": "ㅎ",
       "medial": "ㅢ",
       "final": "ㄴ",
+      "expected_romanization": "huin",
       "vowel_category": "ui_special_case"
     },
     {
@@ -222,6 +249,7 @@
       "initial": "ㅎ",
       "medial": "ㅢ",
       "final": "ㅂ",
+      "expected_romanization": "huip",
       "vowel_category": "ui_special_case"
     }
   ]
