@@ -1,0 +1,228 @@
+{
+  "practice_items": [
+    {
+      "id": "syl_001",
+      "composed": "가",
+      "initial": "ㄱ",
+      "medial": "ㅏ",
+      "final": null,
+      "vowel_category": "vertical_right"
+    },
+    {
+      "id": "syl_002",
+      "composed": "나",
+      "initial": "ㄴ",
+      "medial": "ㅏ",
+      "final": null,
+      "vowel_category": "vertical_right"
+    },
+    {
+      "id": "syl_003",
+      "composed": "더",
+      "initial": "ㄷ",
+      "medial": "ㅓ",
+      "final": null,
+      "vowel_category": "vertical_right"
+    },
+    {
+      "id": "syl_004",
+      "composed": "비",
+      "initial": "ㅂ",
+      "medial": "ㅣ",
+      "final": null,
+      "vowel_category": "vertical_right"
+    },
+    {
+      "id": "syl_005",
+      "composed": "각",
+      "initial": "ㄱ",
+      "medial": "ㅏ",
+      "final": "ㄱ",
+      "vowel_category": "vertical_right"
+    },
+    {
+      "id": "syl_006",
+      "composed": "산",
+      "initial": "ㅅ",
+      "medial": "ㅏ",
+      "final": "ㄴ",
+      "vowel_category": "vertical_right"
+    },
+    {
+      "id": "syl_007",
+      "composed": "달",
+      "initial": "ㄷ",
+      "medial": "ㅏ",
+      "final": "ㄹ",
+      "vowel_category": "vertical_right"
+    },
+    {
+      "id": "syl_008",
+      "composed": "밥",
+      "initial": "ㅂ",
+      "medial": "ㅏ",
+      "final": "ㅂ",
+      "vowel_category": "vertical_right"
+    },
+    {
+      "id": "syl_009",
+      "composed": "고",
+      "initial": "ㄱ",
+      "medial": "ㅗ",
+      "final": null,
+      "vowel_category": "horizontal_below"
+    },
+    {
+      "id": "syl_010",
+      "composed": "두",
+      "initial": "ㄷ",
+      "medial": "ㅜ",
+      "final": null,
+      "vowel_category": "horizontal_below"
+    },
+    {
+      "id": "syl_011",
+      "composed": "소",
+      "initial": "ㅅ",
+      "medial": "ㅗ",
+      "final": null,
+      "vowel_category": "horizontal_below"
+    },
+    {
+      "id": "syl_012",
+      "composed": "그",
+      "initial": "ㄱ",
+      "medial": "ㅡ",
+      "final": null,
+      "vowel_category": "horizontal_below"
+    },
+    {
+      "id": "syl_013",
+      "composed": "곰",
+      "initial": "ㄱ",
+      "medial": "ㅗ",
+      "final": "ㅁ",
+      "vowel_category": "horizontal_below"
+    },
+    {
+      "id": "syl_014",
+      "composed": "문",
+      "initial": "ㅁ",
+      "medial": "ㅜ",
+      "final": "ㄴ",
+      "vowel_category": "horizontal_below"
+    },
+    {
+      "id": "syl_015",
+      "composed": "물",
+      "initial": "ㅁ",
+      "medial": "ㅜ",
+      "final": "ㄹ",
+      "vowel_category": "horizontal_below"
+    },
+    {
+      "id": "syl_016",
+      "composed": "등",
+      "initial": "ㄷ",
+      "medial": "ㅡ",
+      "final": "ㅇ",
+      "vowel_category": "horizontal_below"
+    },
+    {
+      "id": "syl_017",
+      "composed": "와",
+      "initial": "ㅇ",
+      "medial": "ㅘ",
+      "final": null,
+      "vowel_category": "diphthong_wrap"
+    },
+    {
+      "id": "syl_018",
+      "composed": "과",
+      "initial": "ㄱ",
+      "medial": "ㅘ",
+      "final": null,
+      "vowel_category": "diphthong_wrap"
+    },
+    {
+      "id": "syl_019",
+      "composed": "귀",
+      "initial": "ㄱ",
+      "medial": "ㅟ",
+      "final": null,
+      "vowel_category": "diphthong_wrap"
+    },
+    {
+      "id": "syl_020",
+      "composed": "돼",
+      "initial": "ㄷ",
+      "medial": "ㅙ",
+      "final": null,
+      "vowel_category": "diphthong_wrap"
+    },
+    {
+      "id": "syl_021",
+      "composed": "완",
+      "initial": "ㅇ",
+      "medial": "ㅘ",
+      "final": "ㄴ",
+      "vowel_category": "diphthong_wrap"
+    },
+    {
+      "id": "syl_022",
+      "composed": "광",
+      "initial": "ㄱ",
+      "medial": "ㅘ",
+      "final": "ㅇ",
+      "vowel_category": "diphthong_wrap"
+    },
+    {
+      "id": "syl_023",
+      "composed": "원",
+      "initial": "ㅇ",
+      "medial": "ㅝ",
+      "final": "ㄴ",
+      "vowel_category": "diphthong_wrap"
+    },
+    {
+      "id": "syl_024",
+      "composed": "월",
+      "initial": "ㅇ",
+      "medial": "ㅝ",
+      "final": "ㄹ",
+      "vowel_category": "diphthong_wrap"
+    },
+    {
+      "id": "syl_025",
+      "composed": "의",
+      "initial": "ㅇ",
+      "medial": "ㅢ",
+      "final": null,
+      "vowel_category": "ui_special_case"
+    },
+    {
+      "id": "syl_026",
+      "composed": "희",
+      "initial": "ㅎ",
+      "medial": "ㅢ",
+      "final": null,
+      "vowel_category": "ui_special_case"
+    },
+    {
+      "id": "syl_027",
+      "composed": "흰",
+      "initial": "ㅎ",
+      "medial": "ㅢ",
+      "final": "ㄴ",
+      "vowel_category": "ui_special_case"
+    },
+    {
+      "id": "syl_028",
+      "composed": "흽",
+      "initial": "ㅎ",
+      "medial": "ㅢ",
+      "final": "ㅂ",
+      "vowel_category": "ui_special_case"
+    }
+  ]
+}

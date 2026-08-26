@@ -3,9 +3,444 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Hangul Hub</title>
+  <meta name="description" content="Hangul Hub — Interactive static web application for absolute-beginner Hangul literacy and syllable assembly.">
+  <title>Hangul Hub | Korean Character Practice & Study Hub</title>
+  
+  <!-- Fonts: Noto Sans KR for proper Hangul display -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;800&display=swap" rel="stylesheet">
+  
+  <!-- Stylesheet -->
+  <link rel="stylesheet" href="css/styles.css">
 </head>
 <body>
-  <h1>Hangul Hub — under construction</h1>
+
+  <!-- Application Header & Global Navigation -->
+  <header class="app-header">
+    <div class="header-container">
+      <a class="brand-title" id="nav-brand">
+        <div class="brand-icon">한</div>
+        <span class="brand-title-text">Hangul Hub</span>
+      </a>
+      <nav class="main-nav" aria-label="Main Navigation">
+        <a class="nav-link active" id="nav-practice-hub">Practice Hub</a>
+        <a class="nav-link" id="nav-learning-hub">Learning Hub</a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Error Container for Async Data Loading -->
+  <div id="global-error-container" aria-live="polite"></div>
+
+  <!-- Main View Container -->
+  <main class="app-main">
+
+    <!-- VIEW 1: PRACTICE HUB (Home View) -->
+    <section id="view-home" class="view active">
+      <!-- HUB MODE SWITCHER TABS -->
+      <div class="hub-switcher-wrapper">
+        <div class="hub-switcher-tabs">
+          <button class="hub-tab-btn active" id="tab-practice-hub-1">Practice Hub</button>
+          <button class="hub-tab-btn teal-tab" id="tab-learning-hub-1">Learning Hub</button>
+        </div>
+      </div>
+
+      <div class="hub-header">
+        <h1 class="hub-title">Select Your Practice Track</h1>
+        <p class="hub-subtitle">Master Korean Hangul characters and syllable block assembly step-by-step.</p>
+      </div>
+
+      <!-- STACKED PROGRESSION MENU -->
+      <div class="stacked-menu-container">
+        
+        <!-- SECTION 1: FOUNDATIONS -->
+        <div class="menu-section-header">
+          <span class="section-badge">Part 1</span>
+          <h2 class="section-title">Character Foundations</h2>
+          <p class="section-subtitle">Master basic consonants, vowels, double tense sounds, and compound vowels.</p>
+        </div>
+
+        <div class="stacked-tracks-list">
+          
+          <!-- STEP 1: JAMO LIST -->
+          <div class="stacked-track-card" id="card-jamo-list">
+            <div class="step-indicator">STEP 1</div>
+            <div class="stacked-symbol">ㄱ ㄴ ㄷ</div>
+            <div class="stacked-info">
+              <div class="stacked-header">
+                <h3 class="stacked-title">Jamo Reference List</h3>
+                <span class="track-badge">Fundamentals</span>
+              </div>
+              <p class="stacked-desc">Browse all 40 Jamo characters with initial & final romanizations, Korean names, and pronunciation notes.</p>
+            </div>
+            <div class="stacked-action-btn">Study Jamo List →</div>
+          </div>
+
+          <!-- STEP 2: JAMO FLASHCARDS -->
+          <div class="stacked-track-card" id="card-jamo-flashcard">
+            <div class="step-indicator">STEP 2</div>
+            <div class="stacked-symbol">ㅏ ㅓ ㅗ</div>
+            <div class="stacked-info">
+              <div class="stacked-header">
+                <h3 class="stacked-title">Jamo Flashcards</h3>
+                <span class="track-badge">Self-Study</span>
+              </div>
+              <p class="stacked-desc">Interactive flip cards for passive recall of Jamo characters, sounds, and names.</p>
+            </div>
+            <div class="stacked-action-btn">Start Jamo Deck →</div>
+          </div>
+
+        </div>
+
+        <!-- SECTION 2: SYLLABLE ASSEMBLY -->
+        <div class="menu-section-header" style="margin-top: 2rem;">
+          <span class="section-badge teal-badge">Part 2</span>
+          <h2 class="section-title">Syllable Block Assembly</h2>
+          <p class="section-subtitle">Learn geometric vowel positioning categories and final batchim rules.</p>
+        </div>
+
+        <div class="stacked-tracks-list">
+
+          <!-- STEP 3: SYLLABLE LIST -->
+          <div class="stacked-track-card teal-track" id="card-syllable-list">
+            <div class="step-indicator teal-indicator">STEP 3</div>
+            <div class="stacked-symbol">가 고 과</div>
+            <div class="stacked-info">
+              <div class="stacked-header">
+                <h3 class="stacked-title">Syllables Reference List</h3>
+                <span class="track-badge">Block Rules</span>
+              </div>
+              <p class="stacked-desc">Explore 28 practice syllables categorized by geometric vowel positioning rules and batchim placement.</p>
+            </div>
+            <div class="stacked-action-btn">Study Syllable List →</div>
+          </div>
+
+          <!-- STEP 4: SYLLABLE FLASHCARDS -->
+          <div class="stacked-track-card teal-track" id="card-syllable-flashcard">
+            <div class="step-indicator teal-indicator">STEP 4</div>
+            <div class="stacked-symbol">각 산 물</div>
+            <div class="stacked-info">
+              <div class="stacked-header">
+                <h3 class="stacked-title">Syllables Flashcards</h3>
+                <span class="track-badge">Decomposition</span>
+              </div>
+              <p class="stacked-desc">Practice syllable block decomposition (initial + medial + final) across all 4 layout rules.</p>
+            </div>
+            <div class="stacked-action-btn">Start Syllables Deck →</div>
+          </div>
+
+        </div>
+
+        <!-- SECTION 3: INTERACTIVE DRILLS -->
+        <div class="menu-section-header" style="margin-top: 2rem;">
+          <span class="section-badge amber-badge">Part 3</span>
+          <h2 class="section-title">Interactive Drills & Quizzes</h2>
+          <p class="section-subtitle">Test your recall with timed quizzes and interactive stroke assembly.</p>
+        </div>
+
+        <div class="stacked-tracks-list">
+
+          <!-- QUIZ MODE -->
+          <div class="stacked-track-card disabled" id="card-quiz-mode">
+            <div class="step-indicator amber-indicator">DRILLS</div>
+            <div class="stacked-symbol" style="color: var(--amber);">퀴즈</div>
+            <div class="stacked-info">
+              <div class="stacked-header">
+                <h3 class="stacked-title">Quiz Mode</h3>
+                <span class="track-badge">Coming Soon</span>
+              </div>
+              <p class="stacked-desc">Multiple-choice and sound recognition drills with instant scoring and performance tracking.</p>
+            </div>
+            <div class="stacked-action-btn" style="color: var(--text-dim);">Locked</div>
+          </div>
+
+          <!-- WRITING MODE -->
+          <div class="stacked-track-card disabled" id="card-writing-mode">
+            <div class="step-indicator amber-indicator">CANVAS</div>
+            <div class="stacked-symbol" style="color: var(--amber);">조립</div>
+            <div class="stacked-info">
+              <div class="stacked-header">
+                <h3 class="stacked-title">Assembly & Writing Mode</h3>
+                <span class="track-badge">Coming Soon</span>
+              </div>
+              <p class="stacked-desc">Drag-and-drop syllable block assembly and stroke order practice canvas.</p>
+            </div>
+            <div class="stacked-action-btn" style="color: var(--text-dim);">Locked</div>
+          </div>
+
+        </div>
+
+      </div>
+    </section>
+
+    <!-- VIEW 2: LEARNING HUB -->
+    <section id="view-learning-hub" class="view">
+      <!-- HUB MODE SWITCHER TABS -->
+      <div class="hub-switcher-wrapper">
+        <div class="hub-switcher-tabs">
+          <button class="hub-tab-btn" id="tab-practice-hub-2">Practice Hub</button>
+          <button class="hub-tab-btn teal-tab active" id="tab-learning-hub-2">Learning Hub</button>
+        </div>
+      </div>
+
+      <div class="hub-header">
+        <h1 class="hub-title" style="color: var(--teal);">Learning Hub</h1>
+        <p class="hub-subtitle">Study Korean character foundations and syllable structure at your own pace.</p>
+      </div>
+
+      <!-- STACKED PROGRESSION MENU FOR LEARNING HUB -->
+      <div class="stacked-menu-container">
+        
+        <div class="menu-section-header">
+          <span class="section-badge teal-badge">Part 1</span>
+          <h2 class="section-title">Jamo Character Reference</h2>
+          <p class="section-subtitle">Review 40 basic and compound consonants and vowels with audio/pronunciation notes.</p>
+        </div>
+
+        <div class="stacked-tracks-list">
+          <div class="stacked-track-card teal-track" id="card-learning-jamo-list">
+            <div class="step-indicator teal-indicator">STUDY 1</div>
+            <div class="stacked-symbol">ㄱ ㄴ ㄷ</div>
+            <div class="stacked-info">
+              <div class="stacked-header">
+                <h3 class="stacked-title">Jamo Reference Table</h3>
+                <span class="track-badge">40 Entries</span>
+              </div>
+              <p class="stacked-desc">Comprehensive reference list for consonants and vowels in canonical teaching order.</p>
+            </div>
+            <div class="stacked-action-btn">Study Table →</div>
+          </div>
+
+          <div class="stacked-track-card teal-track" id="card-learning-jamo-flashcard">
+            <div class="step-indicator teal-indicator">STUDY 2</div>
+            <div class="stacked-symbol">ㅏ ㅓ ㅗ</div>
+            <div class="stacked-info">
+              <div class="stacked-header">
+                <h3 class="stacked-title">Jamo Flashcard Deck</h3>
+                <span class="track-badge">40 Cards</span>
+              </div>
+              <p class="stacked-desc">Self-paced flashcard deck to memorize initial/final romanizations and sound notes.</p>
+            </div>
+            <div class="stacked-action-btn">Study Deck →</div>
+          </div>
+        </div>
+
+        <div class="menu-section-header" style="margin-top: 2rem;">
+          <span class="section-badge teal-badge">Part 2</span>
+          <h2 class="section-title">Syllable Block Positioning</h2>
+          <p class="section-subtitle">Learn vertical, horizontal, wrap-around, and batchim layout rules.</p>
+        </div>
+
+        <div class="stacked-tracks-list">
+          <div class="stacked-track-card teal-track" id="card-learning-syllable-list">
+            <div class="step-indicator teal-indicator">STUDY 3</div>
+            <div class="stacked-symbol">가 고 과</div>
+            <div class="stacked-info">
+              <div class="stacked-header">
+                <h3 class="stacked-title">Syllables Reference Table</h3>
+                <span class="track-badge">28 Syllables</span>
+              </div>
+              <p class="stacked-desc">28 practice items organized by the 4 geometric vowel positioning categories.</p>
+            </div>
+            <div class="stacked-action-btn">Study Table →</div>
+          </div>
+
+          <div class="stacked-track-card teal-track" id="card-learning-syllable-flashcard">
+            <div class="step-indicator teal-indicator">STUDY 4</div>
+            <div class="stacked-symbol">각 산 물</div>
+            <div class="stacked-info">
+              <div class="stacked-header">
+                <h3 class="stacked-title">Syllable Flashcard Deck</h3>
+                <span class="track-badge">28 Cards</span>
+              </div>
+              <p class="stacked-desc">Flashcards to practice breaking down composed syllables into initial, medial, and final jamo.</p>
+            </div>
+            <div class="stacked-action-btn">Study Deck →</div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- VIEW 3: JAMO LIST VIEW -->
+    <section id="view-jamo-list" class="view">
+      <div class="view-header">
+        <button class="btn-back" onclick="App.navigateTo('home')">← Back to Hub</button>
+        <div class="view-title-group">
+          <h2>Part 1: Jamo Reference List</h2>
+          <p>40 entries (14 basic consonants, 10 basic vowels, 5 double consonants, 11 compound vowels)</p>
+        </div>
+      </div>
+
+      <!-- Category Filter Pills -->
+      <div class="category-nav" id="jamo-list-filters">
+        <button class="filter-btn active" data-category="all">All (40)</button>
+        <button class="filter-btn" data-category="basic_consonants">Basic Consonants (14)</button>
+        <button class="filter-btn" data-category="basic_vowels">Basic Vowels (10)</button>
+        <button class="filter-btn" data-category="double_tense_consonants">Double Consonants (5)</button>
+        <button class="filter-btn" data-category="compound_vowels">Compound Vowels (11)</button>
+      </div>
+
+      <div id="jamo-list-content"></div>
+    </section>
+
+    <!-- VIEW 4: JAMO FLASHCARD VIEW -->
+    <section id="view-jamo-flashcard" class="view">
+      <div class="view-header">
+        <button class="btn-back" onclick="App.navigateTo('home')">← Back to Hub</button>
+        <div class="view-title-group">
+          <h2>Part 1: Jamo Flashcards</h2>
+          <p>Click or tap card to flip & reveal sound rules</p>
+        </div>
+      </div>
+
+      <div class="flashcard-container">
+        <!-- Deck Progress -->
+        <div class="deck-progress-bar">
+          <span class="progress-text" id="jamo-card-count">Card 1 of 40</span>
+          <div class="progress-track">
+            <div class="progress-fill" id="jamo-progress-fill"></div>
+          </div>
+          <select id="jamo-deck-filter" class="filter-btn" style="border-radius: var(--radius-sm);">
+            <option value="all">All Jamo (40)</option>
+            <option value="basic_consonants">Basic Consonants (14)</option>
+            <option value="basic_vowels">Basic Vowels (10)</option>
+            <option value="double_tense_consonants">Double Consonants (5)</option>
+            <option value="compound_vowels">Compound Vowels (11)</option>
+          </select>
+        </div>
+
+        <!-- 3D Flip Card Component -->
+        <div class="flashcard-wrapper" id="jamo-card-wrapper" tabindex="0" role="button" aria-label="Jamo flashcard flip">
+          <div class="flashcard-inner">
+            <!-- Card Front -->
+            <div class="card-face card-front">
+              <div class="flashcard-display-char" id="jamo-card-front-char">ㄱ</div>
+              <div class="flip-hint">Click or press Space to flip</div>
+            </div>
+            <!-- Card Back -->
+            <div class="card-face card-back">
+              <div id="jamo-card-back-content"></div>
+              <div class="flip-hint">Click to flip back</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Controls -->
+        <div class="flashcard-controls">
+          <button class="ctrl-btn" id="btn-jamo-prev">Previous</button>
+          <button class="ctrl-btn ctrl-btn-primary" id="btn-jamo-flip">Flip Card</button>
+          <button class="ctrl-btn" id="btn-jamo-next">Next</button>
+        </div>
+        <div class="shortcut-guide">Shortcuts: <kbd>←</kbd> <kbd>→</kbd> Navigate &bull; <kbd>Space</kbd> / <kbd>Enter</kbd> Flip</div>
+      </div>
+    </section>
+
+    <!-- VIEW 5: SYLLABLE LIST VIEW -->
+    <section id="view-syllable-list" class="view">
+      <div class="view-header">
+        <button class="btn-back" onclick="App.navigateTo('home')">← Back to Hub</button>
+        <div class="view-title-group">
+          <h2>Part 2: Syllables Reference List</h2>
+          <p>28 practice syllables categorized by geometric vowel positioning rules</p>
+        </div>
+      </div>
+
+      <!-- Batchim Rule Intro Box -->
+      <div class="batchim-rule-box" id="batchim-rule-intro"></div>
+
+      <!-- Category Filter Pills -->
+      <div class="category-nav" id="syllable-list-filters">
+        <button class="filter-btn active" data-category="all">All Rules (28)</button>
+        <button class="filter-btn" data-category="vertical_right">Vertical Right (8)</button>
+        <button class="filter-btn" data-category="horizontal_below">Horizontal Below (8)</button>
+        <button class="filter-btn" data-category="diphthong_wrap">Diphthong Wrap (8)</button>
+        <button class="filter-btn" data-category="ui_special_case">UI Special Case (4)</button>
+      </div>
+
+      <div id="syllable-list-content"></div>
+    </section>
+
+    <!-- VIEW 6: SYLLABLE FLASHCARD VIEW -->
+    <section id="view-syllable-flashcard" class="view">
+      <div class="view-header">
+        <button class="btn-back" onclick="App.navigateTo('home')">← Back to Hub</button>
+        <div class="view-title-group">
+          <h2>Part 2: Syllable Flashcards</h2>
+          <p>Practice block decomposition across geometric positioning categories</p>
+        </div>
+      </div>
+
+      <div class="flashcard-container">
+        <!-- Deck Progress -->
+        <div class="deck-progress-bar">
+          <span class="progress-text" id="syllable-card-count">Card 1 of 28</span>
+          <div class="progress-track">
+            <div class="progress-fill" id="syllable-progress-fill"></div>
+          </div>
+          <select id="syllable-deck-filter" class="filter-btn" style="border-radius: var(--radius-sm);">
+            <option value="all">All Syllables (28)</option>
+            <option value="vertical_right">Vertical Right (8)</option>
+            <option value="horizontal_below">Horizontal Below (8)</option>
+            <option value="diphthong_wrap">Diphthong Wrap (8)</option>
+            <option value="ui_special_case">UI Special Case (4)</option>
+          </select>
+        </div>
+
+        <!-- 3D Flip Card Component -->
+        <div class="flashcard-wrapper" id="syllable-card-wrapper" tabindex="0" role="button" aria-label="Syllable flashcard flip">
+          <div class="flashcard-inner">
+            <!-- Card Front -->
+            <div class="card-face card-front">
+              <div class="flashcard-display-char" id="syllable-card-front-char">가</div>
+              <div class="flip-hint">Click or press Space to flip</div>
+            </div>
+            <!-- Card Back -->
+            <div class="card-face card-back">
+              <div id="syllable-card-back-content"></div>
+              <div class="flip-hint">Click to flip back</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Controls -->
+        <div class="flashcard-controls">
+          <button class="ctrl-btn" id="btn-syllable-prev">Previous</button>
+          <button class="ctrl-btn ctrl-btn-primary" id="btn-syllable-flip">Flip Card</button>
+          <button class="ctrl-btn" id="btn-syllable-next">Next</button>
+        </div>
+        <div class="shortcut-guide">Shortcuts: <kbd>←</kbd> <kbd>→</kbd> Navigate &bull; <kbd>Space</kbd> / <kbd>Enter</kbd> Flip</div>
+      </div>
+    </section>
+
+    <!-- VIEW 7: COMING SOON VIEW (Practice Hub) -->
+    <section id="view-coming-soon" class="view">
+      <div class="view-header">
+        <button class="btn-back" onclick="App.navigateTo('home')">← Back to Hub</button>
+        <div class="view-title-group">
+          <h2>Practice Hub — Feature Under Development</h2>
+        </div>
+      </div>
+      <div style="text-align: center; padding: 4rem 1rem; background-color: var(--bg-card); border-radius: var(--radius-lg); border: 1px solid var(--border-color); box-shadow: var(--shadow-sm);">
+        <h3 style="font-size: 1.6rem; margin-bottom: 0.5rem;" id="coming-soon-title">Interactive Drills Coming Soon</h3>
+        <p style="color: var(--text-muted); max-width: 600px; margin: 0 auto 1.5rem auto;">
+          Quiz Mode (multiple-choice drills, sound identification) and Assembly Mode (drag-and-drop stroke order canvas) are scheduled for future development phases.
+        </p>
+        <button class="btn-back" onclick="App.navigateTo('home')">Return to Practice Hub</button>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Footer -->
+  <footer class="app-footer">
+    <p>Hangul Hub &copy; 2026 — Zero-dependency static learning platform for Korean literacy.</p>
+  </footer>
+
+  <!-- Scripts -->
+  <script src="js/data-loader.js"></script>
+  <script src="js/hangul-compose.js"></script>
+  <script src="js/main.js"></script>
 </body>
 </html>

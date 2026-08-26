@@ -1,0 +1,37 @@
+{
+  "positioning_categories": [
+    {
+      "category": "vertical_right",
+      "description": "Vowels with a dominant vertical stem sit to the right of the initial consonant in a side-by-side layout.",
+      "vowels": ["ㅏ", "ㅑ", "ㅓ", "ㅕ", "ㅣ", "ㅐ", "ㅒ", "ㅔ", "ㅖ"],
+      "example_syllable": "가",
+      "example_breakdown": "Initial 'ㄱ' on the left, medial 'ㅏ' on the right."
+    },
+    {
+      "category": "horizontal_below",
+      "description": "Vowels with a dominant horizontal stem sit directly underneath the initial consonant in a top-bottom layout.",
+      "vowels": ["ㅗ", "ㅛ", "ㅜ", "ㅠ", "ㅡ"],
+      "example_syllable": "고",
+      "example_breakdown": "Initial 'ㄱ' on top, medial 'ㅗ' directly underneath."
+    },
+    {
+      "category": "diphthong_wrap",
+      "description": "Compound vowels combining horizontal glides (ㅗ or ㅜ) with vertical vowels wrap around the initial consonant (sitting both below and to its right).",
+      "vowels": ["ㅘ", "ㅙ", "ㅚ", "ㅝ", "ㅞ", "ㅟ"],
+      "example_syllable": "과",
+      "example_breakdown": "Initial 'ㄱ' top-left, horizontal glide 'ㅗ' bottom-left, vertical component 'ㅏ' on the right."
+    },
+    {
+      "category": "ui_special_case",
+      "description": "The compound vowel ㅢ combines flat horizontal 'ㅡ' and vertical 'ㅣ'. It visually spans both below and right, but unlike ㅗ/ㅜ-based diphthongs, it derives from a flat non-glide base vowel 'ㅡ'.",
+      "vowels": ["ㅢ"],
+      "example_syllable": "의",
+      "example_breakdown": "Initial silent 'ㅇ' top-left, horizontal 'ㅡ' underneath, vertical 'ㅣ' on the right."
+    }
+  ],
+  "batchim_rule": {
+    "description": "Any final consonant (batchim) always sits at the very bottom of the syllable block, below whatever initial+medial structure is above it.",
+    "example_syllable": "각",
+    "example_breakdown": "Initial 'ㄱ' top-left, medial 'ㅏ' top-right, final batchim 'ㄱ' spanning the bottom."
+  }
+}

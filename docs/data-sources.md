@@ -1,9 +1,9 @@
 # Data Sources
 
 ## Part 1 — Jamo reference data
-- Status: AI-drafted, pending manual verification
+- Status: Manually verified against National Institute of Korean Language (국립국어원) Revised Romanization (2000) reference table
 - Intended reference standard: National Institute of Korean Language (국립국어원), Revised Romanization of Korean (2000)
-- Verified by: (not yet — pending)
+- Verified by: JobVin, with Claude cross-check, 2026-08-26
 - Date drafted: 2026-08-26
 
 ## Part 3 — Vocabulary
