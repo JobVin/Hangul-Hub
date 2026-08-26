@@ -201,7 +201,7 @@
         <button class="btn-back" onclick="App.navigateTo('home')">← Back to Practice Hub</button>
         <div class="view-title-group">
           <h2>Select Quiz Variant</h2>
-          <p>Choose your target content (Jamo or Syllables) and question direction</p>
+          <p>Choose your category focus, target content (Jamo or Syllables), and question direction</p>
         </div>
       </div>
 
@@ -210,8 +210,16 @@
         <!-- JAMO QUIZZES -->
         <div class="menu-section-header">
           <span class="section-badge amber-badge">Part 1 Quizzes</span>
-          <h2 class="section-title">Jamo Character Quizzes (40 Items)</h2>
-          <p class="section-subtitle">Test individual consonant and vowel sound mappings.</p>
+          <h2 class="section-title" id="jamo-quiz-section-title">Jamo Character Quizzes</h2>
+          <p class="section-subtitle">Select a category focus, then choose direction:</p>
+        </div>
+
+        <div class="category-nav" id="jamo-quiz-filters">
+          <button class="filter-btn active" data-category="all" id="jamo-quiz-filter-all">All Jamo (39)</button>
+          <button class="filter-btn" data-category="basic_consonants" id="jamo-quiz-filter-bc">Basic Consonants (13)</button>
+          <button class="filter-btn" data-category="basic_vowels" id="jamo-quiz-filter-bv">Basic Vowels (10)</button>
+          <button class="filter-btn" data-category="double_tense_consonants" id="jamo-quiz-filter-dc">Double Consonants (5)</button>
+          <button class="filter-btn" data-category="compound_vowels" id="jamo-quiz-filter-cv">Compound Vowels (11)</button>
         </div>
 
         <div class="stacked-tracks-list">
@@ -221,7 +229,7 @@
             <div class="stacked-info">
               <div class="stacked-header">
                 <h3 class="stacked-title">Jamo: Hangul → Romanization</h3>
-                <span class="track-badge">Type English</span>
+                <span class="track-badge amber-badge" id="badge-jamo-hangul-to-rom">Type English</span>
               </div>
               <p class="stacked-desc">See the Korean Jamo character (e.g. ㄱ) and type its English romanization (e.g. g).</p>
             </div>
@@ -234,7 +242,7 @@
             <div class="stacked-info">
               <div class="stacked-header">
                 <h3 class="stacked-title">Jamo: Romanization → Hangul</h3>
-                <span class="track-badge">Type Korean</span>
+                <span class="track-badge amber-badge" id="badge-jamo-rom-to-hangul">Type Korean</span>
               </div>
               <p class="stacked-desc">See the English romanization (e.g. g) and type the corresponding Korean Jamo (e.g. ㄱ).</p>
             </div>
@@ -245,8 +253,16 @@
         <!-- SYLLABLE QUIZZES -->
         <div class="menu-section-header" style="margin-top: 2rem;">
           <span class="section-badge amber-badge">Part 2 Quizzes</span>
-          <h2 class="section-title">Syllable Block Quizzes (28 Items)</h2>
-          <p class="section-subtitle">Test full composed syllable block reading and spelling.</p>
+          <h2 class="section-title" id="syllable-quiz-section-title">Syllable Block Quizzes</h2>
+          <p class="section-subtitle">Select a category focus, then choose direction:</p>
+        </div>
+
+        <div class="category-nav" id="syllable-quiz-filters">
+          <button class="filter-btn active" data-category="all" id="syllable-quiz-filter-all">All Syllables (28)</button>
+          <button class="filter-btn" data-category="vertical_right" id="syllable-quiz-filter-vr">Vertical Right (8)</button>
+          <button class="filter-btn" data-category="horizontal_below" id="syllable-quiz-filter-hb">Horizontal Below (8)</button>
+          <button class="filter-btn" data-category="diphthong_wrap" id="syllable-quiz-filter-dw">Diphthong Wrap (8)</button>
+          <button class="filter-btn" data-category="ui_special_case" id="syllable-quiz-filter-ui">UI Special Case (4)</button>
         </div>
 
         <div class="stacked-tracks-list">
@@ -256,7 +272,7 @@
             <div class="stacked-info">
               <div class="stacked-header">
                 <h3 class="stacked-title">Syllables: Hangul → Romanization</h3>
-                <span class="track-badge">Type English</span>
+                <span class="track-badge amber-badge" id="badge-syl-hangul-to-rom">Type English</span>
               </div>
               <p class="stacked-desc">See the composed syllable block (e.g. 가 or 완) and type its English romanization (e.g. ga or wan).</p>
             </div>
@@ -269,7 +285,7 @@
             <div class="stacked-info">
               <div class="stacked-header">
                 <h3 class="stacked-title">Syllables: Romanization → Hangul</h3>
-                <span class="track-badge">Type Korean</span>
+                <span class="track-badge amber-badge" id="badge-syl-rom-to-hangul">Type Korean</span>
               </div>
               <p class="stacked-desc">See the English romanization (e.g. ga or wan) and type the composed Korean syllable (e.g. 가 or 완).</p>
             </div>

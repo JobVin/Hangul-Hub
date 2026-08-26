@@ -27,12 +27,14 @@ const App = {
     syllableCategoryFilter: 'all',
 
     // Quiz Engine State
-    activeQuizVariant: null,   // 'jamo-hangul-to-rom' | 'jamo-rom-to-hangul' | 'syl-hangul-to-rom' | 'syl-rom-to-hangul'
-    quizItems: [],             // Array of current round item objects
+    activeQuizVariant: null,          // 'jamo-hangul-to-rom' | 'jamo-rom-to-hangul' | 'syl-hangul-to-rom' | 'syl-rom-to-hangul'
+    activeJamoQuizCategory: 'all',     // 'all' | 'basic_consonants' | 'basic_vowels' | 'double_tense_consonants' | 'compound_vowels'
+    activeSyllableQuizCategory: 'all', // 'all' | 'vertical_right' | 'horizontal_below' | 'diphthong_wrap' | 'ui_special_case'
+    quizItems: [],                    // Array of current round item objects
     quizIndex: 0,
     quizScore: 0,
     quizSubmitted: false,
-    quizMissedItems: [],       // Array of { item, prompt, expected, userAnswer }
+    quizMissedItems: [],              // Array of { item, prompt, expected, userAnswer }
     isRetryRound: false
   },
 
@@ -52,9 +54,10 @@ const App = {
       this.data.blockRules = blockRules;
       this.data.syllables = syllables;
 
-      // Initialize default flashcard decks
+      // Initialize default flashcard decks & quiz filter counts
       this.initJamoDeck('all');
       this.initSyllableDeck('all');
+      this.updateQuizFilterCounts();
 
       console.log('Hangul Hub initialized successfully.');
     } catch (err) {
@@ -72,7 +75,7 @@ const App = {
     return arr;
   },
 
-  // Flatten all 4 jamo categories into a single ordered array of 40 entries
+  // Flatten all 4 jamo categories into a single ordered array of 40 entries (for Study Mode)
   getJamoFlatList() {
     if (!this.data.jamo) return [];
     return [
@@ -81,6 +84,81 @@ const App = {
       ...this.data.jamo.double_tense_consonants,
       ...this.data.jamo.compound_vowels
     ];
+  },
+
+  // Get filtered Jamo list for Quiz Mode (EXCLUDES items where romanization_initial is null, e.g. ㅇ)
+  getJamoQuizList(subCategory = 'all') {
+    if (!this.data.jamo) return [];
+    let rawList = [];
+    if (subCategory === 'all') {
+      rawList = this.getJamoFlatList();
+    } else {
+      rawList = this.data.jamo[subCategory] || [];
+    }
+    // Filter out entries with null romanization_initial (e.g. silent initial ㅇ)
+    return rawList.filter(item => item.romanization_initial !== null);
+  },
+
+  // Get Syllable list for Quiz Mode (supports sub-categories)
+  getSyllableQuizList(subCategory = 'all') {
+    if (!this.data.syllables) return [];
+    const items = this.data.syllables.practice_items || [];
+    if (subCategory === 'all') {
+      return items;
+    }
+    return items.filter(item => item.vowel_category === subCategory);
+  },
+
+  updateQuizFilterCounts() {
+    if (!this.data.jamo || !this.data.syllables) return;
+
+    // Jamo Quiz Counts
+    const jamoAll = this.getJamoQuizList('all').length;
+    const jamoBC = this.getJamoQuizList('basic_consonants').length;
+    const jamoBV = this.getJamoQuizList('basic_vowels').length;
+    const jamoDC = this.getJamoQuizList('double_tense_consonants').length;
+    const jamoCV = this.getJamoQuizList('compound_vowels').length;
+
+    const btnJamoAll = document.getElementById('jamo-quiz-filter-all');
+    const btnJamoBC = document.getElementById('jamo-quiz-filter-bc');
+    const btnJamoBV = document.getElementById('jamo-quiz-filter-bv');
+    const btnJamoDC = document.getElementById('jamo-quiz-filter-dc');
+    const btnJamoCV = document.getElementById('jamo-quiz-filter-cv');
+
+    if (btnJamoAll) btnJamoAll.textContent = `All Jamo (${jamoAll})`;
+    if (btnJamoBC) btnJamoBC.textContent = `Basic Consonants (${jamoBC})`;
+    if (btnJamoBV) btnJamoBV.textContent = `Basic Vowels (${jamoBV})`;
+    if (btnJamoDC) btnJamoDC.textContent = `Double Consonants (${jamoDC})`;
+    if (btnJamoCV) btnJamoCV.textContent = `Compound Vowels (${jamoCV})`;
+
+    // Syllable Quiz Counts
+    const sylAll = this.getSyllableQuizList('all').length;
+    const sylVR = this.getSyllableQuizList('vertical_right').length;
+    const sylHB = this.getSyllableQuizList('horizontal_below').length;
+    const sylDW = this.getSyllableQuizList('diphthong_wrap').length;
+    const sylUI = this.getSyllableQuizList('ui_special_case').length;
+
+    const btnSylAll = document.getElementById('syllable-quiz-filter-all');
+    const btnSylVR = document.getElementById('syllable-quiz-filter-vr');
+    const btnSylHB = document.getElementById('syllable-quiz-filter-hb');
+    const btnSylDW = document.getElementById('syllable-quiz-filter-dw');
+    const btnSylUI = document.getElementById('syllable-quiz-filter-ui');
+
+    if (btnSylAll) btnSylAll.textContent = `All Syllables (${sylAll})`;
+    if (btnSylVR) btnSylVR.textContent = `Vertical Right (${sylVR})`;
+    if (btnSylHB) btnSylHB.textContent = `Horizontal Below (${sylHB})`;
+    if (btnSylDW) btnSylDW.textContent = `Diphthong Wrap (${sylDW})`;
+    if (btnSylUI) btnSylUI.textContent = `UI Special Case (${sylUI})`;
+
+    // Section Titles
+    const activeJamoCount = this.getJamoQuizList(this.state.activeJamoQuizCategory).length;
+    const activeSylCount = this.getSyllableQuizList(this.state.activeSyllableQuizCategory).length;
+
+    const jamoTitle = document.getElementById('jamo-quiz-section-title');
+    const sylTitle = document.getElementById('syllable-quiz-section-title');
+
+    if (jamoTitle) jamoTitle.textContent = `Jamo Character Quizzes (${activeJamoCount} Items)`;
+    if (sylTitle) sylTitle.textContent = `Syllable Block Quizzes (${activeSylCount} Items)`;
   },
 
   bindEvents() {
@@ -116,6 +194,32 @@ const App = {
     if (qvJamo2) qvJamo2.addEventListener('click', () => this.startQuizVariant('jamo-rom-to-hangul'));
     if (qvSyl1) qvSyl1.addEventListener('click', () => this.startQuizVariant('syl-hangul-to-rom'));
     if (qvSyl2) qvSyl2.addEventListener('click', () => this.startQuizVariant('syl-rom-to-hangul'));
+
+    // Quiz View Jamo Category Filters
+    const jamoQuizFilterNav = document.getElementById('jamo-quiz-filters');
+    if (jamoQuizFilterNav) {
+      jamoQuizFilterNav.addEventListener('click', (e) => {
+        if (e.target.classList.contains('filter-btn')) {
+          jamoQuizFilterNav.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
+          e.target.classList.add('active');
+          this.state.activeJamoQuizCategory = e.target.dataset.category;
+          this.updateQuizFilterCounts();
+        }
+      });
+    }
+
+    // Quiz View Syllable Category Filters
+    const syllableQuizFilterNav = document.getElementById('syllable-quiz-filters');
+    if (syllableQuizFilterNav) {
+      syllableQuizFilterNav.addEventListener('click', (e) => {
+        if (e.target.classList.contains('filter-btn')) {
+          syllableQuizFilterNav.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
+          e.target.classList.add('active');
+          this.state.activeSyllableQuizCategory = e.target.dataset.category;
+          this.updateQuizFilterCounts();
+        }
+      });
+    }
 
     // Learning Hub Cards
     const lJamoList = document.getElementById('card-learning-jamo-list');
@@ -268,6 +372,8 @@ const App = {
       this.renderJamoCard();
     } else if (viewId === 'syllable-flashcard') {
       this.renderSyllableCard();
+    } else if (viewId === 'quiz-select') {
+      this.updateQuizFilterCounts();
     } else if (viewId === 'coming-soon' && extraParam) {
       document.getElementById('coming-soon-title').textContent = `${extraParam} — Coming Soon`;
     }
@@ -277,15 +383,29 @@ const App = {
      QUIZ ENGINE LOGIC
      ========================================================================== */
   
+  getCategoryNameLabel(catKey) {
+    const labels = {
+      basic_consonants: 'Basic Consonants',
+      basic_vowels: 'Basic Vowels',
+      double_tense_consonants: 'Double Consonants',
+      compound_vowels: 'Compound Vowels',
+      vertical_right: 'Vertical Right',
+      horizontal_below: 'Horizontal Below',
+      diphthong_wrap: 'Diphthong Wrap',
+      ui_special_case: 'UI Special Case'
+    };
+    return labels[catKey] ? ` (${labels[catKey]})` : '';
+  },
+
   startQuizVariant(variant) {
     this.state.activeQuizVariant = variant;
     this.state.isRetryRound = false;
 
     let baseItems = [];
     if (variant.startsWith('jamo')) {
-      baseItems = this.getJamoFlatList();
+      baseItems = this.getJamoQuizList(this.state.activeJamoQuizCategory);
     } else if (variant.startsWith('syl')) {
-      baseItems = this.data.syllables ? (this.data.syllables.practice_items || []) : [];
+      baseItems = this.getSyllableQuizList(this.state.activeSyllableQuizCategory);
     }
 
     // Shuffle item order per quiz session
@@ -362,7 +482,11 @@ const App = {
       'syl-rom-to-hangul': 'Syllables: Romanization → Hangul'
     };
 
-    document.getElementById('quiz-active-title').textContent = `${variantTitles[variant]} ${this.state.isRetryRound ? '(Retry Round)' : ''}`;
+    const categoryLabel = variant.startsWith('jamo')
+      ? this.getCategoryNameLabel(this.state.activeJamoQuizCategory)
+      : this.getCategoryNameLabel(this.state.activeSyllableQuizCategory);
+
+    document.getElementById('quiz-active-title').textContent = `${variantTitles[variant]}${categoryLabel} ${this.state.isRetryRound ? '(Retry Round)' : ''}`;
     
     const currentNum = this.state.quizIndex + 1;
     const totalNum = this.state.quizItems.length;
@@ -495,7 +619,11 @@ const App = {
       'syl-rom-to-hangul': 'Syllables: Romanization → Hangul'
     };
 
-    document.getElementById('quiz-results-variant-title').textContent = `${variantTitles[this.state.activeQuizVariant]} ${this.state.isRetryRound ? '(Retry Round)' : ''}`;
+    const categoryLabel = this.state.activeQuizVariant.startsWith('jamo')
+      ? this.getCategoryNameLabel(this.state.activeJamoQuizCategory)
+      : this.getCategoryNameLabel(this.state.activeSyllableQuizCategory);
+
+    document.getElementById('quiz-results-variant-title').textContent = `${variantTitles[this.state.activeQuizVariant]}${categoryLabel} ${this.state.isRetryRound ? '(Retry Round)' : ''}`;
     document.getElementById('quiz-score-circle').textContent = `${pct}%`;
     document.getElementById('quiz-score-heading').textContent = (pct === 100) ? '🎉 Perfect Score!' : 'Quiz Completed!';
     document.getElementById('quiz-score-detail').textContent = `You scored ${score} out of ${total} correct.`;
