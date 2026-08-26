@@ -1,0 +1,450 @@
+{
+  "basic_consonants": [
+    {
+      "jamo": "ㄱ",
+      "type": "consonant",
+      "category": "basic",
+      "romanization_initial": "g",
+      "romanization_final": "k",
+      "name_korean": "기역",
+      "name_romanized": "giyeok",
+      "pronunciation_note": "Voiceless/soft 'g' in initial position; unreleased 'k' in final (batchim) position.",
+      "example_word": null
+    },
+    {
+      "jamo": "ㄴ",
+      "type": "consonant",
+      "category": "basic",
+      "romanization_initial": "n",
+      "romanization_final": "n",
+      "name_korean": "니은",
+      "name_romanized": "nieun",
+      "pronunciation_note": "Like 'n' in 'no' in both initial and final positions.",
+      "example_word": null
+    },
+    {
+      "jamo": "ㄷ",
+      "type": "consonant",
+      "category": "basic",
+      "romanization_initial": "d",
+      "romanization_final": "t",
+      "name_korean": "디귿",
+      "name_romanized": "digeut",
+      "pronunciation_note": "Soft/unaspirated 'd' initially; unreleased 't' in final position.",
+      "example_word": null
+    },
+    {
+      "jamo": "ㄹ",
+      "type": "consonant",
+      "category": "basic",
+      "romanization_initial": "r",
+      "romanization_final": "l",
+      "name_korean": "리을",
+      "name_romanized": "rieul",
+      "pronunciation_note": "Flapped 'r' (like Spanish 'r' or 'tt' in American 'butter') initially between vowels; clear 'l' in final position.",
+      "example_word": null
+    },
+    {
+      "jamo": "ㅁ",
+      "type": "consonant",
+      "category": "basic",
+      "romanization_initial": "m",
+      "romanization_final": "m",
+      "name_korean": "미음",
+      "name_romanized": "mieum",
+      "pronunciation_note": "Like 'm' in 'moon' in both initial and final positions.",
+      "example_word": null
+    },
+    {
+      "jamo": "ㅂ",
+      "type": "consonant",
+      "category": "basic",
+      "romanization_initial": "b",
+      "romanization_final": "p",
+      "name_korean": "비읍",
+      "name_romanized": "bieup",
+      "pronunciation_note": "Soft/unaspirated 'b' initially; unreleased 'p' in final position.",
+      "example_word": null
+    },
+    {
+      "jamo": "ㅅ",
+      "type": "consonant",
+      "category": "basic",
+      "romanization_initial": "s",
+      "romanization_final": "t",
+      "name_korean": "시옷",
+      "name_romanized": "siot",
+      "pronunciation_note": "Like soft 's' initially (sounds like 'sh' before 'ㅣ' or 'y' vowels); neutralizes to unreleased 't' in final position.",
+      "example_word": null
+    },
+    {
+      "jamo": "ㅇ",
+      "type": "consonant",
+      "category": "basic",
+      "romanization_initial": null,
+      "romanization_final": "ng",
+      "name_korean": "이응",
+      "name_romanized": "ieung",
+      "pronunciation_note": "Silent placeholder when in initial position; pronounced as 'ng' (like in 'sing') in final batchim position.",
+      "example_word": null
+    },
+    {
+      "jamo": "ㅈ",
+      "type": "consonant",
+      "category": "basic",
+      "romanization_initial": "j",
+      "romanization_final": "t",
+      "name_korean": "지읒",
+      "name_romanized": "jieut",
+      "pronunciation_note": "Soft 'j' or 'ch' initially; neutralizes to unreleased 't' in final position.",
+      "example_word": null
+    },
+    {
+      "jamo": "ㅊ",
+      "type": "consonant",
+      "category": "basic",
+      "romanization_initial": "ch",
+      "romanization_final": "t",
+      "name_korean": "치읓",
+      "name_romanized": "chieut",
+      "pronunciation_note": "Strongly aspirated 'ch' (like in 'chair') initially; neutralizes to unreleased 't' in final position.",
+      "example_word": null
+    },
+    {
+      "jamo": "ㅋ",
+      "type": "consonant",
+      "category": "basic",
+      "romanization_initial": "k",
+      "romanization_final": "k",
+      "name_korean": "키읔",
+      "name_romanized": "kieuk",
+      "pronunciation_note": "Strongly aspirated 'k' (like in 'kite') initially; unreleased 'k' in final position.",
+      "example_word": null
+    },
+    {
+      "jamo": "ㅌ",
+      "type": "consonant",
+      "category": "basic",
+      "romanization_initial": "t",
+      "romanization_final": "t",
+      "name_korean": "티읕",
+      "name_romanized": "tieut",
+      "pronunciation_note": "Strongly aspirated 't' (like in 'top') initially; unreleased 't' in final position.",
+      "example_word": null
+    },
+    {
+      "jamo": "ㅍ",
+      "type": "consonant",
+      "category": "basic",
+      "romanization_initial": "p",
+      "romanization_final": "p",
+      "name_korean": "피읖",
+      "name_romanized": "pieup",
+      "pronunciation_note": "Strongly aspirated 'p' (like in 'pie') initially; unreleased 'p' in final position.",
+      "example_word": null
+    },
+    {
+      "jamo": "ㅎ",
+      "type": "consonant",
+      "category": "basic",
+      "romanization_initial": "h",
+      "romanization_final": "t",
+      "name_korean": "히읗",
+      "name_romanized": "hieut",
+      "pronunciation_note": "Like 'h' in 'hat' initially; neutralizes to unreleased 't' in final position (though often silent or aspirated when followed by another sound).",
+      "example_word": null
+    }
+  ],
+  "basic_vowels": [
+    {
+      "jamo": "ㅏ",
+      "type": "vowel",
+      "category": "basic",
+      "romanization_initial": "a",
+      "romanization_final": null,
+      "name_korean": null,
+      "name_romanized": null,
+      "pronunciation_note": "Like 'a' in 'father'.",
+      "example_word": null
+    },
+    {
+      "jamo": "ㅑ",
+      "type": "vowel",
+      "category": "basic",
+      "romanization_initial": "ya",
+      "romanization_final": null,
+      "name_korean": null,
+      "name_romanized": null,
+      "pronunciation_note": "Like 'ya' in 'yacht'.",
+      "example_word": null
+    },
+    {
+      "jamo": "ㅓ",
+      "type": "vowel",
+      "category": "basic",
+      "romanization_initial": "eo",
+      "romanization_final": null,
+      "name_korean": null,
+      "name_romanized": null,
+      "pronunciation_note": "Like 'eo' in 'somewhere' or 'u' in 'fun' / open 'o' sound.",
+      "example_word": null
+    },
+    {
+      "jamo": "ㅕ",
+      "type": "vowel",
+      "category": "basic",
+      "romanization_initial": "yeo",
+      "romanization_final": null,
+      "name_korean": null,
+      "name_romanized": null,
+      "pronunciation_note": "Like 'yo' in 'young'.",
+      "example_word": null
+    },
+    {
+      "jamo": "ㅗ",
+      "type": "vowel",
+      "category": "basic",
+      "romanization_initial": "o",
+      "romanization_final": null,
+      "name_korean": null,
+      "name_romanized": null,
+      "pronunciation_note": "Like 'o' in 'go' or 'so' (rounded, pure vowel).",
+      "example_word": null
+    },
+    {
+      "jamo": "ㅛ",
+      "type": "vowel",
+      "category": "basic",
+      "romanization_initial": "yo",
+      "romanization_final": null,
+      "name_korean": null,
+      "name_romanized": null,
+      "pronunciation_note": "Like 'yo' in 'yodel'.",
+      "example_word": null
+    },
+    {
+      "jamo": "ㅜ",
+      "type": "vowel",
+      "category": "basic",
+      "romanization_initial": "u",
+      "romanization_final": null,
+      "name_korean": null,
+      "name_romanized": null,
+      "pronunciation_note": "Like 'oo' in 'moon'.",
+      "example_word": null
+    },
+    {
+      "jamo": "ㅠ",
+      "type": "vowel",
+      "category": "basic",
+      "romanization_initial": "yu",
+      "romanization_final": null,
+      "name_korean": null,
+      "name_romanized": null,
+      "pronunciation_note": "Like 'yu' in 'youth' or 'you'.",
+      "example_word": null
+    },
+    {
+      "jamo": "ㅡ",
+      "type": "vowel",
+      "category": "basic",
+      "romanization_initial": "eu",
+      "romanization_final": null,
+      "name_korean": null,
+      "name_romanized": null,
+      "pronunciation_note": "Unrounded high back vowel; like 'eu' or sound made when pushed in the stomach ('uh').",
+      "example_word": null
+    },
+    {
+      "jamo": "ㅣ",
+      "type": "vowel",
+      "category": "basic",
+      "romanization_initial": "i",
+      "romanization_final": null,
+      "name_korean": null,
+      "name_romanized": null,
+      "pronunciation_note": "Like 'ee' in 'see' or 'i' in 'machine'.",
+      "example_word": null
+    }
+  ],
+  "double_tense_consonants": [
+    {
+      "jamo": "ㄲ",
+      "type": "consonant",
+      "category": "double_tense",
+      "romanization_initial": "kk",
+      "romanization_final": "k",
+      "name_korean": "쌍기역",
+      "name_romanized": "ssanggiyeok",
+      "pronunciation_note": "Tense/glottalized 'k' sound made with tight vocal cords; neutralizes to unreleased 'k' in final position.",
+      "example_word": null
+    },
+    {
+      "jamo": "ㄸ",
+      "type": "consonant",
+      "category": "double_tense",
+      "romanization_initial": "tt",
+      "romanization_final": null,
+      "name_korean": "쌍디귿",
+      "name_romanized": "ssangdigeut",
+      "pronunciation_note": "Tense/glottalized 't' sound made with tight vocal cords; does not occur as a final batchim consonant.",
+      "example_word": null
+    },
+    {
+      "jamo": "ㅃ",
+      "type": "consonant",
+      "category": "double_tense",
+      "romanization_initial": "pp",
+      "romanization_final": null,
+      "name_korean": "쌍비읍",
+      "name_romanized": "ssangbieup",
+      "pronunciation_note": "Tense/glottalized 'p' sound made with tight vocal cords; does not occur as a final batchim consonant.",
+      "example_word": null
+    },
+    {
+      "jamo": "ㅆ",
+      "type": "consonant",
+      "category": "double_tense",
+      "romanization_initial": "ss",
+      "romanization_final": "t",
+      "name_korean": "쌍시옷",
+      "name_romanized": "ssangsiot",
+      "pronunciation_note": "Tense/hissing 's' sound; neutralizes to unreleased 't' in final position.",
+      "example_word": null
+    },
+    {
+      "jamo": "ㅉ",
+      "type": "consonant",
+      "category": "double_tense",
+      "romanization_initial": "jj",
+      "romanization_final": null,
+      "name_korean": "쌍지읒",
+      "name_romanized": "ssangjieut",
+      "pronunciation_note": "Tense/glottalized 'ch'/'j' sound; does not occur as a final batchim consonant.",
+      "example_word": null
+    }
+  ],
+  "compound_vowels": [
+    {
+      "jamo": "ㅐ",
+      "type": "vowel",
+      "category": "compound",
+      "romanization_initial": "ae",
+      "romanization_final": null,
+      "name_korean": null,
+      "name_romanized": null,
+      "pronunciation_note": "Like 'a' in 'cat' or 'e' in 'pet'.",
+      "example_word": null
+    },
+    {
+      "jamo": "ㅒ",
+      "type": "vowel",
+      "category": "compound",
+      "romanization_initial": "yae",
+      "romanization_final": null,
+      "name_korean": null,
+      "name_romanized": null,
+      "pronunciation_note": "Like 'ya' in 'yankee' or 'ye' in 'yes'.",
+      "example_word": null
+    },
+    {
+      "jamo": "ㅔ",
+      "type": "vowel",
+      "category": "compound",
+      "romanization_initial": "e",
+      "romanization_final": null,
+      "name_korean": null,
+      "name_romanized": null,
+      "pronunciation_note": "Like 'e' in 'bed' (very similar to ㅐ in modern spoken Korean).",
+      "example_word": null
+    },
+    {
+      "jamo": "ㅖ",
+      "type": "vowel",
+      "category": "compound",
+      "romanization_initial": "ye",
+      "romanization_final": null,
+      "name_korean": null,
+      "name_romanized": null,
+      "pronunciation_note": "Like 'ye' in 'yes'.",
+      "example_word": null
+    },
+    {
+      "jamo": "ㅘ",
+      "type": "vowel",
+      "category": "compound",
+      "romanization_initial": "wa",
+      "romanization_final": null,
+      "name_korean": null,
+      "name_romanized": null,
+      "pronunciation_note": "Like 'wa' in 'water' or 'wah'.",
+      "example_word": null
+    },
+    {
+      "jamo": "ㅙ",
+      "type": "vowel",
+      "category": "compound",
+      "romanization_initial": "wae",
+      "romanization_final": null,
+      "name_korean": null,
+      "name_romanized": null,
+      "pronunciation_note": "Like 'wa' in 'wax' or 'we' in 'west'.",
+      "example_word": null
+    },
+    {
+      "jamo": "ㅚ",
+      "type": "vowel",
+      "category": "compound",
+      "romanization_initial": "oe",
+      "romanization_final": null,
+      "name_korean": null,
+      "name_romanized": null,
+      "pronunciation_note": "Pronounced like 'we' in 'wet' in standard modern Korean (RR spelling is 'oe').",
+      "example_word": null
+    },
+    {
+      "jamo": "ㅝ",
+      "type": "vowel",
+      "category": "compound",
+      "romanization_initial": "wo",
+      "romanization_final": null,
+      "name_korean": null,
+      "name_romanized": null,
+      "pronunciation_note": "Like 'wa' in 'war' or 'wo' in 'wonder'.",
+      "example_word": null
+    },
+    {
+      "jamo": "ㅞ",
+      "type": "vowel",
+      "category": "compound",
+      "romanization_initial": "we",
+      "romanization_final": null,
+      "name_korean": null,
+      "name_romanized": null,
+      "pronunciation_note": "Like 'we' in 'wet'.",
+      "example_word": null
+    },
+    {
+      "jamo": "ㅟ",
+      "type": "vowel",
+      "category": "compound",
+      "romanization_initial": "wi",
+      "romanization_final": null,
+      "name_korean": null,
+      "name_romanized": null,
+      "pronunciation_note": "Like 'we' in 'we' or 'wi' in 'win'.",
+      "example_word": null
+    },
+    {
+      "jamo": "ㅢ",
+      "type": "vowel",
+      "category": "compound",
+      "romanization_initial": "ui",
+      "romanization_final": null,
+      "name_korean": null,
+      "name_romanized": null,
+      "pronunciation_note": "Combination of ㅡ [eu] and ㅣ [i]; pronounced 'ui' when initial, 'i' after consonants, and 'e' as possessive particle 의.",
+      "example_word": null
+    }
+  ]
+}
