@@ -35,12 +35,22 @@ const App = {
     quizScore: 0,
     quizSubmitted: false,
     quizMissedItems: [],              // Array of { item, prompt, expected, userAnswer }
-    isRetryRound: false
+    isRetryRound: false,
+
+    // Writing Mode State (Freehand Canvas, Visual Self-Check Only)
+    // Note: No persistence — canvas clears and progress resets on page reload per project spec.
+    activeWritingType: null,             // 'jamo' | 'syllable'
+    activeJamoWritingCategory: 'all',    // 'all' | 'basic_consonants' | 'basic_vowels' | 'double_tense_consonants' | 'compound_vowels'
+    activeSyllableWritingCategory: 'all',// 'all' | 'vertical_right' | 'horizontal_below' | 'diphthong_wrap' | 'ui_special_case'
+    writingItems: [],                    // Sequential pool of item objects
+    writingIndex: 0,
+    isDrawing: false
   },
 
   async init() {
     this.bindEvents();
     this.initScrollListeners();
+    this.initWritingCanvas();
     
     try {
       // Async data loading via DataLoader
@@ -54,10 +64,11 @@ const App = {
       this.data.blockRules = blockRules;
       this.data.syllables = syllables;
 
-      // Initialize default flashcard decks & quiz filter counts
+      // Initialize default flashcard decks, quiz filter counts & writing filter counts
       this.initJamoDeck('all');
       this.initSyllableDeck('all');
       this.updateQuizFilterCounts();
+      this.updateWritingFilterCounts();
 
       console.log('Hangul Hub initialized successfully.');
     } catch (err) {
@@ -182,7 +193,7 @@ const App = {
     const quizCard = document.getElementById('card-quiz-mode');
     const writingCard = document.getElementById('card-writing-mode');
     if (quizCard) quizCard.addEventListener('click', () => this.navigateTo('quiz-select'));
-    if (writingCard) writingCard.addEventListener('click', () => this.navigateTo('coming-soon', 'Assembly & Writing Mode'));
+    if (writingCard) writingCard.addEventListener('click', () => this.navigateTo('writing-select'));
 
     // Quiz Variant Selection Cards
     const qvJamo1 = document.getElementById('quiz-variant-jamo-hangul-to-rom');
@@ -194,6 +205,38 @@ const App = {
     if (qvJamo2) qvJamo2.addEventListener('click', () => this.startQuizVariant('jamo-rom-to-hangul'));
     if (qvSyl1) qvSyl1.addEventListener('click', () => this.startQuizVariant('syl-hangul-to-rom'));
     if (qvSyl2) qvSyl2.addEventListener('click', () => this.startQuizVariant('syl-rom-to-hangul'));
+
+    // Writing Mode Track Selection Cards
+    const wtJamo = document.getElementById('writing-track-jamo');
+    const wtSyl = document.getElementById('writing-track-syllable');
+    if (wtJamo) wtJamo.addEventListener('click', () => this.startWritingSession('jamo'));
+    if (wtSyl) wtSyl.addEventListener('click', () => this.startWritingSession('syllable'));
+
+    // Writing View Jamo Category Filters
+    const jamoWritingFilterNav = document.getElementById('jamo-writing-filters');
+    if (jamoWritingFilterNav) {
+      jamoWritingFilterNav.addEventListener('click', (e) => {
+        if (e.target.classList.contains('filter-btn')) {
+          jamoWritingFilterNav.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
+          e.target.classList.add('active');
+          this.state.activeJamoWritingCategory = e.target.dataset.category;
+          this.updateWritingFilterCounts();
+        }
+      });
+    }
+
+    // Writing View Syllable Category Filters
+    const syllableWritingFilterNav = document.getElementById('syllable-writing-filters');
+    if (syllableWritingFilterNav) {
+      syllableWritingFilterNav.addEventListener('click', (e) => {
+        if (e.target.classList.contains('filter-btn')) {
+          syllableWritingFilterNav.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
+          e.target.classList.add('active');
+          this.state.activeSyllableWritingCategory = e.target.dataset.category;
+          this.updateWritingFilterCounts();
+        }
+      });
+    }
 
     // Quiz View Jamo Category Filters
     const jamoQuizFilterNav = document.getElementById('jamo-quiz-filters');
@@ -301,6 +344,12 @@ const App = {
           e.preventDefault();
           this.nextQuizQuestion();
         }
+      } else if (this.state.currentView === 'writing-active') {
+        if (e.key === 'ArrowLeft') this.prevWritingItem();
+        else if (e.key === 'ArrowRight') this.nextWritingItem();
+        else if (e.key.toLowerCase() === 'c' || e.key === 'Delete') {
+          this.clearWritingCanvas();
+        }
       }
     });
   },
@@ -354,7 +403,7 @@ const App = {
 
     // Update Header Active State
     document.querySelectorAll('.nav-link').forEach(link => link.classList.remove('active'));
-    if (viewId === 'home' || viewId.startsWith('quiz')) {
+    if (viewId === 'home' || viewId.startsWith('quiz') || viewId.startsWith('writing')) {
       document.getElementById('nav-practice-hub').classList.add('active');
     } else if (viewId === 'learning-hub' || viewId.startsWith('jamo') || viewId.startsWith('syllable')) {
       document.getElementById('nav-learning-hub').classList.add('active');
@@ -374,6 +423,8 @@ const App = {
       this.renderSyllableCard();
     } else if (viewId === 'quiz-select') {
       this.updateQuizFilterCounts();
+    } else if (viewId === 'writing-select') {
+      this.updateWritingFilterCounts();
     } else if (viewId === 'coming-soon' && extraParam) {
       document.getElementById('coming-soon-title').textContent = `${extraParam} — Coming Soon`;
     }
@@ -957,6 +1008,273 @@ const App = {
     document.getElementById('syllable-card-count').textContent = `Card ${current} of ${total}`;
     const pct = (current / total) * 100;
     document.getElementById('syllable-progress-fill').style.width = `${pct}%`;
+  },
+
+  /* ==========================================================================
+     WRITING PRACTICE ENGINE LOGIC (Visual Self-Check Only)
+     Note: No persistence — canvas clears and progress resets on page reload per project spec.
+     ========================================================================== */
+
+  // Get Jamo pool for Writing Mode (INCLUDES ALL 40 jamo, including ㅇ)
+  getJamoWritingList(subCategory = 'all') {
+    if (!this.data.jamo) return [];
+    if (subCategory === 'all') {
+      return this.getJamoFlatList();
+    }
+    return this.data.jamo[subCategory] || [];
+  },
+
+  // Get Syllables pool for Writing Mode (all 28 or by vowel_category)
+  getSyllableWritingList(subCategory = 'all') {
+    if (!this.data.syllables) return [];
+    const items = this.data.syllables.practice_items || [];
+    if (subCategory === 'all') {
+      return items;
+    }
+    return items.filter(item => item.vowel_category === subCategory);
+  },
+
+  updateWritingFilterCounts() {
+    if (!this.data.jamo || !this.data.syllables) return;
+
+    // Jamo Writing Counts (All 40 jamo included)
+    const jAll = this.getJamoWritingList('all').length;
+    const jBC = this.getJamoWritingList('basic_consonants').length;
+    const jBV = this.getJamoWritingList('basic_vowels').length;
+    const jDC = this.getJamoWritingList('double_tense_consonants').length;
+    const jCV = this.getJamoWritingList('compound_vowels').length;
+
+    const btnJAll = document.getElementById('jamo-writing-filter-all');
+    const btnJBC = document.getElementById('jamo-writing-filter-bc');
+    const btnJBV = document.getElementById('jamo-writing-filter-bv');
+    const btnJDC = document.getElementById('jamo-writing-filter-dc');
+    const btnJCV = document.getElementById('jamo-writing-filter-cv');
+
+    if (btnJAll) btnJAll.textContent = `All Jamo (${jAll})`;
+    if (btnJBC) btnJBC.textContent = `Basic Consonants (${jBC})`;
+    if (btnJBV) btnJBV.textContent = `Basic Vowels (${jBV})`;
+    if (btnJDC) btnJDC.textContent = `Double Consonants (${jDC})`;
+    if (btnJCV) btnJCV.textContent = `Compound Vowels (${jCV})`;
+
+    // Syllable Writing Counts
+    const sAll = this.getSyllableWritingList('all').length;
+    const sVR = this.getSyllableWritingList('vertical_right').length;
+    const sHB = this.getSyllableWritingList('horizontal_below').length;
+    const sDW = this.getSyllableWritingList('diphthong_wrap').length;
+    const sUI = this.getSyllableWritingList('ui_special_case').length;
+
+    const btnSAll = document.getElementById('syllable-writing-filter-all');
+    const btnSVR = document.getElementById('syllable-writing-filter-vr');
+    const btnSHB = document.getElementById('syllable-writing-filter-hb');
+    const btnSDW = document.getElementById('syllable-writing-filter-dw');
+    const btnSUI = document.getElementById('syllable-writing-filter-ui');
+
+    if (btnSAll) btnSAll.textContent = `All Syllables (${sAll})`;
+    if (btnSVR) btnSVR.textContent = `Vertical Right (${sVR})`;
+    if (btnSHB) btnSHB.textContent = `Horizontal Below (${sHB})`;
+    if (btnSDW) btnSDW.textContent = `Diphthong Wrap (${sDW})`;
+    if (btnSUI) btnSUI.textContent = `UI Special Case (${sUI})`;
+
+    const jTitle = document.getElementById('jamo-writing-section-title');
+    const sTitle = document.getElementById('syllable-writing-section-title');
+    const activeJCount = this.getJamoWritingList(this.state.activeJamoWritingCategory).length;
+    const activeSCount = this.getSyllableWritingList(this.state.activeSyllableWritingCategory).length;
+
+    if (jTitle) jTitle.textContent = `Jamo Character Writing (${activeJCount} Items)`;
+    if (sTitle) sTitle.textContent = `Syllable Block Writing (${activeSCount} Items)`;
+  },
+
+  startWritingSession(type) {
+    this.state.activeWritingType = type;
+    this.state.writingIndex = 0;
+
+    if (type === 'jamo') {
+      this.state.writingItems = this.getJamoWritingList(this.state.activeJamoWritingCategory);
+    } else if (type === 'syllable') {
+      this.state.writingItems = this.getSyllableWritingList(this.state.activeSyllableWritingCategory);
+    }
+
+    if (this.state.writingItems.length === 0) return;
+
+    this.navigateTo('writing-active');
+    this.renderWritingItem();
+  },
+
+  renderWritingItem() {
+    const item = this.state.writingItems[this.state.writingIndex];
+    if (!item) return;
+
+    const currentNum = this.state.writingIndex + 1;
+    const totalNum = this.state.writingItems.length;
+    const pct = (currentNum / totalNum) * 100;
+
+    // Header & Progress
+    const typeLabel = this.state.activeWritingType === 'jamo' ? 'Jamo Writing Practice' : 'Syllable Writing Practice';
+    const catLabel = this.state.activeWritingType === 'jamo'
+      ? this.getCategoryNameLabel(this.state.activeJamoWritingCategory)
+      : this.getCategoryNameLabel(this.state.activeSyllableWritingCategory);
+
+    document.getElementById('writing-active-title').textContent = `${typeLabel}${catLabel}`;
+    document.getElementById('writing-active-subtitle').textContent = `Item ${currentNum} of ${totalNum}`;
+    document.getElementById('writing-active-progress-text').textContent = `Item ${currentNum} of ${totalNum}`;
+    document.getElementById('writing-active-progress-fill').style.width = `${pct}%`;
+    document.getElementById('writing-active-category-tag').textContent = catLabel ? catLabel.replace(/[() ]/g, '') : 'All';
+
+    // Model Reference rendering
+    const charDisplay = document.getElementById('writing-model-char');
+    const badgeType = document.getElementById('writing-model-type-badge');
+    const detailsContainer = document.getElementById('writing-model-details');
+    const noteContainer = document.getElementById('writing-model-note');
+
+    if (this.state.activeWritingType === 'jamo') {
+      charDisplay.textContent = item.jamo;
+      badgeType.textContent = `${item.type} • ${item.category}`;
+
+      const nameStr = item.name_korean ? `${item.name_korean} (${item.name_romanized})` : '';
+      let romStr = '';
+      if (item.type === 'consonant') {
+        const initStr = item.romanization_initial ? item.romanization_initial : '(silent)';
+        const finStr = item.romanization_final ? item.romanization_final : 'N/A';
+        romStr = `Initial: <strong>${initStr}</strong> | Final: <strong>${finStr}</strong>`;
+      } else {
+        romStr = `Romanization: <strong>${item.romanization_initial}</strong>`;
+      }
+
+      detailsContainer.innerHTML = `
+        ${nameStr ? `<div class="writing-model-name">${nameStr}</div>` : ''}
+        <div class="writing-model-rom">${romStr}</div>
+      `;
+      noteContainer.textContent = item.pronunciation_note || '';
+    } else {
+      // Syllable block
+      charDisplay.textContent = item.composed;
+      badgeType.textContent = `Layout: ${item.vowel_category}`;
+
+      let catDesc = '';
+      if (this.data.blockRules && this.data.blockRules.positioning_categories) {
+        const match = this.data.blockRules.positioning_categories.find(c => c.category === item.vowel_category);
+        if (match) catDesc = match.description;
+      }
+
+      const finalDisplay = item.final ? item.final : 'None';
+      detailsContainer.innerHTML = `
+        <div class="syllable-breakdown" style="justify-content: center; margin-bottom: 0.5rem;">
+          <div class="breakdown-pill"><label>Initial</label><span>${item.initial}</span></div>
+          <div class="breakdown-pill"><label>Medial</label><span>${item.medial}</span></div>
+          <div class="breakdown-pill"><label>Final</label><span>${finalDisplay}</span></div>
+        </div>
+        <div class="writing-model-rom">Romanization: <strong>${item.expected_romanization || ''}</strong></div>
+      `;
+      noteContainer.textContent = catDesc || '';
+    }
+
+    // Clear Canvas for new drawing
+    this.clearWritingCanvas();
+  },
+
+  nextWritingItem() {
+    if (this.state.writingItems.length === 0) return;
+    this.state.writingIndex = (this.state.writingIndex + 1) % this.state.writingItems.length;
+    this.renderWritingItem();
+  },
+
+  prevWritingItem() {
+    if (this.state.writingItems.length === 0) return;
+    this.state.writingIndex = (this.state.writingIndex - 1 + this.state.writingItems.length) % this.state.writingItems.length;
+    this.renderWritingItem();
+  },
+
+  initWritingCanvas() {
+    const canvas = document.getElementById('writing-canvas');
+    if (!canvas) return;
+
+    const ctx = canvas.getContext('2d');
+
+    const getPos = (e) => {
+      const rect = canvas.getBoundingClientRect();
+      const scaleX = canvas.width / rect.width;
+      const scaleY = canvas.height / rect.height;
+      return {
+        x: (e.clientX - rect.left) * scaleX,
+        y: (e.clientY - rect.top) * scaleY
+      };
+    };
+
+    const startDraw = (e) => {
+      e.preventDefault();
+      this.state.isDrawing = true;
+      if (canvas.setPointerCapture) {
+        try { canvas.setPointerCapture(e.pointerId); } catch (err) {}
+      }
+      const pos = getPos(e);
+      ctx.beginPath();
+      ctx.moveTo(pos.x, pos.y);
+      // Draw initial dot in case of single tap/click
+      ctx.fillStyle = '#0f172a';
+      ctx.arc(pos.x, pos.y, ctx.lineWidth / 2, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.beginPath();
+      ctx.moveTo(pos.x, pos.y);
+    };
+
+    const draw = (e) => {
+      if (!this.state.isDrawing) return;
+      e.preventDefault();
+      const pos = getPos(e);
+      ctx.lineTo(pos.x, pos.y);
+      ctx.stroke();
+    };
+
+    const stopDraw = (e) => {
+      if (this.state.isDrawing) {
+        this.state.isDrawing = false;
+        ctx.closePath();
+        if (canvas.releasePointerCapture) {
+          try { canvas.releasePointerCapture(e.pointerId); } catch (err) {}
+        }
+      }
+    };
+
+    canvas.addEventListener('pointerdown', startDraw);
+    canvas.addEventListener('pointermove', draw);
+    canvas.addEventListener('pointerup', stopDraw);
+    canvas.addEventListener('pointercancel', stopDraw);
+    canvas.addEventListener('pointerleave', stopDraw);
+  },
+
+  clearWritingCanvas() {
+    const canvas = document.getElementById('writing-canvas');
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+
+    // Clear whole buffer
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    // Draw subtle grid quadrant guidelines (dashed center lines)
+    ctx.save();
+    ctx.strokeStyle = '#e2e8f0';
+    ctx.lineWidth = 1.5;
+    ctx.setLineDash([6, 6]);
+
+    // Horizontal center line
+    ctx.beginPath();
+    ctx.moveTo(0, canvas.height / 2);
+    ctx.lineTo(canvas.width, canvas.height / 2);
+    ctx.stroke();
+
+    // Vertical center line
+    ctx.beginPath();
+    ctx.moveTo(canvas.width / 2, 0);
+    ctx.lineTo(canvas.width / 2, canvas.height);
+    ctx.stroke();
+
+    ctx.restore();
+
+    // Set brush properties for dark high-contrast drawing
+    ctx.strokeStyle = '#0f172a';
+    ctx.lineWidth = 10;
+    ctx.lineCap = 'round';
+    ctx.lineJoin = 'round';
   }
 };
 

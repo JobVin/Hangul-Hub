@@ -76,18 +76,18 @@
             <div class="stacked-action-btn" style="color: var(--amber);">Select Quiz Track →</div>
           </div>
 
-          <!-- WRITING MODE TRACK -->
-          <div class="stacked-track-card disabled" id="card-writing-mode">
+          <!-- WRITING MODE TRACK (ACTIVE) -->
+          <div class="stacked-track-card" id="card-writing-mode">
             <div class="step-indicator amber-indicator">DRILL 2</div>
-            <div class="stacked-symbol" style="color: var(--amber);">조립</div>
+            <div class="stacked-symbol" style="color: var(--amber);">쓰기</div>
             <div class="stacked-info">
               <div class="stacked-header">
-                <h3 class="stacked-title">Assembly & Writing Canvas</h3>
-                <span class="track-badge">Requires Syllable Study</span>
+                <h3 class="stacked-title">Writing Practice (Freehand Canvas)</h3>
+                <span class="track-badge amber-badge">Visual Self-Check</span>
               </div>
-              <p class="stacked-desc">Drag-and-drop syllable block builder and guided stroke order canvas.</p>
+              <p class="stacked-desc">Practice drawing Jamo characters and syllable blocks on a freehand drawing canvas with model references.</p>
             </div>
-            <div class="stacked-action-btn" style="color: var(--text-dim);">Coming Soon</div>
+            <div class="stacked-action-btn" style="color: var(--amber);">Select Writing Track →</div>
           </div>
 
         </div>
@@ -385,7 +385,148 @@
       </div>
     </section>
 
-    <!-- VIEW 6: JAMO LIST VIEW -->
+    <!-- VIEW 6: WRITING PRACTICE SELECTION VIEW -->
+    <section id="view-writing-select" class="view">
+      <div class="view-header">
+        <button class="btn-back" onclick="App.navigateTo('home')">← Back to Practice Hub</button>
+        <div class="view-title-group">
+          <h2>Select Writing Practice Track</h2>
+          <p>Choose your character pool and category focus for freehand copying practice</p>
+        </div>
+      </div>
+
+      <div class="stacked-menu-container">
+        
+        <!-- JAMO WRITING -->
+        <div class="menu-section-header">
+          <span class="section-badge amber-badge">Part 1 Writing Practice</span>
+          <h2 class="section-title" id="jamo-writing-section-title">Jamo Character Writing</h2>
+          <p class="section-subtitle">Select a category focus, then start canvas practice:</p>
+        </div>
+
+        <div class="category-nav" id="jamo-writing-filters">
+          <button class="filter-btn active" data-category="all" id="jamo-writing-filter-all">All Jamo (40)</button>
+          <button class="filter-btn" data-category="basic_consonants" id="jamo-writing-filter-bc">Basic Consonants (14)</button>
+          <button class="filter-btn" data-category="basic_vowels" id="jamo-writing-filter-bv">Basic Vowels (10)</button>
+          <button class="filter-btn" data-category="double_tense_consonants" id="jamo-writing-filter-dc">Double Consonants (5)</button>
+          <button class="filter-btn" data-category="compound_vowels" id="jamo-writing-filter-cv">Compound Vowels (11)</button>
+        </div>
+
+        <div class="stacked-tracks-list">
+          <div class="stacked-track-card" id="writing-track-jamo">
+            <div class="step-indicator amber-indicator">PRACTICE 1</div>
+            <div class="stacked-symbol" style="color: var(--amber);">ㄱ ㅏ</div>
+            <div class="stacked-info">
+              <div class="stacked-header">
+                <h3 class="stacked-title">Jamo Freehand Practice</h3>
+                <span class="track-badge amber-badge">Visual Self-Check</span>
+              </div>
+              <p class="stacked-desc">Draw individual consonants and vowels on an interactive canvas alongside a large model reference.</p>
+            </div>
+            <div class="stacked-action-btn" style="color: var(--amber);">Start Jamo Writing →</div>
+          </div>
+        </div>
+
+        <!-- SYLLABLE WRITING -->
+        <div class="menu-section-header" style="margin-top: 2rem;">
+          <span class="section-badge amber-badge">Part 2 Writing Practice</span>
+          <h2 class="section-title" id="syllable-writing-section-title">Syllable Block Writing</h2>
+          <p class="section-subtitle">Select a category focus, then start canvas practice:</p>
+        </div>
+
+        <div class="category-nav" id="syllable-writing-filters">
+          <button class="filter-btn active" data-category="all" id="syllable-writing-filter-all">All Syllables (28)</button>
+          <button class="filter-btn" data-category="vertical_right" id="syllable-writing-filter-vr">Vertical Right (8)</button>
+          <button class="filter-btn" data-category="horizontal_below" id="syllable-writing-filter-hb">Horizontal Below (8)</button>
+          <button class="filter-btn" data-category="diphthong_wrap" id="syllable-writing-filter-dw">Diphthong Wrap (8)</button>
+          <button class="filter-btn" data-category="ui_special_case" id="syllable-writing-filter-ui">UI Special Case (4)</button>
+        </div>
+
+        <div class="stacked-tracks-list">
+          <div class="stacked-track-card" id="writing-track-syllable">
+            <div class="step-indicator amber-indicator">PRACTICE 2</div>
+            <div class="stacked-symbol" style="color: var(--amber);">가 고</div>
+            <div class="stacked-info">
+              <div class="stacked-header">
+                <h3 class="stacked-title">Syllable Block Freehand Practice</h3>
+                <span class="track-badge amber-badge">Visual Self-Check</span>
+              </div>
+              <p class="stacked-desc">Practice drawing complete composed syllable blocks across geometric vowel layouts.</p>
+            </div>
+            <div class="stacked-action-btn" style="color: var(--amber);">Start Syllable Writing →</div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- VIEW 7: ACTIVE WRITING PRACTICE VIEW -->
+    <section id="view-writing-active" class="view">
+      <div class="view-header">
+        <button class="btn-back" onclick="App.navigateTo('writing-select')">← Select Track</button>
+        <div class="view-title-group">
+          <h2 id="writing-active-title">Writing Practice</h2>
+          <p id="writing-active-subtitle">Item 1 of 40</p>
+        </div>
+      </div>
+
+      <div class="writing-practice-container">
+        <!-- Progress Bar -->
+        <div class="deck-progress-bar">
+          <span class="progress-text" id="writing-active-progress-text">Item 1 of 40</span>
+          <div class="progress-track">
+            <div class="progress-fill" id="writing-active-progress-fill"></div>
+          </div>
+          <span class="category-tag" id="writing-active-category-tag">All</span>
+        </div>
+
+        <!-- Practice Canvas & Model Grid -->
+        <div class="writing-workspace-grid">
+          
+          <!-- Reference Model Card -->
+          <div class="writing-model-card">
+            <div class="writing-card-header">
+              <span class="track-badge">Model Reference</span>
+              <span class="category-tag" id="writing-model-type-badge">Consonant</span>
+            </div>
+            <div class="writing-model-display" id="writing-model-char">ㄱ</div>
+            <div class="writing-model-details" id="writing-model-details">
+              <div class="writing-model-name" id="writing-model-name">기역 (giyeok)</div>
+              <div class="writing-model-rom" id="writing-model-rom">Initial: g | Final: k</div>
+            </div>
+            <div class="writing-model-note" id="writing-model-note">
+              Voiceless/soft 'g' in initial position; unreleased 'k' in final position.
+            </div>
+          </div>
+
+          <!-- Interactive Drawing Canvas Card -->
+          <div class="writing-canvas-card">
+            <div class="writing-card-header">
+              <span class="track-badge amber-badge">Practice Canvas</span>
+              <span class="writing-canvas-hint">Draw with Mouse / Touch</span>
+            </div>
+
+            <div class="canvas-wrapper">
+              <canvas id="writing-canvas" width="400" height="400" aria-label="Hangul handwriting canvas"></canvas>
+            </div>
+
+            <!-- Canvas Action Controls -->
+            <div class="writing-controls">
+              <button class="ctrl-btn" id="btn-writing-prev" onclick="App.prevWritingItem()">← Previous</button>
+              <button class="ctrl-btn" id="btn-writing-clear" onclick="App.clearWritingCanvas()">🗑️ Clear</button>
+              <button class="ctrl-btn ctrl-btn-primary" id="btn-writing-next" onclick="App.nextWritingItem()">Next Item →</button>
+            </div>
+
+            <div class="writing-self-check-notice">
+              <span>👁️ <strong>Visual Self-Check:</strong> Compare your handwritten strokes against the reference model on the left. Practice at your own pace without scoring or grading.</span>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- VIEW 8: JAMO LIST VIEW -->
     <section id="view-jamo-list" class="view">
       <div class="view-header">
         <button class="btn-back" onclick="App.navigateTo('learning-hub')">← Back to Learning Hub</button>

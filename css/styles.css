@@ -1043,7 +1043,150 @@ kbd {
 }
 
 /* --------------------------------------------------------------------------
-   11. Sticky Sub-Navigation & Floating Back To Top Button
+   11. Practice Mode — Freehand Writing Canvas
+   -------------------------------------------------------------------------- */
+.writing-practice-container {
+  max-width: 880px;
+  margin: 1.5rem auto 3rem auto;
+}
+
+.writing-workspace-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.75rem;
+  align-items: stretch;
+}
+
+.writing-model-card,
+.writing-canvas-card {
+  background-color: var(--bg-card);
+  border: 2px solid var(--border-color);
+  border-radius: var(--radius-lg);
+  padding: 1.75rem;
+  box-shadow: var(--shadow-sm);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  transition: var(--transition-fast);
+}
+
+.writing-model-card:hover,
+.writing-canvas-card:hover {
+  box-shadow: var(--shadow-md);
+}
+
+.writing-card-header {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.25rem;
+}
+
+.writing-canvas-hint {
+  font-size: 0.8rem;
+  color: var(--text-dim);
+  font-weight: 600;
+}
+
+.writing-model-display {
+  font-family: var(--font-hangul);
+  font-size: 6.5rem;
+  font-weight: 800;
+  color: var(--text-main);
+  line-height: 1.1;
+  margin: 0.5rem 0 1rem 0;
+  min-height: 140px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.writing-model-details {
+  width: 100%;
+  margin-bottom: 1rem;
+}
+
+.writing-model-name {
+  font-size: 1.2rem;
+  font-weight: 800;
+  color: var(--text-main);
+  margin-bottom: 0.3rem;
+}
+
+.writing-model-rom {
+  font-size: 1.05rem;
+  color: var(--primary-text);
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+}
+
+.writing-model-note {
+  font-size: 0.9rem;
+  color: var(--text-muted);
+  background-color: var(--bg-subtle);
+  border: 1px solid var(--border-color);
+  padding: 0.85rem 1rem;
+  border-radius: var(--radius-sm);
+  width: 100%;
+  text-align: left;
+  line-height: 1.45;
+  margin-top: auto;
+}
+
+/* Canvas Wrapper with Visual Boundary & Touch Optimization */
+.canvas-wrapper {
+  position: relative;
+  width: 100%;
+  max-width: 340px;
+  aspect-ratio: 1 / 1;
+  margin: 0 auto 1.25rem auto;
+  border: 2.5px solid var(--border-color);
+  border-radius: var(--radius-md);
+  background-color: #ffffff;
+  box-shadow: inset 0 2px 5px rgba(15, 23, 42, 0.04);
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.canvas-wrapper:focus-within {
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(67, 56, 202, 0.15);
+}
+
+#writing-canvas {
+  width: 100%;
+  height: 100%;
+  display: block;
+  touch-action: none; /* Prevents scroll gestures on touch/stylus screens */
+  cursor: crosshair;
+}
+
+.writing-controls {
+  display: flex;
+  gap: 0.75rem;
+  width: 100%;
+  margin-bottom: 1.25rem;
+}
+
+.writing-self-check-notice {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  background-color: var(--bg-subtle);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-sm);
+  padding: 0.75rem 1rem;
+  text-align: left;
+  line-height: 1.4;
+  width: 100%;
+  margin-top: auto;
+}
+
+/* --------------------------------------------------------------------------
+   12. Sticky Sub-Navigation & Floating Back To Top Button
    -------------------------------------------------------------------------- */
 .sticky-subnav-bar {
   position: fixed;
@@ -1164,6 +1307,11 @@ kbd {
 
   .quiz-input-group {
     flex-direction: column;
+  }
+
+  .writing-workspace-grid {
+    grid-template-columns: 1fr;
+    gap: 1.25rem;
   }
 
   .sticky-subnav-bar {
