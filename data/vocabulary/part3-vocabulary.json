@@ -1,0 +1,438 @@
+{
+  "greetings_phrases": [
+    {
+      "id": "voc_001",
+      "hangul": "안녕하세요",
+      "romanization": "annyeonghaseyo",
+      "english": "hello (polite)",
+      "category": "greetings_phrases",
+      "usage_note": "Standard polite greeting, appropriate for most situations including strangers, acquaintances, colleagues, and elders."
+    },
+    {
+      "id": "voc_002",
+      "hangul": "안녕히 가세요",
+      "romanization": "annyeonghi gaseyo",
+      "english": "goodbye (to person leaving)",
+      "category": "greetings_phrases",
+      "usage_note": "Spoken to someone who is leaving the premises (literally 'go in peace'). Said by the person staying behind or by someone parting ways in a different direction."
+    },
+    {
+      "id": "voc_003",
+      "hangul": "안녕히 계세요",
+      "romanization": "annyeonghi gyeseyo",
+      "english": "goodbye (to person staying)",
+      "category": "greetings_phrases",
+      "usage_note": "Spoken to someone who is remaining at the location (literally 'stay in peace'). Said by the person who is departing."
+    },
+    {
+      "id": "voc_004",
+      "hangul": "감사합니다",
+      "romanization": "gamsahamnida",
+      "english": "thank you (formal)",
+      "category": "greetings_phrases",
+      "usage_note": "Formal, respectful expression of gratitude derived from Sino-Korean roots (感謝). Standard in business, public settings, service encounters, and when speaking to superiors or elders."
+    },
+    {
+      "id": "voc_005",
+      "hangul": "고맙습니다",
+      "romanization": "gomapseumnida",
+      "english": "thank you (polite)",
+      "category": "greetings_phrases",
+      "usage_note": "Native Korean polite expression of gratitude. Very common in everyday interactions; warm and respectful without being overly stiff."
+    },
+    {
+      "id": "voc_006",
+      "hangul": "죄송합니다",
+      "romanization": "joesonghamnida",
+      "english": "I'm sorry (formal)",
+      "category": "greetings_phrases",
+      "usage_note": "Formal and deferential apology derived from Sino-Korean roots (罪悚). Standard when apologizing to strangers, elders, customers, or superiors."
+    },
+    {
+      "id": "voc_007",
+      "hangul": "네",
+      "romanization": "ne",
+      "english": "yes",
+      "category": "greetings_phrases",
+      "usage_note": "Polite affirmation meaning 'yes' or 'that is correct'. Also frequently used in conversation as an active-listening backchannel ('I see', 'understood')."
+    },
+    {
+      "id": "voc_008",
+      "hangul": "아니요",
+      "romanization": "aniyo",
+      "english": "no",
+      "category": "greetings_phrases",
+      "usage_note": "Polite negation meaning 'no' or 'that is not correct'. Note the standard modern spelling ends in '요' (polite ending), distinguished from archaic '아니오' or casual '아니'."
+    }
+  ],
+  "numbers_sino_korean": [
+    {
+      "id": "voc_009",
+      "hangul": "일",
+      "romanization": "il",
+      "english": "one",
+      "category": "numbers_sino_korean",
+      "usage_note": "Sino-Korean number (一). Sino-Korean numbers are used for dates (years, months, days), money/prices, phone numbers, minutes/seconds, addresses, and counting measurements or numbers above 99."
+    },
+    {
+      "id": "voc_010",
+      "hangul": "이",
+      "romanization": "i",
+      "english": "two",
+      "category": "numbers_sino_korean",
+      "usage_note": "Sino-Korean number (二). Sino-Korean numbers are used for dates (years, months, days), money/prices, phone numbers, minutes/seconds, addresses, and counting measurements or numbers above 99."
+    },
+    {
+      "id": "voc_011",
+      "hangul": "삼",
+      "romanization": "sam",
+      "english": "three",
+      "category": "numbers_sino_korean",
+      "usage_note": "Sino-Korean number (三). Sino-Korean numbers are used for dates (years, months, days), money/prices, phone numbers, minutes/seconds, addresses, and counting measurements or numbers above 99."
+    },
+    {
+      "id": "voc_012",
+      "hangul": "사",
+      "romanization": "sa",
+      "english": "four",
+      "category": "numbers_sino_korean",
+      "usage_note": "Sino-Korean number (四). Sino-Korean numbers are used for dates (years, months, days), money/prices, phone numbers, minutes/seconds, addresses, and counting measurements or numbers above 99."
+    },
+    {
+      "id": "voc_013",
+      "hangul": "오",
+      "romanization": "o",
+      "english": "five",
+      "category": "numbers_sino_korean",
+      "usage_note": "Sino-Korean number (五). Sino-Korean numbers are used for dates (years, months, days), money/prices, phone numbers, minutes/seconds, addresses, and counting measurements or numbers above 99."
+    },
+    {
+      "id": "voc_014",
+      "hangul": "육",
+      "romanization": "yuk",
+      "english": "six",
+      "category": "numbers_sino_korean",
+      "usage_note": "Sino-Korean number (六). Sino-Korean numbers are used for dates (years, months, days), money/prices, phone numbers, minutes/seconds, addresses, and counting measurements or numbers above 99."
+    },
+    {
+      "id": "voc_015",
+      "hangul": "칠",
+      "romanization": "chil",
+      "english": "seven",
+      "category": "numbers_sino_korean",
+      "usage_note": "Sino-Korean number (七). Sino-Korean numbers are used for dates (years, months, days), money/prices, phone numbers, minutes/seconds, addresses, and counting measurements or numbers above 99."
+    },
+    {
+      "id": "voc_016",
+      "hangul": "팔",
+      "romanization": "pal",
+      "english": "eight",
+      "category": "numbers_sino_korean",
+      "usage_note": "Sino-Korean number (八). Sino-Korean numbers are used for dates (years, months, days), money/prices, phone numbers, minutes/seconds, addresses, and counting measurements or numbers above 99."
+    },
+    {
+      "id": "voc_017",
+      "hangul": "구",
+      "romanization": "gu",
+      "english": "nine",
+      "category": "numbers_sino_korean",
+      "usage_note": "Sino-Korean number (九). Sino-Korean numbers are used for dates (years, months, days), money/prices, phone numbers, minutes/seconds, addresses, and counting measurements or numbers above 99."
+    },
+    {
+      "id": "voc_018",
+      "hangul": "십",
+      "romanization": "sip",
+      "english": "ten",
+      "category": "numbers_sino_korean",
+      "usage_note": "Sino-Korean number (十). Sino-Korean numbers are used for dates (years, months, days), money/prices, phone numbers, minutes/seconds, addresses, and counting measurements or numbers above 99."
+    }
+  ],
+  "numbers_native_korean": [
+    {
+      "id": "voc_019",
+      "hangul": "하나",
+      "romanization": "hana",
+      "english": "one",
+      "category": "numbers_native_korean",
+      "usage_note": "Native Korean number. Native Korean numbers are used when counting physical objects or people with counter words, stating age (살), and telling the hour (시) on a clock. Before counter words, 하나 contracts to 한 (han)."
+    },
+    {
+      "id": "voc_020",
+      "hangul": "둘",
+      "romanization": "dul",
+      "english": "two",
+      "category": "numbers_native_korean",
+      "usage_note": "Native Korean number. Native Korean numbers are used when counting physical objects or people with counter words, stating age (살), and telling the hour (시) on a clock. Before counter words, 둘 contracts to 두 (du)."
+    },
+    {
+      "id": "voc_021",
+      "hangul": "셋",
+      "romanization": "set",
+      "english": "three",
+      "category": "numbers_native_korean",
+      "usage_note": "Native Korean number. Native Korean numbers are used when counting physical objects or people with counter words, stating age (살), and telling the hour (시) on a clock. Before counter words, 셋 contracts to 세 (se)."
+    },
+    {
+      "id": "voc_022",
+      "hangul": "넷",
+      "romanization": "net",
+      "english": "four",
+      "category": "numbers_native_korean",
+      "usage_note": "Native Korean number. Native Korean numbers are used when counting physical objects or people with counter words, stating age (살), and telling the hour (시) on a clock. Before counter words, 넷 contracts to 네 (ne)."
+    },
+    {
+      "id": "voc_023",
+      "hangul": "다섯",
+      "romanization": "daseot",
+      "english": "five",
+      "category": "numbers_native_korean",
+      "usage_note": "Native Korean number. Native Korean numbers are used when counting physical objects or people with counter words, stating age (살), and telling the hour (시) on a clock."
+    },
+    {
+      "id": "voc_024",
+      "hangul": "여섯",
+      "romanization": "yeoseot",
+      "english": "six",
+      "category": "numbers_native_korean",
+      "usage_note": "Native Korean number. Native Korean numbers are used when counting physical objects or people with counter words, stating age (살), and telling the hour (시) on a clock."
+    },
+    {
+      "id": "voc_025",
+      "hangul": "일곱",
+      "romanization": "ilgop",
+      "english": "seven",
+      "category": "numbers_native_korean",
+      "usage_note": "Native Korean number. Native Korean numbers are used when counting physical objects or people with counter words, stating age (살), and telling the hour (시) on a clock."
+    },
+    {
+      "id": "voc_026",
+      "hangul": "여덟",
+      "romanization": "yeodeol",
+      "english": "eight",
+      "category": "numbers_native_korean",
+      "usage_note": "Native Korean number. Native Korean numbers are used when counting physical objects or people with counter words, stating age (살), and telling the hour (시) on a clock. Note: In Revised Romanization, transcribed as 'yeodeol' reflecting standard pronunciation [여덜] where ㅂ is silent in isolation/before consonants."
+    },
+    {
+      "id": "voc_027",
+      "hangul": "아홉",
+      "romanization": "ahop",
+      "english": "nine",
+      "category": "numbers_native_korean",
+      "usage_note": "Native Korean number. Native Korean numbers are used when counting physical objects or people with counter words, stating age (살), and telling the hour (시) on a clock."
+    },
+    {
+      "id": "voc_028",
+      "hangul": "열",
+      "romanization": "yeol",
+      "english": "ten",
+      "category": "numbers_native_korean",
+      "usage_note": "Native Korean number. Native Korean numbers are used when counting physical objects or people with counter words, stating age (살), and telling the hour (시) on a clock. The native counting system practically extends up to 99, above which Sino-Korean numbers are standardly used."
+    }
+  ],
+  "family_terms": [
+    {
+      "id": "voc_029",
+      "hangul": "아버지",
+      "romanization": "abeoji",
+      "english": "father (formal)",
+      "category": "family_terms",
+      "usage_note": "Formal/polite term for father. Used when speaking about one's father with deference, or referring politely to someone else's father."
+    },
+    {
+      "id": "voc_030",
+      "hangul": "아빠",
+      "romanization": "appa",
+      "english": "dad (casual)",
+      "category": "family_terms",
+      "usage_note": "Casual, affectionate term for dad. Commonly used by children and adults within close, informal family conversations."
+    },
+    {
+      "id": "voc_031",
+      "hangul": "어머니",
+      "romanization": "eomeoni",
+      "english": "mother (formal)",
+      "category": "family_terms",
+      "usage_note": "Formal/polite term for mother. Used when speaking about one's mother with deference, or referring politely to someone else's mother."
+    },
+    {
+      "id": "voc_032",
+      "hangul": "엄마",
+      "romanization": "eomma",
+      "english": "mom (casual)",
+      "category": "family_terms",
+      "usage_note": "Casual, affectionate term for mom. Commonly used by children and adults within close, informal family conversations."
+    },
+    {
+      "id": "voc_033",
+      "hangul": "형",
+      "romanization": "hyeong",
+      "english": "older brother (if speaker is male)",
+      "category": "family_terms",
+      "usage_note": "Used EXCLUSIVELY by a MALE speaker to address or refer to an older brother (or an older close male peer). CRITICAL: Selection depends on the SPEAKER's gender (male speaker), NOT the sibling's gender."
+    },
+    {
+      "id": "voc_034",
+      "hangul": "누나",
+      "romanization": "nuna",
+      "english": "older sister (if speaker is male)",
+      "category": "family_terms",
+      "usage_note": "Used EXCLUSIVELY by a MALE speaker to address or refer to an older sister (or an older close female peer). CRITICAL: Selection depends on the SPEAKER's gender (male speaker), NOT the sibling's gender."
+    },
+    {
+      "id": "voc_035",
+      "hangul": "오빠",
+      "romanization": "oppa",
+      "english": "older brother (if speaker is female)",
+      "category": "family_terms",
+      "usage_note": "Used EXCLUSIVELY by a FEMALE speaker to address or refer to an older brother (or an older close male friend/partner). CRITICAL: Selection depends on the SPEAKER's gender (female speaker), NOT the sibling's gender."
+    },
+    {
+      "id": "voc_036",
+      "hangul": "언니",
+      "romanization": "eonni",
+      "english": "older sister (if speaker is female)",
+      "category": "family_terms",
+      "usage_note": "Used EXCLUSIVELY by a FEMALE speaker to address or refer to an older sister (or an older close female peer). CRITICAL: Selection depends on the SPEAKER's gender (female speaker), NOT the sibling's gender."
+    }
+  ],
+  "days_of_week": [
+    {
+      "id": "voc_037",
+      "hangul": "월요일",
+      "romanization": "woryoil",
+      "english": "Monday",
+      "category": "days_of_week",
+      "usage_note": "Monday. Associated with the Moon (월 / 月). Revised Romanization reflects the liaison of final 'ㄹ' into the vowel-initial syllable: [워료일] -> 'woryoil'."
+    },
+    {
+      "id": "voc_038",
+      "hangul": "화요일",
+      "romanization": "hwayoil",
+      "english": "Tuesday",
+      "category": "days_of_week",
+      "usage_note": "Tuesday. Associated with Fire / Mars (화 / 火)."
+    },
+    {
+      "id": "voc_039",
+      "hangul": "수요일",
+      "romanization": "suyoil",
+      "english": "Wednesday",
+      "category": "days_of_week",
+      "usage_note": "Wednesday. Associated with Water / Mercury (수 / 水)."
+    },
+    {
+      "id": "voc_040",
+      "hangul": "목요일",
+      "romanization": "mogyoil",
+      "english": "Thursday",
+      "category": "days_of_week",
+      "usage_note": "Thursday. Associated with Wood / Jupiter (목 / 木). Revised Romanization reflects the liaison of final 'ㄱ' into the vowel-initial syllable: [모교일] -> 'mogyoil'."
+    },
+    {
+      "id": "voc_041",
+      "hangul": "금요일",
+      "romanization": "geumyoil",
+      "english": "Friday",
+      "category": "days_of_week",
+      "usage_note": "Friday. Associated with Gold / Metal / Venus (금 / 金). Revised Romanization reflects the liaison of final 'ㅁ' into the vowel-initial syllable: [그묘일] -> 'geumyoil'."
+    },
+    {
+      "id": "voc_042",
+      "hangul": "토요일",
+      "romanization": "toyoil",
+      "english": "Saturday",
+      "category": "days_of_week",
+      "usage_note": "Saturday. Associated with Earth / Soil / Saturn (토 / 土)."
+    },
+    {
+      "id": "voc_043",
+      "hangul": "일요일",
+      "romanization": "iryoil",
+      "english": "Sunday",
+      "category": "days_of_week",
+      "usage_note": "Sunday. Associated with the Sun (일 / 日). Revised Romanization reflects the liaison of final 'ㄹ' into the vowel-initial syllable: [이료일] -> 'iryoil'."
+    }
+  ],
+  "common_nouns": [
+    {
+      "id": "voc_044",
+      "hangul": "물",
+      "romanization": "mul",
+      "english": "water",
+      "category": "common_nouns",
+      "usage_note": "Native Korean noun for water (drinking water, fresh water)."
+    },
+    {
+      "id": "voc_045",
+      "hangul": "밥",
+      "romanization": "bap",
+      "english": "rice / meal",
+      "category": "common_nouns",
+      "usage_note": "Refers specifically to cooked rice, and by extension signifies a full meal ('식사'). Frequently used in daily greetings like '밥 먹었어(요)?' ('Have you eaten?')."
+    },
+    {
+      "id": "voc_046",
+      "hangul": "학교",
+      "romanization": "hakgyo",
+      "english": "school",
+      "category": "common_nouns",
+      "usage_note": "Sino-Korean noun (學校). Note that while pronounced with a tense [학꾜], Revised Romanization rules do not transcribe tensification: 'hakgyo'."
+    },
+    {
+      "id": "voc_047",
+      "hangul": "집",
+      "romanization": "jip",
+      "english": "house / home",
+      "category": "common_nouns",
+      "usage_note": "Native Korean noun for house, home, or household."
+    },
+    {
+      "id": "voc_048",
+      "hangul": "친구",
+      "romanization": "chingu",
+      "english": "friend",
+      "category": "common_nouns",
+      "usage_note": "Sino-Korean noun (親舊). In traditional Korean culture, strictly used for friends of the exact same age, though in modern language learners also use it generally for close peers."
+    },
+    {
+      "id": "voc_049",
+      "hangul": "책",
+      "romanization": "chaek",
+      "english": "book",
+      "category": "common_nouns",
+      "usage_note": "Sino-Korean noun (冊) for a book or volume."
+    },
+    {
+      "id": "voc_050",
+      "hangul": "사람",
+      "romanization": "saram",
+      "english": "person",
+      "category": "common_nouns",
+      "usage_note": "Native Korean noun for a human being or person. Frequently combined with country names to indicate nationality (e.g., 한국 사람 = Korean person)."
+    },
+    {
+      "id": "voc_051",
+      "hangul": "시간",
+      "romanization": "sigan",
+      "english": "time",
+      "category": "common_nouns",
+      "usage_note": "Sino-Korean noun (時間) meaning time, duration, or an hour (as a unit of elapsed duration)."
+    },
+    {
+      "id": "voc_052",
+      "hangul": "이름",
+      "romanization": "ireum",
+      "english": "name",
+      "category": "common_nouns",
+      "usage_note": "Native Korean noun for a name. The polite honorific counterpart used for elders is '성함' (seongham)."
+    },
+    {
+      "id": "voc_053",
+      "hangul": "나라",
+      "romanization": "nara",
+      "english": "country",
+      "category": "common_nouns",
+      "usage_note": "Native Korean noun for country, nation, or homeland."
+    }
+  ]
+}
