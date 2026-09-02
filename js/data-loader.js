@@ -69,9 +69,18 @@ async function loadSyllablePractice() {
   return await fetchJSON('data/syllables/part2-practice.json');
 }
 
+/**
+ * Loads Part 3 Vocabulary Items
+ * @returns {Promise<Object>}
+ */
+async function loadVocabularyData() {
+  return await fetchJSON('data/vocabulary/part3-vocabulary.json');
+}
+
 // Expose on global window object for browser script consumption
 window.DataLoader = {
   loadJamoData,
   loadBlockRules,
-  loadSyllablePractice
+  loadSyllablePractice,
+  loadVocabularyData
 };

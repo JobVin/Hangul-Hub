@@ -192,6 +192,41 @@
           </div>
         </div>
 
+        <!-- SECTION 3: VOCABULARY STUDY -->
+        <div class="menu-section-header" style="margin-top: 2rem;">
+          <span class="section-badge teal-badge">Part 3</span>
+          <h2 class="section-title">Basic Vocabulary Reference</h2>
+          <p class="section-subtitle">Study 60 beginner Korean words across 7 everyday categories.</p>
+        </div>
+
+        <div class="stacked-tracks-list">
+          <div class="stacked-track-card teal-track" id="card-learning-vocab-list">
+            <div class="step-indicator teal-indicator">STEP 5</div>
+            <div class="stacked-symbol">안녕 물 밥</div>
+            <div class="stacked-info">
+              <div class="stacked-header">
+                <h3 class="stacked-title">Vocabulary Reference Table</h3>
+                <span class="track-badge">60 Entries</span>
+              </div>
+              <p class="stacked-desc">Browse greetings, numbers, family terms, days of the week, nouns, and verbs.</p>
+            </div>
+            <div class="stacked-action-btn">Study Table →</div>
+          </div>
+
+          <div class="stacked-track-card teal-track" id="card-learning-vocab-flashcard">
+            <div class="step-indicator teal-indicator">STEP 6</div>
+            <div class="stacked-symbol">가족 숫자 동사</div>
+            <div class="stacked-info">
+              <div class="stacked-header">
+                <h3 class="stacked-title">Vocabulary Flashcard Deck</h3>
+                <span class="track-badge">60 Cards</span>
+              </div>
+              <p class="stacked-desc">Self-paced flashcards with pronunciation, English meaning, and grammatical usage notes.</p>
+            </div>
+            <div class="stacked-action-btn">Study Deck →</div>
+          </div>
+        </div>
+
       </div>
     </section>
 
@@ -293,6 +328,65 @@
           </div>
         </div>
 
+        <!-- VOCABULARY QUIZZES -->
+        <div class="menu-section-header" style="margin-top: 2rem;">
+          <span class="section-badge amber-badge">Part 3 Quizzes</span>
+          <h2 class="section-title" id="vocab-quiz-section-title">Vocabulary Quizzes</h2>
+          <p class="section-subtitle">Select a category focus, then choose direction:</p>
+        </div>
+
+        <div class="category-nav" id="vocab-quiz-filters">
+          <button class="filter-btn active" data-category="all" id="vocab-quiz-filter-all">All Vocab (60)</button>
+          <button class="filter-btn" data-category="greetings_phrases" id="vocab-quiz-filter-gp">Greetings &amp; Phrases (8)</button>
+          <button class="filter-btn" data-category="numbers_sino_korean" id="vocab-quiz-filter-nsk">Sino-Korean Numbers (10)</button>
+          <button class="filter-btn" data-category="numbers_native_korean" id="vocab-quiz-filter-nnk">Native Korean Numbers (10)</button>
+          <button class="filter-btn" data-category="family_terms" id="vocab-quiz-filter-ft">Family Terms (8)</button>
+          <button class="filter-btn" data-category="days_of_week" id="vocab-quiz-filter-dow">Days of the Week (7)</button>
+          <button class="filter-btn" data-category="common_nouns" id="vocab-quiz-filter-cn">Common Nouns (10)</button>
+          <button class="filter-btn" data-category="pronouns_and_verbs" id="vocab-quiz-filter-pv">Pronouns &amp; Verbs (7)</button>
+        </div>
+
+        <div class="stacked-tracks-list">
+          <div class="stacked-track-card" id="quiz-variant-vocab-hangul-to-rom">
+            <div class="step-indicator amber-indicator">DIRECTION 1</div>
+            <div class="stacked-symbol" style="color: var(--amber);">물 → mul</div>
+            <div class="stacked-info">
+              <div class="stacked-header">
+                <h3 class="stacked-title">Vocabulary: Hangul → Romanization</h3>
+                <span class="track-badge amber-badge" id="badge-vocab-hangul-to-rom">Type English</span>
+              </div>
+              <p class="stacked-desc">See the Korean word (e.g. 물 or 학교) and type its English romanization (e.g. mul or hakgyo).</p>
+            </div>
+            <div class="stacked-action-btn" style="color: var(--amber);">Start Quiz →</div>
+          </div>
+
+          <div class="stacked-track-card" id="quiz-variant-vocab-rom-to-hangul">
+            <div class="step-indicator amber-indicator">DIRECTION 2</div>
+            <div class="stacked-symbol" style="color: var(--amber);">mul → 물</div>
+            <div class="stacked-info">
+              <div class="stacked-header">
+                <h3 class="stacked-title">Vocabulary: Romanization → Hangul</h3>
+                <span class="track-badge amber-badge" id="badge-vocab-rom-to-hangul">Type Korean</span>
+              </div>
+              <p class="stacked-desc">See the English romanization (e.g. mul or hakgyo) and type the Korean word (e.g. 물 or 학교).</p>
+            </div>
+            <div class="stacked-action-btn" style="color: var(--amber);">Start Quiz →</div>
+          </div>
+
+          <div class="stacked-track-card" id="quiz-variant-vocab-hangul-to-eng">
+            <div class="step-indicator amber-indicator">DIRECTION 3</div>
+            <div class="stacked-symbol" style="color: var(--amber);">물 → water</div>
+            <div class="stacked-info">
+              <div class="stacked-header">
+                <h3 class="stacked-title">Vocabulary: Hangul → English Meaning</h3>
+                <span class="track-badge amber-badge" id="badge-vocab-hangul-to-eng">Multiple Choice</span>
+              </div>
+              <p class="stacked-desc">See the Korean word and choose the correct English meaning from 4 options.</p>
+            </div>
+            <div class="stacked-action-btn" style="color: var(--amber);">Start Quiz →</div>
+          </div>
+        </div>
+
       </div>
     </section>
 
@@ -326,13 +420,18 @@
             <span>⌨️ Requires a Korean (2-beolsik) keyboard enabled on your device.</span>
           </div>
 
-          <!-- Answer Form -->
+          <!-- Answer Form (Typed Directions) -->
           <form id="quiz-answer-form" onsubmit="event.preventDefault(); App.handleQuizSubmit();" autocomplete="off">
             <div class="quiz-input-group">
               <input type="text" id="quiz-answer-input" class="quiz-input" placeholder="Type your answer here..." autocomplete="off" spellcheck="false" autofocus />
               <button type="submit" id="btn-quiz-submit" class="ctrl-btn ctrl-btn-primary" style="flex: initial; padding: 0.85rem 1.8rem;">Submit Answer</button>
             </div>
           </form>
+
+          <!-- Multiple Choice Container (Direction 3: English Meaning) -->
+          <div id="quiz-mc-container" class="quiz-mc-container" style="display: none;">
+            <div class="quiz-mc-grid" id="quiz-mc-options"></div>
+          </div>
 
           <!-- Feedback Banner -->
           <div id="quiz-feedback-box" class="quiz-feedback-box" style="display: none;">
@@ -660,6 +759,81 @@
           <button class="ctrl-btn" id="btn-syllable-prev">Previous</button>
           <button class="ctrl-btn ctrl-btn-primary" id="btn-syllable-flip">Flip Card</button>
           <button class="ctrl-btn" id="btn-syllable-next">Next</button>
+        </div>
+        <div class="shortcut-guide">Shortcuts: <kbd>←</kbd> <kbd>→</kbd> Navigate &bull; <kbd>Space</kbd> / <kbd>Enter</kbd> Flip</div>
+      </div>
+    </section>
+
+    <!-- VIEW: VOCABULARY LIST VIEW -->
+    <section id="view-vocab-list" class="view">
+      <div class="view-header">
+        <button class="btn-back" onclick="App.navigateTo('learning-hub')">← Back to Learning Hub</button>
+        <div class="view-title-group">
+          <h2>Part 3: Basic Vocabulary Reference List</h2>
+          <p>60 essential beginner words across 7 everyday categories</p>
+        </div>
+      </div>
+
+      <!-- Category Filter Pills -->
+      <div class="category-nav" id="vocab-list-filters">
+        <button class="filter-btn active" data-category="all">All (60)</button>
+        <button class="filter-btn" data-category="greetings_phrases">Greetings &amp; Phrases (8)</button>
+        <button class="filter-btn" data-category="numbers_sino_korean">Sino-Korean Numbers (10)</button>
+        <button class="filter-btn" data-category="numbers_native_korean">Native Korean Numbers (10)</button>
+        <button class="filter-btn" data-category="family_terms">Family Terms (8)</button>
+        <button class="filter-btn" data-category="days_of_week">Days of the Week (7)</button>
+        <button class="filter-btn" data-category="common_nouns">Common Nouns (10)</button>
+        <button class="filter-btn" data-category="pronouns_and_verbs">Pronouns &amp; Verbs (7)</button>
+      </div>
+
+      <div id="vocab-list-content"></div>
+    </section>
+
+    <!-- VIEW: VOCABULARY FLASHCARD VIEW -->
+    <section id="view-vocab-flashcard" class="view">
+      <div class="view-header">
+        <button class="btn-back" onclick="App.navigateTo('learning-hub')">← Back to Learning Hub</button>
+        <div class="view-title-group">
+          <h2>Part 3: Vocabulary Flashcards</h2>
+          <p>Click or tap card to flip &amp; reveal pronunciation and usage notes</p>
+        </div>
+      </div>
+
+      <div class="flashcard-container">
+        <div class="deck-progress-bar">
+          <span class="progress-text" id="vocab-card-count">Card 1 of 60</span>
+          <div class="progress-track">
+            <div class="progress-fill" id="vocab-progress-fill"></div>
+          </div>
+          <select id="vocab-deck-filter" class="filter-btn" style="border-radius: var(--radius-sm);">
+            <option value="all">All Vocab (60)</option>
+            <option value="greetings_phrases">Greetings &amp; Phrases (8)</option>
+            <option value="numbers_sino_korean">Sino-Korean Numbers (10)</option>
+            <option value="numbers_native_korean">Native Korean Numbers (10)</option>
+            <option value="family_terms">Family Terms (8)</option>
+            <option value="days_of_week">Days of the Week (7)</option>
+            <option value="common_nouns">Common Nouns (10)</option>
+            <option value="pronouns_and_verbs">Pronouns &amp; Verbs (7)</option>
+          </select>
+        </div>
+
+        <div class="flashcard-wrapper" id="vocab-card-wrapper" tabindex="0" role="button" aria-label="Vocabulary flashcard flip">
+          <div class="flashcard-inner">
+            <div class="card-face card-front">
+              <div class="flashcard-display-char" id="vocab-card-front-char">안녕하세요</div>
+              <div class="flip-hint">Click or press Space to flip</div>
+            </div>
+            <div class="card-face card-back">
+              <div id="vocab-card-back-content"></div>
+              <div class="flip-hint">Click to flip back</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="flashcard-controls">
+          <button class="ctrl-btn" id="btn-vocab-prev">Previous</button>
+          <button class="ctrl-btn ctrl-btn-primary" id="btn-vocab-flip">Flip Card</button>
+          <button class="ctrl-btn" id="btn-vocab-next">Next</button>
         </div>
         <div class="shortcut-guide">Shortcuts: <kbd>←</kbd> <kbd>→</kbd> Navigate &bull; <kbd>Space</kbd> / <kbd>Enter</kbd> Flip</div>
       </div>

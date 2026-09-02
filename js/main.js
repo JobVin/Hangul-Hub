@@ -8,7 +8,8 @@ const App = {
   data: {
     jamo: null,
     blockRules: null,
-    syllables: null
+    syllables: null,
+    vocabulary: null
   },
 
   state: {
@@ -26,10 +27,17 @@ const App = {
     syllableFlipped: false,
     syllableCategoryFilter: 'all',
 
+    // Vocabulary Flashcard Deck State
+    vocabDeck: [],
+    vocabIndex: 0,
+    vocabFlipped: false,
+    vocabCategoryFilter: 'all',
+
     // Quiz Engine State
-    activeQuizVariant: null,          // 'jamo-hangul-to-rom' | 'jamo-rom-to-hangul' | 'syl-hangul-to-rom' | 'syl-rom-to-hangul'
+    activeQuizVariant: null,          // 'jamo-hangul-to-rom' | 'jamo-rom-to-hangul' | 'syl-hangul-to-rom' | 'syl-rom-to-hangul' | 'vocab-hangul-to-rom' | 'vocab-rom-to-hangul' | 'vocab-hangul-to-eng'
     activeJamoQuizCategory: 'all',     // 'all' | 'basic_consonants' | 'basic_vowels' | 'double_tense_consonants' | 'compound_vowels'
     activeSyllableQuizCategory: 'all', // 'all' | 'vertical_right' | 'horizontal_below' | 'diphthong_wrap' | 'ui_special_case'
+    activeVocabQuizCategory: 'all',    // 'all' | 'greetings_phrases' | 'numbers_sino_korean' | 'numbers_native_korean' | 'family_terms' | 'days_of_week' | 'common_nouns' | 'pronouns_and_verbs'
     quizItems: [],                    // Array of current round item objects
     quizIndex: 0,
     quizScore: 0,
@@ -54,19 +62,22 @@ const App = {
     
     try {
       // Async data loading via DataLoader
-      const [jamo, blockRules, syllables] = await Promise.all([
+      const [jamo, blockRules, syllables, vocabulary] = await Promise.all([
         DataLoader.loadJamoData(),
         DataLoader.loadBlockRules(),
-        DataLoader.loadSyllablePractice()
+        DataLoader.loadSyllablePractice(),
+        DataLoader.loadVocabularyData()
       ]);
 
       this.data.jamo = jamo;
       this.data.blockRules = blockRules;
       this.data.syllables = syllables;
+      this.data.vocabulary = vocabulary;
 
       // Initialize default flashcard decks, quiz filter counts & writing filter counts
       this.initJamoDeck('all');
       this.initSyllableDeck('all');
+      this.initVocabDeck('all');
       this.updateQuizFilterCounts();
       this.updateWritingFilterCounts();
 
@@ -120,6 +131,29 @@ const App = {
     return items.filter(item => item.vowel_category === subCategory);
   },
 
+  // Flatten all 7 vocabulary categories into a single ordered array of 60 entries
+  getVocabFlatList() {
+    if (!this.data.vocabulary) return [];
+    return [
+      ...(this.data.vocabulary.greetings_phrases || []),
+      ...(this.data.vocabulary.numbers_sino_korean || []),
+      ...(this.data.vocabulary.numbers_native_korean || []),
+      ...(this.data.vocabulary.family_terms || []),
+      ...(this.data.vocabulary.days_of_week || []),
+      ...(this.data.vocabulary.common_nouns || []),
+      ...(this.data.vocabulary.pronouns_and_verbs || [])
+    ];
+  },
+
+  // Get Vocabulary list for Quiz Mode (supports sub-categories)
+  getVocabQuizList(subCategory = 'all') {
+    if (!this.data.vocabulary) return [];
+    if (subCategory === 'all') {
+      return this.getVocabFlatList();
+    }
+    return this.data.vocabulary[subCategory] || [];
+  },
+
   updateQuizFilterCounts() {
     if (!this.data.jamo || !this.data.syllables) return;
 
@@ -161,15 +195,48 @@ const App = {
     if (btnSylDW) btnSylDW.textContent = `Diphthong Wrap (${sylDW})`;
     if (btnSylUI) btnSylUI.textContent = `UI Special Case (${sylUI})`;
 
+    // Vocabulary Quiz Counts
+    if (this.data.vocabulary) {
+      const vocabAll = this.getVocabQuizList('all').length;
+      const vocabGP = this.getVocabQuizList('greetings_phrases').length;
+      const vocabNSK = this.getVocabQuizList('numbers_sino_korean').length;
+      const vocabNNK = this.getVocabQuizList('numbers_native_korean').length;
+      const vocabFT = this.getVocabQuizList('family_terms').length;
+      const vocabDOW = this.getVocabQuizList('days_of_week').length;
+      const vocabCN = this.getVocabQuizList('common_nouns').length;
+      const vocabPV = this.getVocabQuizList('pronouns_and_verbs').length;
+
+      const btnVocabAll = document.getElementById('vocab-quiz-filter-all');
+      const btnVocabGP = document.getElementById('vocab-quiz-filter-gp');
+      const btnVocabNSK = document.getElementById('vocab-quiz-filter-nsk');
+      const btnVocabNNK = document.getElementById('vocab-quiz-filter-nnk');
+      const btnVocabFT = document.getElementById('vocab-quiz-filter-ft');
+      const btnVocabDOW = document.getElementById('vocab-quiz-filter-dow');
+      const btnVocabCN = document.getElementById('vocab-quiz-filter-cn');
+      const btnVocabPV = document.getElementById('vocab-quiz-filter-pv');
+
+      if (btnVocabAll) btnVocabAll.textContent = `All Vocab (${vocabAll})`;
+      if (btnVocabGP) btnVocabGP.textContent = `Greetings & Phrases (${vocabGP})`;
+      if (btnVocabNSK) btnVocabNSK.textContent = `Sino-Korean Numbers (${vocabNSK})`;
+      if (btnVocabNNK) btnVocabNNK.textContent = `Native Korean Numbers (${vocabNNK})`;
+      if (btnVocabFT) btnVocabFT.textContent = `Family Terms (${vocabFT})`;
+      if (btnVocabDOW) btnVocabDOW.textContent = `Days of the Week (${vocabDOW})`;
+      if (btnVocabCN) btnVocabCN.textContent = `Common Nouns (${vocabCN})`;
+      if (btnVocabPV) btnVocabPV.textContent = `Pronouns & Verbs (${vocabPV})`;
+    }
+
     // Section Titles
     const activeJamoCount = this.getJamoQuizList(this.state.activeJamoQuizCategory).length;
     const activeSylCount = this.getSyllableQuizList(this.state.activeSyllableQuizCategory).length;
+    const activeVocabCount = this.getVocabQuizList(this.state.activeVocabQuizCategory).length;
 
     const jamoTitle = document.getElementById('jamo-quiz-section-title');
     const sylTitle = document.getElementById('syllable-quiz-section-title');
+    const vocabTitle = document.getElementById('vocab-quiz-section-title');
 
     if (jamoTitle) jamoTitle.textContent = `Jamo Character Quizzes (${activeJamoCount} Items)`;
     if (sylTitle) sylTitle.textContent = `Syllable Block Quizzes (${activeSylCount} Items)`;
+    if (vocabTitle) vocabTitle.textContent = `Vocabulary Quizzes (${activeVocabCount} Items)`;
   },
 
   bindEvents() {
@@ -205,6 +272,14 @@ const App = {
     if (qvJamo2) qvJamo2.addEventListener('click', () => this.startQuizVariant('jamo-rom-to-hangul'));
     if (qvSyl1) qvSyl1.addEventListener('click', () => this.startQuizVariant('syl-hangul-to-rom'));
     if (qvSyl2) qvSyl2.addEventListener('click', () => this.startQuizVariant('syl-rom-to-hangul'));
+
+    // Vocabulary Quiz Variant Cards
+    const qvVocab1 = document.getElementById('quiz-variant-vocab-hangul-to-rom');
+    const qvVocab2 = document.getElementById('quiz-variant-vocab-rom-to-hangul');
+    const qvVocab3 = document.getElementById('quiz-variant-vocab-hangul-to-eng');
+    if (qvVocab1) qvVocab1.addEventListener('click', () => this.startQuizVariant('vocab-hangul-to-rom'));
+    if (qvVocab2) qvVocab2.addEventListener('click', () => this.startQuizVariant('vocab-rom-to-hangul'));
+    if (qvVocab3) qvVocab3.addEventListener('click', () => this.startQuizVariant('vocab-hangul-to-eng'));
 
     // Writing Mode Track Selection Cards
     const wtJamo = document.getElementById('writing-track-jamo');
@@ -264,16 +339,33 @@ const App = {
       });
     }
 
+    // Quiz View Vocabulary Category Filters
+    const vocabQuizFilterNav = document.getElementById('vocab-quiz-filters');
+    if (vocabQuizFilterNav) {
+      vocabQuizFilterNav.addEventListener('click', (e) => {
+        if (e.target.classList.contains('filter-btn')) {
+          vocabQuizFilterNav.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
+          e.target.classList.add('active');
+          this.state.activeVocabQuizCategory = e.target.dataset.category;
+          this.updateQuizFilterCounts();
+        }
+      });
+    }
+
     // Learning Hub Cards
     const lJamoList = document.getElementById('card-learning-jamo-list');
     const lJamoCard = document.getElementById('card-learning-jamo-flashcard');
     const lSylList = document.getElementById('card-learning-syllable-list');
     const lSylCard = document.getElementById('card-learning-syllable-flashcard');
+    const lVocabList = document.getElementById('card-learning-vocab-list');
+    const lVocabCard = document.getElementById('card-learning-vocab-flashcard');
 
     if (lJamoList) lJamoList.addEventListener('click', () => this.navigateTo('jamo-list'));
     if (lJamoCard) lJamoCard.addEventListener('click', () => this.navigateTo('jamo-flashcard'));
     if (lSylList) lSylList.addEventListener('click', () => this.navigateTo('syllable-list'));
     if (lSylCard) lSylCard.addEventListener('click', () => this.navigateTo('syllable-flashcard'));
+    if (lVocabList) lVocabList.addEventListener('click', () => this.navigateTo('vocab-list'));
+    if (lVocabCard) lVocabCard.addEventListener('click', () => this.navigateTo('vocab-flashcard'));
 
     // Jamo List Category Filters
     const jamoFilterNav = document.getElementById('jamo-list-filters');
@@ -295,6 +387,18 @@ const App = {
           syllableFilterNav.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
           e.target.classList.add('active');
           this.renderSyllableList(e.target.dataset.category);
+        }
+      });
+    }
+
+    // Vocabulary List Category Filters
+    const vocabFilterNav = document.getElementById('vocab-list-filters');
+    if (vocabFilterNav) {
+      vocabFilterNav.addEventListener('click', (e) => {
+        if (e.target.classList.contains('filter-btn')) {
+          vocabFilterNav.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
+          e.target.classList.add('active');
+          this.renderVocabList(e.target.dataset.category);
         }
       });
     }
@@ -323,6 +427,24 @@ const App = {
       this.initSyllableDeck(e.target.value);
     });
 
+    // Vocabulary Flashcard Controls
+    const vocabCardWrapper = document.getElementById('vocab-card-wrapper');
+    if (vocabCardWrapper) {
+      vocabCardWrapper.addEventListener('click', () => this.toggleVocabFlip());
+    }
+    const btnVocabFlip = document.getElementById('btn-vocab-flip');
+    if (btnVocabFlip) btnVocabFlip.addEventListener('click', () => this.toggleVocabFlip());
+    const btnVocabPrev = document.getElementById('btn-vocab-prev');
+    if (btnVocabPrev) btnVocabPrev.addEventListener('click', () => this.prevVocabCard());
+    const btnVocabNext = document.getElementById('btn-vocab-next');
+    if (btnVocabNext) btnVocabNext.addEventListener('click', () => this.nextVocabCard());
+    const vocabDeckFilter = document.getElementById('vocab-deck-filter');
+    if (vocabDeckFilter) {
+      vocabDeckFilter.addEventListener('change', (e) => {
+        this.initVocabDeck(e.target.value);
+      });
+    }
+
     // Global Keyboard Navigation
     document.addEventListener('keydown', (e) => {
       if (this.state.currentView === 'jamo-flashcard') {
@@ -339,10 +461,22 @@ const App = {
           e.preventDefault();
           this.toggleSyllableFlip();
         }
+      } else if (this.state.currentView === 'vocab-flashcard') {
+        if (e.key === 'ArrowLeft') this.prevVocabCard();
+        else if (e.key === 'ArrowRight') this.nextVocabCard();
+        else if (e.key === ' ' || e.key === 'Enter') {
+          e.preventDefault();
+          this.toggleVocabFlip();
+        }
       } else if (this.state.currentView === 'quiz-active') {
         if (e.key === 'Enter' && this.state.quizSubmitted) {
           e.preventDefault();
           this.nextQuizQuestion();
+        } else if (!this.state.quizSubmitted && ['1', '2', '3', '4'].includes(e.key)) {
+          const btn = document.querySelector(`.quiz-mc-btn[data-index="${e.key}"]`);
+          if (btn && !btn.disabled) {
+            btn.click();
+          }
         }
       } else if (this.state.currentView === 'writing-active') {
         if (e.key === 'ArrowLeft') this.prevWritingItem();
@@ -367,7 +501,7 @@ const App = {
 
     window.addEventListener('scroll', () => {
       const scrollPos = window.scrollY || document.documentElement.scrollTop;
-      const isLongPage = this.state.currentView === 'jamo-list' || this.state.currentView === 'syllable-list' || this.state.currentView === 'quiz-results';
+      const isLongPage = this.state.currentView === 'jamo-list' || this.state.currentView === 'syllable-list' || this.state.currentView === 'vocab-list' || this.state.currentView === 'quiz-results';
 
       if (btnScrollTop) {
         if (scrollPos > 300) {
@@ -405,7 +539,7 @@ const App = {
     document.querySelectorAll('.nav-link').forEach(link => link.classList.remove('active'));
     if (viewId === 'home' || viewId.startsWith('quiz') || viewId.startsWith('writing')) {
       document.getElementById('nav-practice-hub').classList.add('active');
-    } else if (viewId === 'learning-hub' || viewId.startsWith('jamo') || viewId.startsWith('syllable')) {
+    } else if (viewId === 'learning-hub' || viewId.startsWith('jamo') || viewId.startsWith('syllable') || viewId.startsWith('vocab')) {
       document.getElementById('nav-learning-hub').classList.add('active');
     }
 
@@ -417,10 +551,14 @@ const App = {
       this.renderJamoList('all');
     } else if (viewId === 'syllable-list') {
       this.renderSyllableList('all');
+    } else if (viewId === 'vocab-list') {
+      this.renderVocabList('all');
     } else if (viewId === 'jamo-flashcard') {
       this.renderJamoCard();
     } else if (viewId === 'syllable-flashcard') {
       this.renderSyllableCard();
+    } else if (viewId === 'vocab-flashcard') {
+      this.renderVocabCard();
     } else if (viewId === 'quiz-select') {
       this.updateQuizFilterCounts();
     } else if (viewId === 'writing-select') {
@@ -443,7 +581,14 @@ const App = {
       vertical_right: 'Vertical Right',
       horizontal_below: 'Horizontal Below',
       diphthong_wrap: 'Diphthong Wrap',
-      ui_special_case: 'UI Special Case'
+      ui_special_case: 'UI Special Case',
+      greetings_phrases: 'Greetings & Phrases',
+      numbers_sino_korean: 'Sino-Korean Numbers',
+      numbers_native_korean: 'Native Korean Numbers',
+      family_terms: 'Family Terms',
+      days_of_week: 'Days of the Week',
+      common_nouns: 'Common Nouns',
+      pronouns_and_verbs: 'Pronouns & Verbs'
     };
     return labels[catKey] ? ` (${labels[catKey]})` : '';
   },
@@ -457,6 +602,8 @@ const App = {
       baseItems = this.getJamoQuizList(this.state.activeJamoQuizCategory);
     } else if (variant.startsWith('syl')) {
       baseItems = this.getSyllableQuizList(this.state.activeSyllableQuizCategory);
+    } else if (variant.startsWith('vocab')) {
+      baseItems = this.getVocabQuizList(this.state.activeVocabQuizCategory);
     }
 
     // Shuffle item order per quiz session
@@ -493,6 +640,8 @@ const App = {
     let prompt = '';
     let expected = '';
     let isDirection2 = false; // Direction 2 = Romanization -> Hangul (requires Korean IME)
+    let isMultipleChoice = false;
+    let choices = [];
 
     if (variant === 'jamo-hangul-to-rom') {
       prompt = item.jamo;
@@ -510,9 +659,62 @@ const App = {
       prompt = item.expected_romanization;
       expected = item.composed;
       isDirection2 = true;
+    } else if (variant === 'vocab-hangul-to-rom') {
+      prompt = item.hangul;
+      expected = item.romanization;
+      isDirection2 = false;
+    } else if (variant === 'vocab-rom-to-hangul') {
+      prompt = item.romanization;
+      expected = item.hangul;
+      isDirection2 = true;
+    } else if (variant === 'vocab-hangul-to-eng') {
+      prompt = item.hangul;
+      expected = item.english;
+      isDirection2 = false;
+      isMultipleChoice = true;
+
+      // Deduplication check strictly on rendered English string (normalized lowercase trim)
+      const normExpected = expected.trim().toLowerCase();
+      const seenEnglish = new Set([normExpected]);
+      const distractors = [];
+
+      // Step 1: Prefer distractors from the SAME category
+      const sameCatItems = (this.data.vocabulary && item.category && this.data.vocabulary[item.category])
+        ? this.data.vocabulary[item.category].filter(c => c.id !== item.id)
+        : [];
+      const shuffledSameCat = this.shuffleArray(sameCatItems);
+
+      for (const candidate of shuffledSameCat) {
+        if (!candidate.english) continue;
+        const normCand = candidate.english.trim().toLowerCase();
+        if (!seenEnglish.has(normCand)) {
+          seenEnglish.add(normCand);
+          distractors.push(candidate.english);
+          if (distractors.length === 3) break;
+        }
+      }
+
+      // Step 2: Fallback to all other vocabulary entries across all categories if fewer than 3
+      if (distractors.length < 3) {
+        const allOtherItems = this.getVocabFlatList().filter(c => c.id !== item.id);
+        const shuffledAllOther = this.shuffleArray(allOtherItems);
+
+        for (const candidate of shuffledAllOther) {
+          if (!candidate.english) continue;
+          const normCand = candidate.english.trim().toLowerCase();
+          if (!seenEnglish.has(normCand)) {
+            seenEnglish.add(normCand);
+            distractors.push(candidate.english);
+            if (distractors.length === 3) break;
+          }
+        }
+      }
+
+      // Step 3: Combine correct answer with exactly 3 unique distractors, then shuffle
+      choices = this.shuffleArray([expected, ...distractors]);
     }
 
-    return { prompt, expected, isDirection2 };
+    return { prompt, expected, isDirection2, isMultipleChoice, choices };
   },
 
   renderQuizQuestion() {
@@ -524,18 +726,26 @@ const App = {
 
     this.state.quizSubmitted = false;
     const variant = this.state.activeQuizVariant;
-    const { prompt, expected, isDirection2 } = this.getQuizItemDetails(item, variant);
+    const { prompt, expected, isDirection2, isMultipleChoice, choices } = this.getQuizItemDetails(item, variant);
 
     const variantTitles = {
       'jamo-hangul-to-rom': 'Jamo: Hangul → Romanization',
       'jamo-rom-to-hangul': 'Jamo: Romanization → Hangul',
       'syl-hangul-to-rom': 'Syllables: Hangul → Romanization',
-      'syl-rom-to-hangul': 'Syllables: Romanization → Hangul'
+      'syl-rom-to-hangul': 'Syllables: Romanization → Hangul',
+      'vocab-hangul-to-rom': 'Vocabulary: Hangul → Romanization',
+      'vocab-rom-to-hangul': 'Vocabulary: Romanization → Hangul',
+      'vocab-hangul-to-eng': 'Vocabulary: Hangul → English Meaning'
     };
 
-    const categoryLabel = variant.startsWith('jamo')
-      ? this.getCategoryNameLabel(this.state.activeJamoQuizCategory)
-      : this.getCategoryNameLabel(this.state.activeSyllableQuizCategory);
+    let categoryLabel = '';
+    if (variant.startsWith('jamo')) {
+      categoryLabel = this.getCategoryNameLabel(this.state.activeJamoQuizCategory);
+    } else if (variant.startsWith('syl')) {
+      categoryLabel = this.getCategoryNameLabel(this.state.activeSyllableQuizCategory);
+    } else if (variant.startsWith('vocab')) {
+      categoryLabel = this.getCategoryNameLabel(this.state.activeVocabQuizCategory);
+    }
 
     document.getElementById('quiz-active-title').textContent = `${variantTitles[variant]}${categoryLabel} ${this.state.isRetryRound ? '(Retry Round)' : ''}`;
     
@@ -549,10 +759,23 @@ const App = {
     document.getElementById('quiz-active-progress-fill').style.width = `${pct}%`;
 
     // Prompt Box
-    document.getElementById('quiz-prompt-label').textContent = isDirection2 
-      ? 'Type the corresponding Korean Hangul character:'
-      : 'Type the English romanization:';
-    document.getElementById('quiz-prompt-display').textContent = prompt;
+    if (isMultipleChoice) {
+      document.getElementById('quiz-prompt-label').textContent = 'Choose the correct English meaning:';
+    } else if (isDirection2) {
+      document.getElementById('quiz-prompt-label').textContent = 'Type the corresponding Korean Hangul character:';
+    } else {
+      document.getElementById('quiz-prompt-label').textContent = 'Type the English romanization:';
+    }
+
+    const promptElem = document.getElementById('quiz-prompt-display');
+    promptElem.textContent = prompt;
+    if (prompt.length > 5) {
+      promptElem.style.fontSize = '3.5rem';
+    } else if (prompt.length > 3) {
+      promptElem.style.fontSize = '4.2rem';
+    } else {
+      promptElem.style.fontSize = '5.5rem';
+    }
 
     // Keyboard Hint Box for Direction 2
     const kbHint = document.getElementById('quiz-keyboard-hint');
@@ -560,19 +783,108 @@ const App = {
       kbHint.style.display = isDirection2 ? 'block' : 'none';
     }
 
-    // Input & Feedback Reset
+    // Toggle Input Mode: Typed vs. Multiple Choice
+    const formElem = document.getElementById('quiz-answer-form');
+    const mcContainer = document.getElementById('quiz-mc-container');
     const inputElem = document.getElementById('quiz-answer-input');
     const submitBtn = document.getElementById('btn-quiz-submit');
     const feedbackBox = document.getElementById('quiz-feedback-box');
 
-    inputElem.value = '';
-    inputElem.disabled = false;
-    submitBtn.disabled = false;
     feedbackBox.style.display = 'none';
 
-    setTimeout(() => {
-      inputElem.focus();
-    }, 50);
+    if (isMultipleChoice) {
+      formElem.style.display = 'none';
+      mcContainer.style.display = 'block';
+
+      this._currentChoices = choices;
+      const optionsGrid = document.getElementById('quiz-mc-options');
+      optionsGrid.innerHTML = choices.map((choice, idx) => {
+        const escapedChoice = choice.replace(/"/g, '&quot;');
+        return `
+          <button type="button" class="quiz-mc-btn" data-index="${idx + 1}" data-choice="${escapedChoice}" onclick="App.handleMultipleChoiceSelect(this, ${idx})">
+            <span class="quiz-mc-badge">${idx + 1}</span>
+            <span class="quiz-mc-text">${choice}</span>
+          </button>
+        `;
+      }).join('');
+    } else {
+      formElem.style.display = 'block';
+      mcContainer.style.display = 'none';
+
+      inputElem.value = '';
+      inputElem.disabled = false;
+      submitBtn.disabled = false;
+
+      setTimeout(() => {
+        inputElem.focus();
+      }, 50);
+    }
+  },
+
+  handleMultipleChoiceSelect(clickedBtn, choiceIdx) {
+    if (this.state.quizSubmitted) return;
+
+    const item = this.state.quizItems[this.state.quizIndex];
+    if (!item) return;
+
+    const variant = this.state.activeQuizVariant;
+    const { prompt, expected } = this.getQuizItemDetails(item, variant);
+    const selectedChoice = this._currentChoices[choiceIdx];
+
+    const isCorrect = (selectedChoice.trim().toLowerCase() === expected.trim().toLowerCase());
+    this.state.quizSubmitted = true;
+
+    // Disable all choice buttons and mark results
+    const allButtons = document.querySelectorAll('.quiz-mc-btn');
+    allButtons.forEach(btn => {
+      btn.disabled = true;
+      const btnChoice = btn.dataset.choice;
+      if (btnChoice.trim().toLowerCase() === expected.trim().toLowerCase()) {
+        btn.classList.add('selected-correct');
+      }
+    });
+
+    if (isCorrect) {
+      this.state.quizScore++;
+      clickedBtn.classList.add('selected-correct');
+    } else {
+      clickedBtn.classList.add('selected-incorrect');
+      this.state.quizMissedItems.push({
+        item: item,
+        prompt: prompt,
+        expected: expected,
+        userAnswer: selectedChoice
+      });
+    }
+
+    // Update Header Score Display
+    document.getElementById('quiz-active-score-text').textContent = `Score: ${this.state.quizScore}`;
+
+    // Feedback Box
+    const feedbackBox = document.getElementById('quiz-feedback-box');
+    const feedbackContent = document.getElementById('quiz-feedback-content');
+    feedbackBox.style.display = 'block';
+
+    if (isCorrect) {
+      feedbackBox.className = 'quiz-feedback-box feedback-correct';
+      feedbackContent.innerHTML = `
+        <div class="feedback-title">✓ Correct!</div>
+        <div class="feedback-detail">Prompt: <strong>${prompt}</strong> &bull; Correct Meaning: <strong>${expected}</strong></div>
+      `;
+    } else {
+      feedbackBox.className = 'quiz-feedback-box feedback-incorrect';
+      feedbackContent.innerHTML = `
+        <div class="feedback-title">✗ Incorrect</div>
+        <div class="feedback-detail">Prompt: <strong>${prompt}</strong></div>
+        <div class="feedback-detail" style="margin-top: 0.25rem;">Your Choice: <span style="text-decoration: line-through;">"${selectedChoice}"</span> &bull; Correct Meaning: <strong>"${expected}"</strong></div>
+      `;
+    }
+
+    // Focus Next button
+    const nextBtn = document.getElementById('btn-quiz-next');
+    if (nextBtn) {
+      setTimeout(() => nextBtn.focus(), 50);
+    }
   },
 
   handleQuizSubmit() {
@@ -667,12 +979,20 @@ const App = {
       'jamo-hangul-to-rom': 'Jamo: Hangul → Romanization',
       'jamo-rom-to-hangul': 'Jamo: Romanization → Hangul',
       'syl-hangul-to-rom': 'Syllables: Hangul → Romanization',
-      'syl-rom-to-hangul': 'Syllables: Romanization → Hangul'
+      'syl-rom-to-hangul': 'Syllables: Romanization → Hangul',
+      'vocab-hangul-to-rom': 'Vocabulary: Hangul → Romanization',
+      'vocab-rom-to-hangul': 'Vocabulary: Romanization → Hangul',
+      'vocab-hangul-to-eng': 'Vocabulary: Hangul → English Meaning'
     };
 
-    const categoryLabel = this.state.activeQuizVariant.startsWith('jamo')
-      ? this.getCategoryNameLabel(this.state.activeJamoQuizCategory)
-      : this.getCategoryNameLabel(this.state.activeSyllableQuizCategory);
+    let categoryLabel = '';
+    if (this.state.activeQuizVariant.startsWith('jamo')) {
+      categoryLabel = this.getCategoryNameLabel(this.state.activeJamoQuizCategory);
+    } else if (this.state.activeQuizVariant.startsWith('syl')) {
+      categoryLabel = this.getCategoryNameLabel(this.state.activeSyllableQuizCategory);
+    } else if (this.state.activeQuizVariant.startsWith('vocab')) {
+      categoryLabel = this.getCategoryNameLabel(this.state.activeVocabQuizCategory);
+    }
 
     document.getElementById('quiz-results-variant-title').textContent = `${variantTitles[this.state.activeQuizVariant]}${categoryLabel} ${this.state.isRetryRound ? '(Retry Round)' : ''}`;
     document.getElementById('quiz-score-circle').textContent = `${pct}%`;
@@ -1008,6 +1328,168 @@ const App = {
     document.getElementById('syllable-card-count').textContent = `Card ${current} of ${total}`;
     const pct = (current / total) * 100;
     document.getElementById('syllable-progress-fill').style.width = `${pct}%`;
+  },
+
+  /* ==========================================================================
+     Vocabulary List View Rendering
+     ========================================================================== */
+  renderVocabList(filterCategory = 'all') {
+    const container = document.getElementById('vocab-list-content');
+    if (!container || !this.data.vocabulary) return;
+
+    const categoryTitles = {
+      greetings_phrases: 'Greetings & Phrases (인사말과 표현 - 8)',
+      numbers_sino_korean: 'Sino-Korean Numbers (한자어 수사 - 10)',
+      numbers_native_korean: 'Native Korean Numbers (고유어 수사 - 10)',
+      family_terms: 'Family Terms (가족 호칭 - 8)',
+      days_of_week: 'Days of the Week (요일 - 7)',
+      common_nouns: 'Common Nouns (기초 명사 - 10)',
+      pronouns_and_verbs: 'Pronouns & Verbs (대명사와 동사 - 7)'
+    };
+
+    let html = '';
+    const allCategories = [
+      'greetings_phrases',
+      'numbers_sino_korean',
+      'numbers_native_korean',
+      'family_terms',
+      'days_of_week',
+      'common_nouns',
+      'pronouns_and_verbs'
+    ];
+
+    const categoriesToRender = filterCategory === 'all'
+      ? allCategories
+      : [filterCategory];
+
+    categoriesToRender.forEach(catKey => {
+      const items = this.data.vocabulary[catKey] || [];
+      if (items.length === 0) return;
+
+      html += `
+        <div class="list-section-header">
+          <h3>${categoryTitles[catKey] || catKey}</h3>
+        </div>
+        <div class="jamo-grid">
+      `;
+
+      items.forEach(item => {
+        let verbHtml = '';
+        if (item.verb_stem && item.polite_present_form) {
+          verbHtml = `
+            <div class="vocab-card-verb-info">
+              <div>Stem: <strong>${item.verb_stem}-</strong></div>
+              <div>Polite Present: <strong>${item.polite_present_form}</strong></div>
+            </div>
+          `;
+        }
+
+        html += `
+          <div class="jamo-card" style="text-align: left; align-items: flex-start;">
+            <div class="jamo-char" style="font-size: 2.5rem; margin-bottom: 0.3rem;">${item.hangul}</div>
+            <div class="vocab-card-rom">Romanization: <strong>${item.romanization}</strong></div>
+            <div class="vocab-card-eng">Meaning: <strong>${item.english}</strong></div>
+            <div class="jamo-note" style="margin-top: 0.25rem;">${item.usage_note}</div>
+            ${verbHtml}
+            <div style="margin-top: 0.75rem;"><span class="category-tag">${catKey.replace(/_/g, ' ')}</span></div>
+          </div>
+        `;
+      });
+
+      html += `</div>`;
+    });
+
+    container.innerHTML = html;
+  },
+
+  /* ==========================================================================
+     Vocabulary Flashcard Logic
+     ========================================================================== */
+  initVocabDeck(filterCategory = 'all') {
+    this.state.vocabCategoryFilter = filterCategory;
+    const flatList = this.getVocabFlatList();
+
+    if (filterCategory === 'all') {
+      this.state.vocabDeck = flatList;
+    } else {
+      this.state.vocabDeck = this.data.vocabulary ? (this.data.vocabulary[filterCategory] || []) : [];
+    }
+
+    this.state.vocabIndex = 0;
+    this.state.vocabFlipped = false;
+    this.renderVocabCard();
+  },
+
+  toggleVocabFlip() {
+    this.state.vocabFlipped = !this.state.vocabFlipped;
+    const wrapper = document.getElementById('vocab-card-wrapper');
+    if (wrapper) {
+      if (this.state.vocabFlipped) wrapper.classList.add('flipped');
+      else wrapper.classList.remove('flipped');
+    }
+  },
+
+  nextVocabCard() {
+    if (this.state.vocabDeck.length === 0) return;
+    this.state.vocabIndex = (this.state.vocabIndex + 1) % this.state.vocabDeck.length;
+    this.state.vocabFlipped = false;
+    this.renderVocabCard();
+  },
+
+  prevVocabCard() {
+    if (this.state.vocabDeck.length === 0) return;
+    this.state.vocabIndex = (this.state.vocabIndex - 1 + this.state.vocabDeck.length) % this.state.vocabDeck.length;
+    this.state.vocabFlipped = false;
+    this.renderVocabCard();
+  },
+
+  renderVocabCard() {
+    const card = this.state.vocabDeck[this.state.vocabIndex];
+    if (!card) return;
+
+    // Reset flip state
+    const wrapper = document.getElementById('vocab-card-wrapper');
+    if (wrapper) wrapper.classList.remove('flipped');
+    this.state.vocabFlipped = false;
+
+    // Front: Hangul (adjust font size for multi-syllable phrases)
+    const frontElem = document.getElementById('vocab-card-front-char');
+    frontElem.textContent = card.hangul;
+    if (card.hangul.length > 5) {
+      frontElem.style.fontSize = '3.5rem';
+    } else if (card.hangul.length > 3) {
+      frontElem.style.fontSize = '4.5rem';
+    } else {
+      frontElem.style.fontSize = '6rem';
+    }
+
+    // Back
+    let verbInfo = '';
+    if (card.verb_stem && card.polite_present_form) {
+      verbInfo = `
+        <div class="vocab-card-verb-info" style="margin-bottom: 0.5rem;">
+          Stem: <strong>${card.verb_stem}-</strong> &bull; Present: <strong>${card.polite_present_form}</strong>
+        </div>
+      `;
+    }
+
+    const backContent = `
+      <div class="card-back-header-char" style="font-size: 2.2rem;">${card.hangul}</div>
+      <div style="font-size: 1.15rem; color: var(--primary-text); font-weight: 800; margin-bottom: 0.25rem;">${card.romanization}</div>
+      <div style="font-size: 1.1rem; color: var(--text-main); font-weight: 700; margin-bottom: 0.6rem;">${card.english}</div>
+      <div class="jamo-note" style="font-size: 0.9rem; max-width: 480px; text-align: center;">${card.usage_note}</div>
+      ${verbInfo}
+      <div style="margin-top: 0.6rem;"><span class="category-tag">${card.category.replace(/_/g, ' ')}</span></div>
+    `;
+
+    document.getElementById('vocab-card-back-content').innerHTML = backContent;
+
+    // Progress Bar & Count
+    const current = this.state.vocabIndex + 1;
+    const total = this.state.vocabDeck.length;
+    document.getElementById('vocab-card-count').textContent = `Card ${current} of ${total}`;
+    const pct = total > 0 ? (current / total) * 100 : 0;
+    document.getElementById('vocab-progress-fill').style.width = `${pct}%`;
   },
 
   /* ==========================================================================

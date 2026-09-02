@@ -972,6 +972,128 @@ kbd {
   box-shadow: 0 0 0 3px rgba(67, 56, 202, 0.15);
 }
 
+/* Multiple Choice Options Grid (Direction 3) */
+.quiz-mc-container {
+  margin-top: 1rem;
+}
+
+.quiz-mc-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 0.85rem;
+}
+
+@media (min-width: 500px) {
+  .quiz-mc-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+.quiz-mc-btn {
+  background-color: var(--bg-card);
+  border: 2px solid var(--border-color);
+  border-radius: var(--radius-md);
+  padding: 1rem 1.15rem;
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--text-main);
+  cursor: pointer;
+  text-align: left;
+  transition: var(--transition-fast);
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  box-shadow: var(--shadow-sm);
+  outline: none;
+  font-family: var(--font-sans);
+}
+
+.quiz-mc-btn:hover:not(:disabled) {
+  background-color: var(--bg-subtle);
+  border-color: var(--primary);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+}
+
+.quiz-mc-btn:focus-visible {
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(67, 56, 202, 0.15);
+}
+
+.quiz-mc-btn:disabled {
+  cursor: default;
+}
+
+.quiz-mc-btn.selected-correct {
+  background-color: var(--teal-light);
+  border-color: var(--teal);
+  color: var(--teal-text);
+}
+
+.quiz-mc-btn.selected-incorrect {
+  background-color: var(--rose-light);
+  border-color: var(--rose);
+  color: var(--rose-text);
+}
+
+.quiz-mc-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background-color: var(--bg-subtle);
+  border: 1.5px solid var(--border-color);
+  font-size: 0.85rem;
+  font-weight: 800;
+  color: var(--text-muted);
+  flex-shrink: 0;
+}
+
+.quiz-mc-btn.selected-correct .quiz-mc-badge {
+  background-color: var(--teal);
+  border-color: var(--teal);
+  color: white;
+}
+
+.quiz-mc-btn.selected-incorrect .quiz-mc-badge {
+  background-color: var(--rose);
+  border-color: var(--rose);
+  color: white;
+}
+
+.quiz-mc-text {
+  flex: 1;
+  word-break: break-word;
+}
+
+/* Vocab Card Details */
+.vocab-card-rom {
+  font-size: 1.05rem;
+  color: var(--primary);
+  font-weight: 700;
+  margin-bottom: 0.25rem;
+}
+
+.vocab-card-eng {
+  font-size: 1.05rem;
+  font-weight: 800;
+  color: var(--text-main);
+  margin-bottom: 0.4rem;
+}
+
+.vocab-card-verb-info {
+  background-color: var(--bg-subtle);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-sm);
+  padding: 0.4rem 0.6rem;
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  margin-top: 0.5rem;
+  line-height: 1.4;
+}
+
 /* Feedback Banners */
 .quiz-feedback-box {
   margin-top: 1.5rem;
