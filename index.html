@@ -90,6 +90,20 @@
             <div class="stacked-action-btn" style="color: var(--amber);">Select Writing Track →</div>
           </div>
 
+          <!-- SENTENCE PRACTICE TRACK (ACTIVE) -->
+          <div class="stacked-track-card" id="card-sentence-practice">
+            <div class="step-indicator amber-indicator">DRILL 3</div>
+            <div class="stacked-symbol" style="color: var(--amber);">문장</div>
+            <div class="stacked-info">
+              <div class="stacked-header">
+                <h3 class="stacked-title">Sentence Construction Practice</h3>
+                <span class="track-badge amber-badge">Self-Graded (20 Sentences)</span>
+              </div>
+              <p class="stacked-desc">Practice composing beginner Korean sentences with visual self-comparison and targeted retry rounds.</p>
+            </div>
+            <div class="stacked-action-btn" style="color: var(--amber);">Start Sentence Practice →</div>
+          </div>
+
         </div>
 
         <!-- Callout Banner to Learning Hub -->
@@ -224,6 +238,28 @@
               <p class="stacked-desc">Self-paced flashcards with pronunciation, English meaning, and grammatical usage notes.</p>
             </div>
             <div class="stacked-action-btn">Study Deck →</div>
+          </div>
+        </div>
+
+        <!-- SECTION 4: GRAMMAR REFERENCE -->
+        <div class="menu-section-header" style="margin-top: 2rem;">
+          <span class="section-badge teal-badge">Part 4</span>
+          <h2 class="section-title">Grammar Reference</h2>
+          <p class="section-subtitle">Study 5 foundational beginner grammar patterns: particles, copula, and present-tense verbs.</p>
+        </div>
+
+        <div class="stacked-tracks-list">
+          <div class="stacked-track-card teal-track" id="card-learning-grammar-list">
+            <div class="step-indicator teal-indicator">STEP 7</div>
+            <div class="stacked-symbol">은/는 이/가 을/를</div>
+            <div class="stacked-info">
+              <div class="stacked-header">
+                <h3 class="stacked-title">Grammar Reference Guide</h3>
+                <span class="track-badge">5 Points</span>
+              </div>
+              <p class="stacked-desc">Browse explanations, forms, conditions, and usage notes for beginner sentence construction.</p>
+            </div>
+            <div class="stacked-action-btn">Study Guide →</div>
           </div>
         </div>
 
@@ -836,6 +872,129 @@
           <button class="ctrl-btn" id="btn-vocab-next">Next</button>
         </div>
         <div class="shortcut-guide">Shortcuts: <kbd>←</kbd> <kbd>→</kbd> Navigate &bull; <kbd>Space</kbd> / <kbd>Enter</kbd> Flip</div>
+      </div>
+    </section>
+
+    <!-- VIEW: GRAMMAR LIST VIEW -->
+    <section id="view-grammar-list" class="view">
+      <div class="view-header">
+        <button class="btn-back" onclick="App.navigateTo('learning-hub')">← Back to Learning Hub</button>
+        <div class="view-title-group">
+          <h2>Part 4: Essential Grammar Reference</h2>
+          <p>5 foundational beginner grammar patterns for sentence construction</p>
+        </div>
+      </div>
+
+      <div id="grammar-list-content"></div>
+    </section>
+
+    <!-- VIEW: SENTENCE PRACTICE VIEW (SELF-GRADED) -->
+    <section id="view-sentence-practice" class="view">
+      <div class="view-header">
+        <button class="btn-back" onclick="App.confirmQuitSentencePractice()">← Quit Practice</button>
+        <div class="view-title-group">
+          <h2 id="sentence-practice-title">Sentence Construction Practice</h2>
+          <p id="sentence-practice-subtitle">Practice Round (20 Sentences)</p>
+        </div>
+      </div>
+
+      <div class="quiz-card-container" style="max-width: 680px;">
+        <!-- Progress Bar -->
+        <div class="deck-progress-bar">
+          <span class="progress-text" id="sentence-progress-text">Sentence 1 of 20</span>
+          <div class="progress-track">
+            <div class="progress-fill" id="sentence-progress-fill"></div>
+          </div>
+          <span class="progress-text" id="sentence-score-text" style="color: var(--amber); font-weight: 800;">Self-Marked: 0 / 0</span>
+        </div>
+
+        <!-- Question Card Box -->
+        <div class="quiz-question-box">
+          <div class="quiz-prompt-label">Compose the Korean Hangul sentence:</div>
+          <div class="sentence-prompt-display" id="sentence-prompt-display">Say 'I am a student.'</div>
+
+          <!-- Keyboard Hint -->
+          <div class="keyboard-hint-box" style="margin-top: 1rem;">
+            <span>⌨️ Requires a Korean (2-beolsik) keyboard enabled on your device.</span>
+          </div>
+
+          <!-- User Input Area -->
+          <div class="sentence-input-wrapper" style="margin-top: 1.25rem;">
+            <textarea id="sentence-user-input" class="sentence-textarea" placeholder="Type your Korean sentence attempt here..." rows="2" autocomplete="off" spellcheck="false"></textarea>
+            <button type="button" id="btn-sentence-reveal" class="ctrl-btn ctrl-btn-primary" onclick="App.revealSentenceAnswer()" style="width: 100%; margin-top: 0.85rem; padding: 0.9rem;">Reveal Answer →</button>
+          </div>
+
+          <!-- Revealed Answer & Self-Assessment Box -->
+          <div id="sentence-reveal-box" class="sentence-reveal-box" style="display: none;">
+            <div class="sentence-comparison-box">
+              <div class="sentence-attempt-preview">
+                <div class="sentence-comparison-label">Your Typed Attempt:</div>
+                <div class="sentence-attempt-text" id="sentence-attempt-display"></div>
+              </div>
+              <div class="sentence-model-preview">
+                <div class="sentence-comparison-label" style="color: var(--teal-text);">Model Korean Answer:</div>
+                <div class="sentence-model-korean" id="sentence-model-korean-display"></div>
+                <div class="sentence-model-rom" id="sentence-model-rom-display"></div>
+                <div class="sentence-model-eng" id="sentence-model-eng-display"></div>
+              </div>
+            </div>
+
+            <!-- Self Assessment Buttons -->
+            <div class="self-assessment-wrapper">
+              <div class="self-assessment-label">Visually compare your attempt. How did you do?</div>
+              <div class="self-assessment-btn-group">
+                <button type="button" id="btn-self-correct" class="ctrl-btn btn-self-correct" onclick="App.handleSelfAssessment(true)">
+                  ✓ Got it right
+                </button>
+                <button type="button" id="btn-self-missed" class="ctrl-btn btn-self-missed" onclick="App.handleSelfAssessment(false)">
+                  ✗ Need more practice
+                </button>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- VIEW: SENTENCE PRACTICE RESULTS VIEW -->
+    <section id="view-sentence-results" class="view">
+      <div class="view-header">
+        <button class="btn-back" onclick="App.navigateTo('home')">← Back to Practice Hub</button>
+        <div class="view-title-group">
+          <h2>Sentence Practice Results</h2>
+          <p id="sentence-results-subtitle">Self-Assessed Score Summary</p>
+        </div>
+      </div>
+
+      <div class="quiz-results-container">
+        <div class="quiz-score-card">
+          <div class="quiz-score-circle" id="sentence-score-circle">100%</div>
+          <h3 id="sentence-score-heading" style="font-size: 1.8rem; margin-bottom: 0.5rem;">Practice Round Completed!</h3>
+          <p id="sentence-score-detail" style="color: var(--text-muted); font-size: 1.1rem; margin-bottom: 1.5rem;">
+            You marked 20 out of 20 sentences as "Got it right".
+          </p>
+
+          <div class="quiz-action-bar-row">
+            <button id="btn-sentence-retry-missed" class="ctrl-btn ctrl-btn-primary" onclick="App.startSentenceRetryRound()" style="background-color: var(--amber); border-color: var(--amber); display: none;">
+              Retry Need Practice Items
+            </button>
+            <button class="ctrl-btn" onclick="App.startSentencePractice()">
+              Restart Full Round
+            </button>
+            <button class="ctrl-btn" onclick="App.navigateTo('home')">
+              Return to Practice Hub
+            </button>
+          </div>
+        </div>
+
+        <!-- Missed Items Section -->
+        <div id="sentence-missed-section" style="margin-top: 2.5rem; display: none;">
+          <h3 style="font-size: 1.3rem; margin-bottom: 1rem; color: var(--rose-text);">
+            Items Self-Marked "Need More Practice":
+          </h3>
+          <div class="jamo-grid" id="sentence-missed-items-grid"></div>
+        </div>
       </div>
     </section>
 

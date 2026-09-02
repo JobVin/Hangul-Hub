@@ -9,7 +9,9 @@ const App = {
     jamo: null,
     blockRules: null,
     syllables: null,
-    vocabulary: null
+    vocabulary: null,
+    grammar: null,
+    sentences: null
   },
 
   state: {
@@ -45,6 +47,14 @@ const App = {
     quizMissedItems: [],              // Array of { item, prompt, expected, userAnswer }
     isRetryRound: false,
 
+    // Sentence Construction Practice State (Self-Graded, No Programmatic Comparison)
+    sentenceItems: [],
+    sentenceIndex: 0,
+    sentenceScore: 0,
+    sentenceRevealed: false,
+    sentenceMissedItems: [],
+    isSentenceRetryRound: false,
+
     // Writing Mode State (Freehand Canvas, Visual Self-Check Only)
     // Note: No persistence — canvas clears and progress resets on page reload per project spec.
     activeWritingType: null,             // 'jamo' | 'syllable'
@@ -62,17 +72,21 @@ const App = {
     
     try {
       // Async data loading via DataLoader
-      const [jamo, blockRules, syllables, vocabulary] = await Promise.all([
+      const [jamo, blockRules, syllables, vocabulary, grammar, sentences] = await Promise.all([
         DataLoader.loadJamoData(),
         DataLoader.loadBlockRules(),
         DataLoader.loadSyllablePractice(),
-        DataLoader.loadVocabularyData()
+        DataLoader.loadVocabularyData(),
+        DataLoader.loadGrammarReference(),
+        DataLoader.loadSentencePractice()
       ]);
 
       this.data.jamo = jamo;
       this.data.blockRules = blockRules;
       this.data.syllables = syllables;
       this.data.vocabulary = vocabulary;
+      this.data.grammar = grammar;
+      this.data.sentences = sentences;
 
       // Initialize default flashcard decks, quiz filter counts & writing filter counts
       this.initJamoDeck('all');
@@ -259,8 +273,10 @@ const App = {
     // Practice Hub Cards
     const quizCard = document.getElementById('card-quiz-mode');
     const writingCard = document.getElementById('card-writing-mode');
+    const sentenceCard = document.getElementById('card-sentence-practice');
     if (quizCard) quizCard.addEventListener('click', () => this.navigateTo('quiz-select'));
     if (writingCard) writingCard.addEventListener('click', () => this.navigateTo('writing-select'));
+    if (sentenceCard) sentenceCard.addEventListener('click', () => this.startSentencePractice());
 
     // Quiz Variant Selection Cards
     const qvJamo1 = document.getElementById('quiz-variant-jamo-hangul-to-rom');
@@ -359,6 +375,7 @@ const App = {
     const lSylCard = document.getElementById('card-learning-syllable-flashcard');
     const lVocabList = document.getElementById('card-learning-vocab-list');
     const lVocabCard = document.getElementById('card-learning-vocab-flashcard');
+    const lGrammarList = document.getElementById('card-learning-grammar-list');
 
     if (lJamoList) lJamoList.addEventListener('click', () => this.navigateTo('jamo-list'));
     if (lJamoCard) lJamoCard.addEventListener('click', () => this.navigateTo('jamo-flashcard'));
@@ -366,6 +383,7 @@ const App = {
     if (lSylCard) lSylCard.addEventListener('click', () => this.navigateTo('syllable-flashcard'));
     if (lVocabList) lVocabList.addEventListener('click', () => this.navigateTo('vocab-list'));
     if (lVocabCard) lVocabCard.addEventListener('click', () => this.navigateTo('vocab-flashcard'));
+    if (lGrammarList) lGrammarList.addEventListener('click', () => this.navigateTo('grammar-list'));
 
     // Jamo List Category Filters
     const jamoFilterNav = document.getElementById('jamo-list-filters');
@@ -501,7 +519,7 @@ const App = {
 
     window.addEventListener('scroll', () => {
       const scrollPos = window.scrollY || document.documentElement.scrollTop;
-      const isLongPage = this.state.currentView === 'jamo-list' || this.state.currentView === 'syllable-list' || this.state.currentView === 'vocab-list' || this.state.currentView === 'quiz-results';
+      const isLongPage = this.state.currentView === 'jamo-list' || this.state.currentView === 'syllable-list' || this.state.currentView === 'vocab-list' || this.state.currentView === 'grammar-list' || this.state.currentView === 'quiz-results' || this.state.currentView === 'sentence-results';
 
       if (btnScrollTop) {
         if (scrollPos > 300) {
@@ -537,9 +555,9 @@ const App = {
 
     // Update Header Active State
     document.querySelectorAll('.nav-link').forEach(link => link.classList.remove('active'));
-    if (viewId === 'home' || viewId.startsWith('quiz') || viewId.startsWith('writing')) {
+    if (viewId === 'home' || viewId.startsWith('quiz') || viewId.startsWith('writing') || viewId.startsWith('sentence')) {
       document.getElementById('nav-practice-hub').classList.add('active');
-    } else if (viewId === 'learning-hub' || viewId.startsWith('jamo') || viewId.startsWith('syllable') || viewId.startsWith('vocab')) {
+    } else if (viewId === 'learning-hub' || viewId.startsWith('jamo') || viewId.startsWith('syllable') || viewId.startsWith('vocab') || viewId.startsWith('grammar')) {
       document.getElementById('nav-learning-hub').classList.add('active');
     }
 
@@ -553,6 +571,8 @@ const App = {
       this.renderSyllableList('all');
     } else if (viewId === 'vocab-list') {
       this.renderVocabList('all');
+    } else if (viewId === 'grammar-list') {
+      this.renderGrammarList();
     } else if (viewId === 'jamo-flashcard') {
       this.renderJamoCard();
     } else if (viewId === 'syllable-flashcard') {
@@ -1490,6 +1510,238 @@ const App = {
     document.getElementById('vocab-card-count').textContent = `Card ${current} of ${total}`;
     const pct = total > 0 ? (current / total) * 100 : 0;
     document.getElementById('vocab-progress-fill').style.width = `${pct}%`;
+  },
+
+  /* ==========================================================================
+     Grammar Reference List View Rendering
+     ========================================================================== */
+  renderGrammarList() {
+    const container = document.getElementById('grammar-list-content');
+    if (!container || !this.data.grammar) return;
+
+    const points = this.data.grammar.grammar_points || [];
+    let html = '';
+
+    points.forEach((point, idx) => {
+      let formsRows = '';
+      if (point.forms && point.forms.length > 0) {
+        formsRows = point.forms.map(f => `
+          <tr>
+            <td><span class="grammar-form-pill">${f.form}</span></td>
+            <td>${f.condition}</td>
+            <td><strong>${f.example_word}</strong></td>
+            <td><strong style="color: var(--teal); font-size: 1.05rem;">${f.example_attached}</strong></td>
+          </tr>
+        `).join('');
+      }
+
+      html += `
+        <div class="grammar-card">
+          <div class="grammar-header">
+            <div class="grammar-title">${idx + 1}. ${point.name}</div>
+            <span class="track-badge">${point.id}</span>
+          </div>
+          <div class="grammar-explanation">${point.explanation}</div>
+          ${formsRows ? `
+            <div class="grammar-table-container">
+              <table class="grammar-forms-table">
+                <thead>
+                  <tr>
+                    <th>Form</th>
+                    <th>Condition / Rule</th>
+                    <th>Example Word</th>
+                    <th>Attached Result</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  ${formsRows}
+                </tbody>
+              </table>
+            </div>
+          ` : ''}
+          <div class="grammar-usage-box">
+            <strong>Usage &amp; Nuance:</strong> ${point.usage_note}
+          </div>
+        </div>
+      `;
+    });
+
+    container.innerHTML = html;
+  },
+
+  /* ==========================================================================
+     SENTENCE CONSTRUCTION PRACTICE ENGINE (Self-Graded, Non-Autograded)
+     Note: Natural Korean sentences have multiple valid phrasings. There is NO
+     programmatic string comparison against the model answer under any circumstances.
+     ========================================================================== */
+  startSentencePractice() {
+    if (!this.data.sentences || !this.data.sentences.sentences) return;
+
+    this.state.isSentenceRetryRound = false;
+    this.state.sentenceItems = this.shuffleArray(this.data.sentences.sentences);
+    this.state.sentenceIndex = 0;
+    this.state.sentenceScore = 0;
+    this.state.sentenceMissedItems = [];
+
+    this.navigateTo('sentence-practice');
+    this.renderSentenceQuestion();
+  },
+
+  startSentenceRetryRound() {
+    if (this.state.sentenceMissedItems.length === 0) return;
+
+    this.state.isSentenceRetryRound = true;
+    const retryBase = this.state.sentenceMissedItems.map(m => m.item);
+    this.state.sentenceItems = this.shuffleArray(retryBase);
+    this.state.sentenceIndex = 0;
+    this.state.sentenceScore = 0;
+    this.state.sentenceMissedItems = [];
+
+    this.navigateTo('sentence-practice');
+    this.renderSentenceQuestion();
+  },
+
+  confirmQuitSentencePractice() {
+    if (confirm('Are you sure you want to quit sentence practice? Your current session progress will be lost.')) {
+      this.navigateTo('home');
+    }
+  },
+
+  renderSentenceQuestion() {
+    const item = this.state.sentenceItems[this.state.sentenceIndex];
+    if (!item) {
+      this.renderSentenceResults();
+      return;
+    }
+
+    this.state.sentenceRevealed = false;
+
+    const currentNum = this.state.sentenceIndex + 1;
+    const totalNum = this.state.sentenceItems.length;
+
+    document.getElementById('sentence-practice-title').textContent = `Sentence Construction Practice ${this.state.isSentenceRetryRound ? '(Retry Round)' : ''}`;
+    document.getElementById('sentence-practice-subtitle').textContent = `Sentence ${currentNum} of ${totalNum}`;
+    document.getElementById('sentence-progress-text').textContent = `Sentence ${currentNum} of ${totalNum}`;
+    document.getElementById('sentence-score-text').textContent = `Self-Marked: ${this.state.sentenceScore} / ${this.state.sentenceIndex}`;
+
+    const pct = (currentNum / totalNum) * 100;
+    document.getElementById('sentence-progress-fill').style.width = `${pct}%`;
+
+    // Display Prompt
+    document.getElementById('sentence-prompt-display').textContent = item.prompt_english;
+
+    // Reset Input Form
+    const inputElem = document.getElementById('sentence-user-input');
+    inputElem.value = '';
+    inputElem.disabled = false;
+
+    // Hide Reveal Box & Show Reveal Button
+    document.getElementById('sentence-reveal-box').style.display = 'none';
+    document.getElementById('btn-sentence-reveal').style.display = 'block';
+
+    setTimeout(() => {
+      inputElem.focus();
+    }, 50);
+  },
+
+  revealSentenceAnswer() {
+    if (this.state.sentenceRevealed) return;
+
+    const item = this.state.sentenceItems[this.state.sentenceIndex];
+    if (!item) return;
+
+    this.state.sentenceRevealed = true;
+
+    const inputElem = document.getElementById('sentence-user-input');
+    const userText = inputElem.value.trim();
+    inputElem.disabled = true;
+
+    // Show attempt in visual comparison container (NO PROGRAMMATIC COMPARISON)
+    const attemptDisplay = document.getElementById('sentence-attempt-display');
+    attemptDisplay.textContent = userText || '(No attempt typed)';
+
+    // Model Answer details
+    document.getElementById('sentence-model-korean-display').textContent = item.korean;
+    document.getElementById('sentence-model-rom-display').textContent = item.romanization;
+    document.getElementById('sentence-model-eng-display').textContent = `English Meaning: "${item.english}"`;
+
+    // Hide reveal button, show reveal box
+    document.getElementById('btn-sentence-reveal').style.display = 'none';
+    document.getElementById('sentence-reveal-box').style.display = 'block';
+
+    // Focus "Got it right" button
+    const correctBtn = document.getElementById('btn-self-correct');
+    if (correctBtn) {
+      setTimeout(() => correctBtn.focus(), 50);
+    }
+  },
+
+  handleSelfAssessment(gotItRight) {
+    const item = this.state.sentenceItems[this.state.sentenceIndex];
+    if (!item) return;
+
+    const inputElem = document.getElementById('sentence-user-input');
+    const userAttempt = inputElem ? inputElem.value.trim() : '';
+
+    if (gotItRight) {
+      this.state.sentenceScore++;
+    } else {
+      this.state.sentenceMissedItems.push({
+        item: item,
+        userAttempt: userAttempt || '(No attempt typed)'
+      });
+    }
+
+    this.nextSentenceQuestion();
+  },
+
+  nextSentenceQuestion() {
+    this.state.sentenceIndex++;
+    if (this.state.sentenceIndex < this.state.sentenceItems.length) {
+      this.renderSentenceQuestion();
+    } else {
+      this.renderSentenceResults();
+    }
+  },
+
+  renderSentenceResults() {
+    this.navigateTo('sentence-results');
+
+    const total = this.state.sentenceItems.length;
+    const score = this.state.sentenceScore;
+    const pct = Math.round((score / total) * 100);
+
+    document.getElementById('sentence-score-circle').textContent = `${pct}%`;
+    document.getElementById('sentence-score-heading').textContent = (pct === 100) ? '🎉 Perfect Practice Round!' : 'Practice Round Completed!';
+    document.getElementById('sentence-score-detail').textContent = `You marked ${score} of ${total} sentences as "Got it right".`;
+
+    // Missed Items Section
+    const missedSection = document.getElementById('sentence-missed-section');
+    const missedGrid = document.getElementById('sentence-missed-items-grid');
+    const retryBtn = document.getElementById('btn-sentence-retry-missed');
+
+    if (this.state.sentenceMissedItems.length > 0) {
+      missedSection.style.display = 'block';
+      retryBtn.style.display = 'inline-flex';
+
+      let html = '';
+      this.state.sentenceMissedItems.forEach(m => {
+        html += `
+          <div class="jamo-card" style="border-color: var(--rose); text-align: left; align-items: flex-start; padding: 1.25rem;">
+            <div style="font-size: 0.8rem; font-weight: 700; color: var(--rose-text); text-transform: uppercase;">Prompt</div>
+            <div style="font-size: 1.15rem; font-weight: 800; color: var(--text-main); margin-bottom: 0.5rem;">${m.item.prompt_english}</div>
+            <div style="font-size: 0.95rem; color: var(--rose-text); margin-bottom: 0.4rem;">Your Attempt: <strong>"${m.userAttempt}"</strong></div>
+            <div style="font-family: var(--font-hangul); font-size: 1.7rem; font-weight: 800; color: var(--teal-text); margin-top: 0.2rem;">${m.item.korean}</div>
+            <div style="font-size: 0.95rem; color: var(--primary); font-weight: 700;">${m.item.romanization}</div>
+            <div style="font-size: 0.9rem; color: var(--text-muted); margin-top: 0.25rem;">Meaning: "${m.item.english}"</div>
+          </div>
+        `;
+      });
+      missedGrid.innerHTML = html;
+    } else {
+      missedSection.style.display = 'none';
+      retryBtn.style.display = 'none';
+    }
   },
 
   /* ==========================================================================

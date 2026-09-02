@@ -77,10 +77,28 @@ async function loadVocabularyData() {
   return await fetchJSON('data/vocabulary/part3-vocabulary.json');
 }
 
+/**
+ * Loads Part 4 Grammar Reference
+ * @returns {Promise<Object>}
+ */
+async function loadGrammarReference() {
+  return await fetchJSON('data/grammar/part4-grammar-reference.json');
+}
+
+/**
+ * Loads Part 4 Practice Sentences
+ * @returns {Promise<Object>}
+ */
+async function loadSentencePractice() {
+  return await fetchJSON('data/sentences/part4-sentences.json');
+}
+
 // Expose on global window object for browser script consumption
 window.DataLoader = {
   loadJamoData,
   loadBlockRules,
   loadSyllablePractice,
-  loadVocabularyData
+  loadVocabularyData,
+  loadGrammarReference,
+  loadSentencePractice
 };
