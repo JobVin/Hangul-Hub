@@ -434,5 +434,71 @@
       "category": "common_nouns",
       "usage_note": "Native Korean noun for country, nation, or homeland."
     }
+  ],
+  "pronouns_and_verbs": [
+    {
+      "id": "voc_054",
+      "hangul": "저",
+      "romanization": "jeo",
+      "english": "I / me (humble/polite)",
+      "category": "pronouns_and_verbs",
+      "usage_note": "Humble/polite first-person singular pronoun ('I', 'me'), used in polite and formal speech when addressing elders, strangers, or superiors. Topic form is '저는' (jeoneun). Special-case: when paired with the subject particle '-가', '저' irregularizes to '제가' (jega), never '저가'."
+    },
+    {
+      "id": "voc_055",
+      "hangul": "이것",
+      "romanization": "igeot",
+      "english": "this (thing)",
+      "category": "pronouns_and_verbs",
+      "usage_note": "Demonstrative pronoun referring to a thing near the speaker ('this thing'). Often contracted colloquially to '이거' (igeo). Forms '이것은' (igeoseun) with the topic particle and '이것이' (igeosi) with the subject particle."
+    },
+    {
+      "id": "voc_056",
+      "hangul": "학생",
+      "romanization": "haksaeng",
+      "english": "student",
+      "category": "pronouns_and_verbs",
+      "usage_note": "Sino-Korean noun (學生) meaning student. Commonly used in introductory self-introductions (e.g., '저는 학생입니다' = I am a student)."
+    },
+    {
+      "id": "voc_057",
+      "hangul": "먹다",
+      "romanization": "meokda",
+      "english": "to eat",
+      "category": "pronouns_and_verbs",
+      "usage_note": "Action verb meaning 'to eat'. Stem vowel is 'ㅓ' (dark/neutral vowel), so by standard Korean vowel harmony it takes the '-어요' branch: 먹- + -어요 = 먹어요 (meogeoyo).",
+      "verb_stem": "먹",
+      "polite_present_form": "먹어요"
+    },
+    {
+      "id": "voc_058",
+      "hangul": "마시다",
+      "romanization": "masida",
+      "english": "to drink",
+      "category": "pronouns_and_verbs",
+      "usage_note": "Action verb meaning 'to drink'. Stem vowel is 'ㅣ' (dark/neutral vowel), so by standard vowel harmony it takes the '-어요' branch. Because the stem ends in an open vowel without batchim (마시-), 'ㅣ' and '어' regularly contract to '여': 마시- + -어요 = 마셔요 (masyeoyo).",
+      "verb_stem": "마시",
+      "polite_present_form": "마셔요"
+    },
+    {
+      "id": "voc_059",
+      "hangul": "읽다",
+      "romanization": "ikda",
+      "english": "to read",
+      "category": "pronouns_and_verbs",
+      "usage_note": "Action verb meaning 'to read'. Stem vowel is 'ㅣ' (dark/neutral vowel), so by standard vowel harmony it takes the '-어요' branch: 읽- + -어요 = 읽어요 (ilgeoyo). In the dictionary citation form, final consonant cluster 'ㄺ' is pronounced [ㄱ], hence romanized as 'ikda'.",
+      "verb_stem": "읽",
+      "polite_present_form": "읽어요"
+    },
+    {
+      "id": "voc_060",
+      "hangul": "보다",
+      "romanization": "boda",
+      "english": "to see / to watch / to look at",
+      "category": "pronouns_and_verbs",
+      "usage_note": "Action verb meaning 'to see', 'to watch', or 'to look at'. Stem vowel is 'ㅗ' (bright vowel), so by standard vowel harmony it takes the '-아요' branch. Because the stem ends in an open vowel without batchim (보-), 'ㅗ' and '아' regularly contract to '와': 보- + -아요 = 봐요 (bwayo).",
+      "verb_stem": "보",
+      "polite_present_form": "봐요"
+    }
   ]
 }
