@@ -1,0 +1,104 @@
+{
+  "grammar_points": [
+    {
+      "id": "gram_001",
+      "name": "Topic particle 은/는",
+      "forms": [
+        {
+          "form": "은",
+          "condition": "attaches after a noun ending in a consonant (batchim)",
+          "example_word": "책",
+          "example_attached": "책은"
+        },
+        {
+          "form": "는",
+          "condition": "attaches after a noun ending in a vowel",
+          "example_word": "친구",
+          "example_attached": "친구는"
+        }
+      ],
+      "explanation": "Marks the topic of a sentence — what the sentence is about, often providing background or highlighting contrast ('as for X').",
+      "usage_note": "Attaches directly to nouns without spaces. The topic particle sets the stage or draws a comparison ('as for this...'). Unlike the subject particle 이/가, which marks the immediate grammatical agent or introduces new specific information, 은/는 frames the broader subject of discussion."
+    },
+    {
+      "id": "gram_002",
+      "name": "Subject particle 이/가",
+      "forms": [
+        {
+          "form": "이",
+          "condition": "attaches after a noun ending in a consonant (batchim)",
+          "example_word": "사람",
+          "example_attached": "사람이"
+        },
+        {
+          "form": "가",
+          "condition": "attaches after a noun ending in a vowel",
+          "example_word": "친구",
+          "example_attached": "친구가"
+        }
+      ],
+      "explanation": "Marks the grammatical subject of a sentence — the entity that performs the action or is described by the state predicate.",
+      "usage_note": "Attaches directly to nouns without spaces. It explicitly marks who or what performs the verb or embodies the adjective, often answering specific questions like 'Who did it?' or 'Which one is it?'."
+    },
+    {
+      "id": "gram_003",
+      "name": "Object particle 을/를",
+      "forms": [
+        {
+          "form": "을",
+          "condition": "attaches after a noun ending in a consonant (batchim)",
+          "example_word": "밥",
+          "example_attached": "밥을"
+        },
+        {
+          "form": "를",
+          "condition": "attaches after a noun ending in a vowel",
+          "example_word": "친구",
+          "example_attached": "친구를"
+        }
+      ],
+      "explanation": "Marks the direct object of a transitive action verb — the entity receiving the action of the verb.",
+      "usage_note": "Attaches directly to the target noun without spaces (e.g., '밥을 먹어요' = eat rice/meal, '책을 읽어요' = read a book). It is used exclusively with transitive action verbs and is never attached to complements of adjectives or the copula 이다."
+    },
+    {
+      "id": "gram_004",
+      "name": "Copula 이다 (formal polite: 입니다 / 입니까?)",
+      "forms": [
+        {
+          "form": "입니다",
+          "condition": "declarative statement ('is / am / are'); attaches directly to a noun regardless of final vowel or consonant",
+          "example_word": "사람",
+          "example_attached": "사람입니다"
+        },
+        {
+          "form": "입니까?",
+          "condition": "interrogative question ('is it? / are you?'); attaches directly to a noun regardless of final vowel or consonant",
+          "example_word": "친구",
+          "example_attached": "친구입니까?"
+        }
+      ],
+      "explanation": "Expresses identity, classification, or definition between two nouns ('Noun A is Noun B'). Functionally equates to the English verb 'to be' when linking nouns.",
+      "usage_note": "In formal polite speech (하십시오체), 입니다 and 입니까? attach directly to the preceding noun without spaces. Unlike informal polite 이에요/예요, the formal forms do not change based on whether the preceding noun ends in a vowel or consonant."
+    },
+    {
+      "id": "gram_005",
+      "name": "Polite informal present-tense verb ending: -아요/-어요",
+      "forms": [
+        {
+          "form": "-아요",
+          "condition": "attaches to verb or adjective stems whose last vowel is 'ㅏ' or 'ㅗ' (bright vowels)",
+          "example_word": "살다 (stem: 살- [ㅏ]) / 좋다 (stem: 좋- [ㅗ])",
+          "example_attached": "살아요 (lives), 좋아요 (is good)"
+        },
+        {
+          "form": "-어요",
+          "condition": "attaches to verb or adjective stems whose last vowel is any vowel other than 'ㅏ' or 'ㅗ' (dark/neutral vowels: ㅓ, ㅜ, ㅡ, ㅣ, etc.)",
+          "example_word": "먹다 (stem: 먹- [ㅓ]) / 읽다 (stem: 읽- [ㅣ])",
+          "example_attached": "먹어요 (eats), 읽어요 (reads)"
+        }
+      ],
+      "explanation": "The standard everyday polite present-tense ending (해요체), used for both statements (falling intonation) and questions (rising intonation). Selection is strictly determined by Korean vowel harmony on the verb stem.",
+      "usage_note": "Vowel harmony rule: (1) Stems whose last vowel is ㅏ or ㅗ take -아요 (Worked examples: 살다 [살-] -> 살아요, 좋다 [좋-] -> 좋아요). (2) Stems whose last vowel is anything else take -어요 (Worked examples: 먹다 [먹-] -> 먹어요, 읽다 [읽-] -> 읽어요). Contraction notes for vowel-final stems: When a stem ends in an open vowel, regular mergers occur: ㅏ + 아 -> 아 (가다 -> 가요), ㅗ + 아 -> 와 (보다 -> 봐요), ㅣ + 어 -> 여 (마시다 -> 마셔요). Special irregular: 하다 merges to 해요."
+    }
+  ]
+}

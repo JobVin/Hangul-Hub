@@ -1,0 +1,204 @@
+{
+  "sentences": [
+    {
+      "id": "sent_001",
+      "korean": "월요일입니다.",
+      "romanization": "woryoirimnida",
+      "english": "It is Monday.",
+      "prompt_english": "Say 'It is Monday.'",
+      "vocab_used": ["voc_037"],
+      "grammar_used": ["gram_004"],
+      "difficulty": "beginner"
+    },
+    {
+      "id": "sent_002",
+      "korean": "금요일입니까?",
+      "romanization": "geumyoirimnikka?",
+      "english": "Is it Friday?",
+      "prompt_english": "Ask 'Is it Friday?'",
+      "vocab_used": ["voc_041"],
+      "grammar_used": ["gram_004"],
+      "difficulty": "beginner"
+    },
+    {
+      "id": "sent_003",
+      "korean": "네, 금요일입니다.",
+      "romanization": "ne, geumyoirimnida",
+      "english": "Yes, it is Friday.",
+      "prompt_english": "Say 'Yes, it is Friday.'",
+      "vocab_used": ["voc_007", "voc_041"],
+      "grammar_used": ["gram_004"],
+      "difficulty": "beginner"
+    },
+    {
+      "id": "sent_004",
+      "korean": "아니요, 토요일입니다.",
+      "romanization": "aniyo, toyoirimnida",
+      "english": "No, it is Saturday.",
+      "prompt_english": "Say 'No, it is Saturday.'",
+      "vocab_used": ["voc_008", "voc_042"],
+      "grammar_used": ["gram_004"],
+      "difficulty": "beginner"
+    },
+    {
+      "id": "sent_005",
+      "korean": "친구는 사람입니다.",
+      "romanization": "chinguneun saramimnida",
+      "english": "A friend is a person.",
+      "prompt_english": "Say 'A friend is a person.'",
+      "vocab_used": ["voc_048", "voc_050"],
+      "grammar_used": ["gram_001", "gram_004"],
+      "difficulty": "beginner"
+    },
+    {
+      "id": "sent_006",
+      "korean": "누나는 친구입니다.",
+      "romanization": "nunaneun chinguimnida",
+      "english": "Older sister is a friend.",
+      "prompt_english": "Say 'Older sister is a friend.' (male speaker)",
+      "vocab_used": ["voc_034", "voc_048"],
+      "grammar_used": ["gram_001", "gram_004"],
+      "difficulty": "beginner"
+    },
+    {
+      "id": "sent_007",
+      "korean": "사람이 친구입니까?",
+      "romanization": "sarami chinguimnikka?",
+      "english": "Is the person a friend?",
+      "prompt_english": "Ask 'Is the person a friend?'",
+      "vocab_used": ["voc_050", "voc_048"],
+      "grammar_used": ["gram_002", "gram_004"],
+      "difficulty": "beginner"
+    },
+    {
+      "id": "sent_008",
+      "korean": "오빠는 친구입니다.",
+      "romanization": "oppaneun chinguimnida",
+      "english": "Older brother is a friend.",
+      "prompt_english": "Say 'Older brother is a friend.' (female speaker)",
+      "vocab_used": ["voc_035", "voc_048"],
+      "grammar_used": ["gram_001", "gram_004"],
+      "difficulty": "beginner"
+    },
+    {
+      "id": "sent_009",
+      "korean": "형은 사람입니다.",
+      "romanization": "hyeongeun saramimnida",
+      "english": "Older brother is a person.",
+      "prompt_english": "Say 'Older brother is a person.' (male speaker)",
+      "vocab_used": ["voc_033", "voc_050"],
+      "grammar_used": ["gram_001", "gram_004"],
+      "difficulty": "beginner"
+    },
+    {
+      "id": "sent_010",
+      "korean": "집이 학교입니까?",
+      "romanization": "jibi hakgyoimnikka?",
+      "english": "Is the house a school?",
+      "prompt_english": "Ask 'Is the house a school?'",
+      "vocab_used": ["voc_047", "voc_046"],
+      "grammar_used": ["gram_002", "gram_004"],
+      "difficulty": "beginner"
+    },
+    {
+      "id": "sent_011",
+      "korean": "저는 학생입니다.",
+      "romanization": "jeoneun haksaengimnida",
+      "english": "I am a student.",
+      "prompt_english": "Say 'I am a student.'",
+      "vocab_used": ["voc_054", "voc_056"],
+      "grammar_used": ["gram_001", "gram_004"],
+      "difficulty": "beginner"
+    },
+    {
+      "id": "sent_012",
+      "korean": "이것은 책입니다.",
+      "romanization": "igeoseun chaegimnida",
+      "english": "This is a book.",
+      "prompt_english": "Say 'This is a book.'",
+      "vocab_used": ["voc_055", "voc_049"],
+      "grammar_used": ["gram_001", "gram_004"],
+      "difficulty": "beginner"
+    },
+    {
+      "id": "sent_013",
+      "korean": "이것은 책입니까?",
+      "romanization": "igeoseun chaegimnikka?",
+      "english": "Is this a book?",
+      "prompt_english": "Ask 'Is this a book?'",
+      "vocab_used": ["voc_055", "voc_049"],
+      "grammar_used": ["gram_001", "gram_004"],
+      "difficulty": "beginner"
+    },
+    {
+      "id": "sent_014",
+      "korean": "친구는 물을 마셔요.",
+      "romanization": "chinguneun mureul masyeoyo",
+      "english": "The friend drinks water.",
+      "prompt_english": "Say 'The friend drinks water.'",
+      "vocab_used": ["voc_048", "voc_044", "voc_058"],
+      "grammar_used": ["gram_001", "gram_003", "gram_005"],
+      "difficulty": "beginner"
+    },
+    {
+      "id": "sent_015",
+      "korean": "형은 밥을 먹어요.",
+      "romanization": "hyeongeun babeul meogeoyo",
+      "english": "Older brother eats a meal.",
+      "prompt_english": "Say 'Older brother eats a meal.' (male speaker)",
+      "vocab_used": ["voc_033", "voc_045", "voc_057"],
+      "grammar_used": ["gram_001", "gram_003", "gram_005"],
+      "difficulty": "beginner"
+    },
+    {
+      "id": "sent_016",
+      "korean": "누나는 책을 읽어요.",
+      "romanization": "nunaneun chaegeul ilgeoyo",
+      "english": "Older sister reads a book.",
+      "prompt_english": "Say 'Older sister reads a book.' (male speaker)",
+      "vocab_used": ["voc_034", "voc_049", "voc_059"],
+      "grammar_used": ["gram_001", "gram_003", "gram_005"],
+      "difficulty": "beginner"
+    },
+    {
+      "id": "sent_017",
+      "korean": "학생이 책을 읽어요.",
+      "romanization": "haksaengi chaegeul ilgeoyo",
+      "english": "The student reads a book.",
+      "prompt_english": "Say 'The student reads a book.'",
+      "vocab_used": ["voc_056", "voc_049", "voc_059"],
+      "grammar_used": ["gram_002", "gram_003", "gram_005"],
+      "difficulty": "beginner"
+    },
+    {
+      "id": "sent_018",
+      "korean": "언니는 밥을 먹어요.",
+      "romanization": "eonnineun babeul meogeoyo",
+      "english": "Older sister eats a meal.",
+      "prompt_english": "Say 'Older sister eats a meal.' (female speaker)",
+      "vocab_used": ["voc_036", "voc_045", "voc_057"],
+      "grammar_used": ["gram_001", "gram_003", "gram_005"],
+      "difficulty": "beginner"
+    },
+    {
+      "id": "sent_019",
+      "korean": "친구가 물을 마셔요.",
+      "romanization": "chinguga mureul masyeoyo",
+      "english": "The friend drinks water.",
+      "prompt_english": "Say 'The friend drinks water.'",
+      "vocab_used": ["voc_048", "voc_044", "voc_058"],
+      "grammar_used": ["gram_002", "gram_003", "gram_005"],
+      "difficulty": "beginner"
+    },
+    {
+      "id": "sent_020",
+      "korean": "오빠는 책을 봐요.",
+      "romanization": "oppaneun chaegeul bwayo",
+      "english": "Older brother looks at a book.",
+      "prompt_english": "Say 'Older brother looks at a book.' (female speaker)",
+      "vocab_used": ["voc_035", "voc_049", "voc_060"],
+      "grammar_used": ["gram_001", "gram_003", "gram_005"],
+      "difficulty": "beginner"
+    }
+  ]
+}
