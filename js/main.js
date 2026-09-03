@@ -3,12 +3,12 @@
  * Note: Quiz scores and session progress are deliberately kept in-memory without localStorage 
  * persistence per current zero-dependency scope.
  * 
- * Copyright (c) 2026 Hangul Hub. All rights reserved.
+ * Copyright (c) 2026 Job. All rights reserved.
  */
 
 try {
   console.log(
-    '%c 한 Hangul Hub %c © 2026 All Rights Reserved • Proprietary Content ',
+    '%c 한 Hangul Hub %c © 2026 Job • All Rights Reserved ',
     'background: #4338ca; color: #fff; font-weight: bold; padding: 4px 8px; border-radius: 4px 0 0 4px;',
     'background: #0d9488; color: #fff; padding: 4px 8px; border-radius: 0 4px 4px 0;'
   );
