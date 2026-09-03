@@ -1615,6 +1615,73 @@ kbd {
 }
 
 /* --------------------------------------------------------------------------
+   12b. Persistent Watermark & Anti-Theft Attribution Badge
+   -------------------------------------------------------------------------- */
+.watermark-badge {
+  position: fixed;
+  bottom: 1.5rem;
+  left: 1.5rem;
+  z-index: 98;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.45rem 0.85rem;
+  background-color: rgba(255, 255, 255, 0.9);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-pill);
+  box-shadow: var(--shadow-sm);
+  font-size: 0.8rem;
+  color: var(--text-dim);
+  user-select: none;
+  pointer-events: auto;
+  transition: all var(--transition-fast);
+}
+
+.watermark-badge:hover {
+  background-color: #ffffff;
+  color: var(--text-main);
+  border-color: var(--teal);
+  box-shadow: var(--shadow-md);
+  transform: translateY(-2px);
+}
+
+.watermark-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background-color: var(--primary-light);
+  color: var(--primary);
+  font-weight: 700;
+  font-size: 0.75rem;
+}
+
+.watermark-text strong {
+  color: var(--primary-text);
+  font-weight: 700;
+}
+
+/* Optional repeating diagonal watermark pattern (can be added to body or cards) */
+.watermark-tiled {
+  position: relative;
+}
+
+.watermark-tiled::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 2;
+  opacity: 0.035;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='90' viewBox='0 0 160 90'><text x='20' y='50' fill='%230f172a' font-family='sans-serif' font-size='12' font-weight='bold' transform='rotate(-25 80 45)'>HANGUL HUB</text></svg>");
+  background-repeat: repeat;
+}
+
+/* --------------------------------------------------------------------------
    13. Responsive Breakpoints
    -------------------------------------------------------------------------- */
 @media (max-width: 640px) {
@@ -1667,6 +1734,14 @@ kbd {
   .sticky-subnav-bar {
     width: 90%;
     justify-content: space-around;
+  }
+
+  .watermark-badge {
+    bottom: 0.75rem;
+    left: 0.75rem;
+    font-size: 0.72rem;
+    padding: 0.35rem 0.65rem;
+    opacity: 0.8;
   }
 }
 
