@@ -62,8 +62,7 @@ const App = {
     // Quiz Answer Mode
     preferredQuizMode: 'mc',          // Toggle selection on the quiz select page: 'mc' | 'typed'
     quizMode: 'mc',                   // Mode captured when the current batch started (toggle changes don't affect it)
-    quizMcCards: [],                  // Multiple Choice batch: [{ item, prompt, expected, options, answered }]
-    quizMcAnswered: 0,
+    quizMcOptions: [],                // Multiple Choice options for the current card: [{ text, isCorrect }]
 
     // Sentence Construction Practice State (Self-Graded, No Programmatic Comparison)
     sentenceItems: [],
@@ -119,6 +118,9 @@ const App = {
     } catch (err) {
       console.error('App initialization failed due to data loading error:', err);
     }
+
+    // Browser Back/Forward support (after data loads, so a refreshed list page can render)
+    this.initHistory();
   },
 
   // Fisher-Yates Shuffle Algorithm for randomizing quiz item order
@@ -322,17 +324,7 @@ const App = {
       btn.addEventListener('click', () => this.setQuizModePreference(btn.dataset.quizMode));
     });
 
-    // Multiple Choice batch: option clicks (event delegation on the card grid)
-    const mcGrid = document.getElementById('quiz-mc-card-grid');
-    if (mcGrid) {
-      mcGrid.addEventListener('click', (e) => {
-        const btn = e.target.closest('button.mc-opt');
-        if (!btn || btn.disabled) return;
-        this.handleMcGridSelect(Number(btn.dataset.card), Number(btn.dataset.opt));
-      });
-    }
-
-    // Tips toggle (Multiple Choice batch view)
+    // Tips toggle (Multiple Choice mode, shown on the quiz card)
     const tipsToggle = document.getElementById('btn-quiz-tips-toggle');
     if (tipsToggle) {
       tipsToggle.addEventListener('click', () => {
@@ -584,7 +576,121 @@ const App = {
     });
   },
 
-  navigateTo(viewId, extraParam = null) {
+  /* ==========================================================================
+     BROWSER HISTORY (Back / Forward buttons and phone back gesture)
+     Every screen change becomes a history entry (#view-name), so the browser Back button
+     returns to the previous screen. In-progress screens (an active quiz, results, writing,
+     sentence practice) can't be rebuilt from a URL, so returning to one opens its menu instead.
+     ========================================================================== */
+
+  TRANSIENT_VIEW_PARENTS: {
+    'quiz-active': 'quiz-select',
+    'quiz-results': 'quiz-select',
+    'writing-active': 'writing-select',
+    'sentence-practice': 'home',
+    'sentence-results': 'home',
+    'coming-soon': 'home'
+  },
+
+  viewExists(viewId) {
+    return typeof document !== 'undefined' && !!document.getElementById(`view-${viewId}`);
+  },
+
+  viewUrl(viewId) {
+    const base = window.location.pathname + window.location.search;
+    return viewId === 'home' ? base : `${base}#${viewId}`;
+  },
+
+  getViewFromHash() {
+    const hashView = decodeURIComponent((window.location.hash || '').replace(/^#/, ''));
+    return hashView && this.viewExists(hashView) ? hashView : null;
+  },
+
+  // Called once at startup: open the screen named in the URL (e.g. after a refresh) and listen for Back/Forward.
+  initHistory() {
+    if (typeof window === 'undefined' || !window.history || !window.history.replaceState) return;
+    this._historyReady = true;
+
+    let startView = this.getViewFromHash() || 'home';
+    startView = this.TRANSIENT_VIEW_PARENTS[startView] || startView;
+    try {
+      window.history.replaceState({ view: startView, parent: null }, '', this.viewUrl(startView));
+    } catch (e) { /* history unavailable: in-app buttons still work */ }
+    if (startView !== this.state.currentView) {
+      this.navigateTo(startView, null, { fromHistory: true });
+    }
+
+    window.addEventListener('popstate', (e) => this.handlePopState(e));
+  },
+
+  isQuizInProgress() {
+    const v = this.state.currentView;
+    if (v === 'quiz-active') {
+      return this.state.quizIndex > 0 || this.state.quizSubmitted;
+    }
+    if (v === 'sentence-practice') {
+      return this.state.sentenceIndex > 0 || this.state.sentenceRevealed;
+    }
+    return false;
+  },
+
+  handlePopState(e) {
+    if (this._ignoreNextPop) {
+      this._ignoreNextPop = false;
+      return;
+    }
+
+    let target = (e.state && e.state.view) || this.getViewFromHash() || 'home';
+
+    // Leaving a quiz part-way through: ask first, as the Quit button does
+    if (this.isQuizInProgress() && !confirm('Leave this quiz? Your current progress will be lost.')) {
+      try {
+        window.history.pushState({ view: this.state.currentView, parent: target }, '', this.viewUrl(this.state.currentView));
+      } catch (err) {}
+      return;
+    }
+
+    if (this.TRANSIENT_VIEW_PARENTS[target]) {
+      target = this.TRANSIENT_VIEW_PARENTS[target];
+      try {
+        window.history.replaceState({ view: target, parent: null }, '', this.viewUrl(target));
+      } catch (err) {}
+    }
+    if (!this.viewExists(target)) target = 'home';
+
+    this.navigateTo(target, null, { fromHistory: true });
+  },
+
+  // Records a screen change in browser history.
+  // - Going to the screen we came from = step back in history (keeps Back/Forward tidy).
+  // - Leaving a quiz/results/writing screen = replace it, so Back skips finished screens.
+  recordHistory(fromView, toView) {
+    if (!this._historyReady || fromView === toView) return;
+    try {
+      const current = window.history.state || {};
+      if (current.parent && current.parent === toView) {
+        this._ignoreNextPop = true;
+        window.history.back();
+        return;
+      }
+      const entry = { view: toView, parent: fromView };
+      if (this.TRANSIENT_VIEW_PARENTS[fromView]) {
+        entry.parent = current.parent || this.TRANSIENT_VIEW_PARENTS[fromView];
+        window.history.replaceState(entry, '', this.viewUrl(toView));
+      } else {
+        window.history.pushState(entry, '', this.viewUrl(toView));
+      }
+    } catch (e) { /* history unavailable: navigation still works */ }
+  },
+
+  navigateTo(viewId, extraParam = null, options = {}) {
+    // Never show a blank page: unknown screens fall back to the Practice Hub
+    if (!this.viewExists(viewId)) {
+      console.warn(`[Hangul Hub] Unknown view "${viewId}", returning to the Practice Hub.`);
+      viewId = 'home';
+    }
+
+    if (!options.fromHistory) this.recordHistory(this.state.currentView, viewId);
     this.state.currentView = viewId;
 
     // Hide sticky navigation when switching views
@@ -680,12 +786,8 @@ const App = {
     this.state.quizScore = 0;
     this.state.quizMissedItems = [];
 
-    if (this.state.quizMode === 'mc') {
-      this.startMcBatch();
-      return;
-    }
-
     this.navigateTo('quiz-active');
+    if (this.state.quizMode === 'mc') this.initMcTips();
     this.renderQuizQuestion();
   },
 
@@ -699,12 +801,8 @@ const App = {
     this.state.quizScore = 0;
     this.state.quizMissedItems = [];
 
-    if (this.state.quizMode === 'mc') {
-      this.startMcBatch();
-      return;
-    }
-
     this.navigateTo('quiz-active');
+    if (this.state.quizMode === 'mc') this.initMcTips();
     this.renderQuizQuestion();
   },
 
@@ -776,7 +874,7 @@ const App = {
   },
 
   // Tips are shown expanded the first time a user opens Multiple Choice mode, then collapsed behind "Show Tips".
-  // (Type Answer mode has no tips panel, so it is unchanged.)
+  // (Type Answer mode had no tips panel before, so it still has none.)
   initMcTips() {
     const seenKey = 'hangulHub.tipsSeen.mc';
     const seen = this.storageGet(seenKey) === '1';
@@ -872,173 +970,12 @@ const App = {
     return { options, expected, usedLengthFallback };
   },
 
-  /* ==========================================================================
-     MULTIPLE CHOICE BATCH (card grid, answered in any order)
-     ========================================================================== */
-
   escapeHtml(text) {
     return String(text)
       .replace(/&/g, '&amp;')
       .replace(/</g, '&lt;')
       .replace(/>/g, '&gt;')
       .replace(/"/g, '&quot;');
-  },
-
-  getQuizVariantTitle() {
-    const variantTitles = {
-      'jamo-hangul-to-rom': 'Jamo: Hangul → Romanization',
-      'jamo-rom-to-hangul': 'Jamo: Romanization → Hangul',
-      'syl-hangul-to-rom': 'Syllables: Hangul → Romanization',
-      'syl-rom-to-hangul': 'Syllables: Romanization → Hangul',
-      'vocab-hangul-to-rom': 'Vocabulary: Hangul → Romanization',
-      'vocab-rom-to-hangul': 'Vocabulary: Romanization → Hangul',
-      'vocab-hangul-to-eng': 'Vocabulary: Hangul → English Meaning'
-    };
-    const variant = this.state.activeQuizVariant;
-    let categoryLabel = '';
-    if (variant.startsWith('jamo')) {
-      categoryLabel = this.getCategoryNameLabel(this.state.activeJamoQuizCategory);
-    } else if (variant.startsWith('syl')) {
-      categoryLabel = this.getCategoryNameLabel(this.state.activeSyllableQuizCategory);
-    } else if (variant.startsWith('vocab')) {
-      categoryLabel = this.getCategoryNameLabel(this.state.activeVocabQuizCategory);
-    }
-    return `${variantTitles[variant]}${categoryLabel}${this.state.isRetryRound ? ' (Retry Round)' : ''}`;
-  },
-
-  startMcBatch() {
-    const variant = this.state.activeQuizVariant;
-    const pool = this.getMcPool(variant);
-
-    // Counters and progress reset at every batch start (new quiz, Retry Missed, Start New Batch)
-    this.state.quizMcAnswered = 0;
-    this.state.quizScore = 0;
-    this.state.quizMissedItems = [];
-    this.state.quizMcCards = this.state.quizItems.map(item => {
-      const { prompt } = this.getQuizPromptAnswer(item, variant);
-      const { options, expected } = this.buildMcOptions(item, variant, pool);
-      return { item, prompt, expected, options, answered: false };
-    });
-
-    this.navigateTo('quiz-mc');
-    this.initMcTips();
-    this.renderMcBatch();
-  },
-
-  renderMcBatch() {
-    const variant = this.state.activeQuizVariant;
-    const cards = this.state.quizMcCards;
-
-    const instructions = {
-      'hangul-to-rom': 'Pick the romanization for each card.',
-      'rom-to-hangul': 'Pick the Hangul for each card.',
-      'hangul-to-eng': 'Pick the English meaning for each card.'
-    };
-    const directionKey = Object.keys(instructions).find(k => variant.endsWith(k));
-
-    document.getElementById('quiz-mc-title').textContent = `${this.getQuizVariantTitle()} · Multiple Choice`;
-    document.getElementById('quiz-mc-subtitle').textContent = instructions[directionKey] || '';
-
-    const results = document.getElementById('quiz-mc-results');
-    if (results) results.style.display = 'none';
-
-    const hasHangul = (s) => /[ᄀ-ᇿ㄰-㆏가-힯]/.test(s);
-
-    document.getElementById('quiz-mc-card-grid').innerHTML = cards.map((card, cardIdx) => {
-      const longest = Math.max(...card.options.map(o => Array.from(o.text).length));
-      const visualWidth = Math.max(...card.options.map(o =>
-        Array.from(o.text).reduce((w, ch) => w + (hasHangul(ch) ? 1.8 : 1), 0)
-      ));
-      const sizeClass = visualWidth >= 17 ? 'opt-lg' : (longest >= 6 ? 'opt-md' : '');
-      const promptClass = Array.from(card.prompt).length > 6 ? 'mc-card-prompt is-long' : 'mc-card-prompt';
-
-      const buttons = card.options.map((opt, optIdx) => `
-          <button type="button" class="quiz-mc-btn mc-opt" data-card="${cardIdx}" data-opt="${optIdx}">${this.escapeHtml(opt.text)}</button>`).join('');
-
-      return `
-        <article class="mc-card ${sizeClass}" id="mc-card-${cardIdx}" aria-label="Card ${cardIdx + 1}">
-          <div class="${promptClass}">${this.escapeHtml(card.prompt)}</div>
-          <div class="mc-card-options">${buttons}
-          </div>
-        </article>`;
-    }).join('');
-
-    this.updateMcProgress();
-  },
-
-  updateMcProgress() {
-    const total = this.state.quizMcCards.length;
-    const answered = this.state.quizMcAnswered;
-    document.getElementById('quiz-mc-progress-text').textContent = `${answered} / ${total} answered`;
-    document.getElementById('quiz-mc-score-text').textContent = `Score: ${this.state.quizScore}`;
-    document.getElementById('quiz-mc-progress-fill').style.width = total ? `${(answered / total) * 100}%` : '0%';
-  },
-
-  handleMcGridSelect(cardIdx, optIdx) {
-    const card = this.state.quizMcCards[cardIdx];
-    if (!card || card.answered) return;
-
-    const chosen = card.options[optIdx];
-    if (!chosen) return;
-    card.answered = true;
-    this.state.quizMcAnswered++;
-
-    // Lock the card immediately
-    const cardEl = document.getElementById(`mc-card-${cardIdx}`);
-    const buttons = cardEl ? cardEl.querySelectorAll('button.mc-opt') : [];
-    buttons.forEach(btn => { btn.disabled = true; });
-
-    const chosenBtn = buttons[optIdx];
-    const correctIdx = card.options.findIndex(o => o.isCorrect);
-
-    if (chosen.isCorrect) {
-      this.state.quizScore++;
-      if (cardEl) cardEl.classList.add('feedback-correct');
-      if (chosenBtn) chosenBtn.classList.add('selected-correct');
-    } else {
-      if (cardEl) cardEl.classList.add('feedback-incorrect');
-      if (chosenBtn) chosenBtn.classList.add('selected-incorrect');
-      if (buttons[correctIdx]) buttons[correctIdx].classList.add('selected-correct');
-      this.state.quizMissedItems.push({
-        item: card.item,
-        prompt: card.prompt,
-        expected: card.expected,
-        userAnswer: chosen.text
-      });
-    }
-
-    this.updateMcProgress();
-
-    if (this.state.quizMcAnswered === this.state.quizMcCards.length) {
-      this.showMcResults();
-    }
-  },
-
-  showMcResults() {
-    const total = this.state.quizMcCards.length;
-    const score = this.state.quizScore;
-    const pct = total ? Math.round((score / total) * 100) : 0;
-
-    document.getElementById('quiz-mc-score-circle').textContent = `${pct}%`;
-    document.getElementById('quiz-mc-score-heading').textContent = (pct === 100) ? '🎉 Perfect Score!' : 'Quiz Completed!';
-    document.getElementById('quiz-mc-score-detail').textContent = `You scored ${score} out of ${total} correct.`;
-
-    const retryBtn = document.getElementById('btn-quiz-mc-retry-missed');
-    if (retryBtn) {
-      const missed = this.state.quizMissedItems.length;
-      retryBtn.style.display = missed > 0 ? 'inline-flex' : 'none';
-      retryBtn.textContent = `🔄 Retry Missed (${missed})`;
-    }
-
-    const results = document.getElementById('quiz-mc-results');
-    if (!results) return;
-    results.style.display = 'block';
-
-    // Scroll the banner into view, keeping it clear of the sticky header
-    const header = document.querySelector('.app-header');
-    const headerHeight = header ? header.getBoundingClientRect().height : 0;
-    const top = results.getBoundingClientRect().top + window.scrollY - headerHeight - 16;
-    window.scrollTo({ top: Math.max(0, top), behavior: 'smooth' });
   },
 
   confirmQuitQuiz() {
@@ -1143,7 +1080,17 @@ const App = {
 
     this.state.quizSubmitted = false;
     const variant = this.state.activeQuizVariant;
-    const { prompt, expected, isDirection2, isMultipleChoice, choices } = this.getQuizItemDetails(item, variant);
+    const details = this.getQuizItemDetails(item, variant);
+    const { prompt, isDirection2 } = details;
+
+    // Multiple Choice mode: every variant shows 4 options built from the full track dataset.
+    // Type Answer mode: unchanged (only Hangul → English Meaning was already multiple choice).
+    const isMcMode = this.state.quizMode === 'mc';
+    const isMultipleChoice = isMcMode || details.isMultipleChoice;
+    const choices = isMcMode
+      ? this.buildMcOptions(item, variant).options.map(o => o.text)
+      : details.choices;
+    const isLastQuestion = this.state.quizIndex === this.state.quizItems.length - 1;
 
     const variantTitles = {
       'jamo-hangul-to-rom': 'Jamo: Hangul → Romanization',
@@ -1176,8 +1123,12 @@ const App = {
     document.getElementById('quiz-active-progress-fill').style.width = `${pct}%`;
 
     // Prompt Box
-    if (isMultipleChoice) {
+    if (variant === 'vocab-hangul-to-eng') {
       document.getElementById('quiz-prompt-label').textContent = 'Choose the correct English meaning:';
+    } else if (isMcMode && isDirection2) {
+      document.getElementById('quiz-prompt-label').textContent = 'Choose the corresponding Korean Hangul:';
+    } else if (isMcMode) {
+      document.getElementById('quiz-prompt-label').textContent = 'Choose the correct English romanization:';
     } else if (isDirection2) {
       document.getElementById('quiz-prompt-label').textContent = 'Type the corresponding Korean Hangul character:';
     } else {
@@ -1197,8 +1148,14 @@ const App = {
     // Keyboard Hint Box for Direction 2
     const kbHint = document.getElementById('quiz-keyboard-hint');
     if (kbHint) {
-      kbHint.style.display = isDirection2 ? 'block' : 'none';
+      kbHint.style.display = (isDirection2 && !isMultipleChoice) ? 'block' : 'none';
     }
+
+    // Tips panel (Multiple Choice mode only) and Next button label
+    const tipsBox = document.getElementById('quiz-tips-box');
+    if (tipsBox) tipsBox.style.display = isMcMode ? 'block' : 'none';
+    const nextBtnLabel = document.getElementById('btn-quiz-next');
+    if (nextBtnLabel) nextBtnLabel.textContent = (isMcMode && isLastQuestion) ? 'See Results →' : 'Next Question →';
 
     // Toggle Input Mode: Typed vs. Multiple Choice
     const formElem = document.getElementById('quiz-answer-form');
@@ -1215,15 +1172,19 @@ const App = {
 
       this._currentChoices = choices;
       const optionsGrid = document.getElementById('quiz-mc-options');
-      optionsGrid.innerHTML = choices.map((choice, idx) => {
-        const escapedChoice = choice.replace(/"/g, '&quot;');
-        return `
-          <button type="button" class="quiz-mc-btn" data-index="${idx + 1}" data-choice="${escapedChoice}" onclick="App.handleMultipleChoiceSelect(this, ${idx})">
+
+      // Long options get one full-width column (and smaller text on phones) so they never wrap or get cut off
+      const isHangulChar = (ch) => /[\u1100-\u11FF\u3130-\u318F\uAC00-\uD7AF]/.test(ch);
+      const widest = Math.max(...choices.map(c => Array.from(c).reduce((w, ch) => w + (isHangulChar(ch) ? 1.8 : 1), 0)));
+      optionsGrid.classList.toggle('long-options', widest >= 16);
+      optionsGrid.classList.toggle('xl-options', widest >= 28);
+
+      optionsGrid.innerHTML = choices.map((choice, idx) => `
+          <button type="button" class="quiz-mc-btn" data-index="${idx + 1}" onclick="App.handleMultipleChoiceSelect(this, ${idx})">
             <span class="quiz-mc-badge">${idx + 1}</span>
-            <span class="quiz-mc-text">${choice}</span>
+            <span class="quiz-mc-text">${this.escapeHtml(choice)}</span>
           </button>
-        `;
-      }).join('');
+        `).join('');
     } else {
       formElem.style.display = 'block';
       mcContainer.style.display = 'none';
@@ -1245,18 +1206,18 @@ const App = {
     if (!item) return;
 
     const variant = this.state.activeQuizVariant;
-    const { prompt, expected } = this.getQuizItemDetails(item, variant);
+    const { prompt, expected } = this.getQuizPromptAnswer(item, variant);
     const selectedChoice = this._currentChoices[choiceIdx];
+    const normExpected = this.normalizeMcAnswer(expected);
 
-    const isCorrect = (selectedChoice.trim().toLowerCase() === expected.trim().toLowerCase());
+    const isCorrect = (this.normalizeMcAnswer(selectedChoice) === normExpected);
     this.state.quizSubmitted = true;
 
-    // Disable all choice buttons and mark results
-    const allButtons = document.querySelectorAll('.quiz-mc-btn');
-    allButtons.forEach(btn => {
+    // Lock the card: disable all choice buttons and always highlight the correct option
+    const allButtons = document.querySelectorAll('#quiz-mc-options .quiz-mc-btn');
+    allButtons.forEach((btn, idx) => {
       btn.disabled = true;
-      const btnChoice = btn.dataset.choice;
-      if (btnChoice.trim().toLowerCase() === expected.trim().toLowerCase()) {
+      if (this.normalizeMcAnswer(this._currentChoices[idx]) === normExpected) {
         btn.classList.add('selected-correct');
       }
     });
@@ -1280,20 +1241,21 @@ const App = {
     // Feedback Box
     const feedbackBox = document.getElementById('quiz-feedback-box');
     const feedbackContent = document.getElementById('quiz-feedback-content');
+    const answerLabel = variant === 'vocab-hangul-to-eng' ? 'Correct Meaning' : 'Correct Answer';
     feedbackBox.style.display = 'block';
 
     if (isCorrect) {
       feedbackBox.className = 'quiz-feedback-box feedback-correct';
       feedbackContent.innerHTML = `
         <div class="feedback-title">✓ Correct!</div>
-        <div class="feedback-detail">Prompt: <strong>${prompt}</strong> &bull; Correct Meaning: <strong>${expected}</strong></div>
+        <div class="feedback-detail">Prompt: <strong>${prompt}</strong> &bull; ${answerLabel}: <strong>${expected}</strong></div>
       `;
     } else {
       feedbackBox.className = 'quiz-feedback-box feedback-incorrect';
       feedbackContent.innerHTML = `
         <div class="feedback-title">✗ Incorrect</div>
         <div class="feedback-detail">Prompt: <strong>${prompt}</strong></div>
-        <div class="feedback-detail" style="margin-top: 0.25rem;">Your Choice: <span style="text-decoration: line-through;">"${selectedChoice}"</span> &bull; Correct Meaning: <strong>"${expected}"</strong></div>
+        <div class="feedback-detail" style="margin-top: 0.25rem;">Your Choice: <span style="text-decoration: line-through;">"${selectedChoice}"</span> &bull; ${answerLabel}: <strong>"${expected}"</strong></div>
       `;
     }
 
