@@ -1,7 +1,9 @@
 /**
  * Hangul Hub — Main Application Logic, View Routing & Quiz Engine
- * Note: Quiz scores and session progress are deliberately kept in-memory without localStorage 
- * persistence per current zero-dependency scope.
+ * Note: Quiz scores and session progress are deliberately kept in-memory without localStorage
+ * persistence per current zero-dependency scope. The only values stored in localStorage are UI
+ * preferences: the quiz answer mode (Multiple Choice / Type Answer) and whether each mode's tips
+ * have been seen. Every storage access is wrapped in try/catch and falls back to defaults.
  * 
  * Copyright (c) 2026 Job. All rights reserved.
  */
@@ -57,6 +59,12 @@ const App = {
     quizMissedItems: [],              // Array of { item, prompt, expected, userAnswer }
     isRetryRound: false,
 
+    // Quiz Answer Mode
+    preferredQuizMode: 'mc',          // Toggle selection on the quiz select page: 'mc' | 'typed'
+    quizMode: 'mc',                   // Mode captured when the current batch started (toggle changes don't affect it)
+    quizMcCards: [],                  // Multiple Choice batch: [{ item, prompt, expected, options, answered }]
+    quizMcAnswered: 0,
+
     // Sentence Construction Practice State (Self-Graded, No Programmatic Comparison)
     sentenceItems: [],
     sentenceIndex: 0,
@@ -76,7 +84,9 @@ const App = {
   },
 
   async init() {
+    this.state.preferredQuizMode = this.getStoredQuizMode();
     this.bindEvents();
+    this.renderQuizModeToggle();
     this.initScrollListeners();
     this.initWritingCanvas();
     
@@ -306,6 +316,31 @@ const App = {
     if (qvVocab1) qvVocab1.addEventListener('click', () => this.startQuizVariant('vocab-hangul-to-rom'));
     if (qvVocab2) qvVocab2.addEventListener('click', () => this.startQuizVariant('vocab-rom-to-hangul'));
     if (qvVocab3) qvVocab3.addEventListener('click', () => this.startQuizVariant('vocab-hangul-to-eng'));
+
+    // Quiz Answer Mode Toggle (Multiple Choice / Type Answer)
+    document.querySelectorAll('[data-quiz-mode]').forEach(btn => {
+      btn.addEventListener('click', () => this.setQuizModePreference(btn.dataset.quizMode));
+    });
+
+    // Multiple Choice batch: option clicks (event delegation on the card grid)
+    const mcGrid = document.getElementById('quiz-mc-card-grid');
+    if (mcGrid) {
+      mcGrid.addEventListener('click', (e) => {
+        const btn = e.target.closest('button.mc-opt');
+        if (!btn || btn.disabled) return;
+        this.handleMcGridSelect(Number(btn.dataset.card), Number(btn.dataset.opt));
+      });
+    }
+
+    // Tips toggle (Multiple Choice batch view)
+    const tipsToggle = document.getElementById('btn-quiz-tips-toggle');
+    if (tipsToggle) {
+      tipsToggle.addEventListener('click', () => {
+        const body = document.getElementById('quiz-tips-body');
+        if (!body) return;
+        this.setTipsExpanded(body.hidden);
+      });
+    }
 
     // Writing Mode Track Selection Cards
     const wtJamo = document.getElementById('writing-track-jamo');
@@ -623,9 +658,12 @@ const App = {
     return labels[catKey] ? ` (${labels[catKey]})` : '';
   },
 
-  startQuizVariant(variant) {
+  // keepMode = true reuses the mode the previous batch started with ("Start New Batch" / "Restart Full Quiz").
+  // Otherwise the mode is captured from the toggle at this moment and stays fixed for the whole batch.
+  startQuizVariant(variant, keepMode = false) {
     this.state.activeQuizVariant = variant;
     this.state.isRetryRound = false;
+    if (!keepMode) this.state.quizMode = this.state.preferredQuizMode;
 
     let baseItems = [];
     if (variant.startsWith('jamo')) {
@@ -636,11 +674,16 @@ const App = {
       baseItems = this.getVocabQuizList(this.state.activeVocabQuizCategory);
     }
 
-    // Shuffle item order per quiz session
+    // Shuffle item order per quiz session (shuffleArray copies; source data is never reordered)
     this.state.quizItems = this.shuffleArray(baseItems);
     this.state.quizIndex = 0;
     this.state.quizScore = 0;
     this.state.quizMissedItems = [];
+
+    if (this.state.quizMode === 'mc') {
+      this.startMcBatch();
+      return;
+    }
 
     this.navigateTo('quiz-active');
     this.renderQuizQuestion();
@@ -656,8 +699,346 @@ const App = {
     this.state.quizScore = 0;
     this.state.quizMissedItems = [];
 
+    if (this.state.quizMode === 'mc') {
+      this.startMcBatch();
+      return;
+    }
+
     this.navigateTo('quiz-active');
     this.renderQuizQuestion();
+  },
+
+  /* ==========================================================================
+     QUIZ ANSWER MODE (Multiple Choice / Type Answer) & PREFERENCE STORAGE
+     ========================================================================== */
+
+  storageGet(key) {
+    try {
+      return window.localStorage.getItem(key);
+    } catch (e) {
+      return null;
+    }
+  },
+
+  storageSet(key, value) {
+    try {
+      window.localStorage.setItem(key, value);
+    } catch (e) {
+      // Storage unavailable (private mode, blocked site data): preference simply isn't remembered.
+    }
+  },
+
+  getStoredQuizMode() {
+    return this.storageGet('hangulHub.quizMode') === 'typed' ? 'typed' : 'mc';
+  },
+
+  setQuizModePreference(mode) {
+    const next = mode === 'typed' ? 'typed' : 'mc';
+    this.state.preferredQuizMode = next;
+    this.storageSet('hangulHub.quizMode', next);
+    this.renderQuizModeToggle();
+  },
+
+  renderQuizModeToggle() {
+    const mode = this.state.preferredQuizMode;
+
+    document.querySelectorAll('[data-quiz-mode]').forEach(btn => {
+      const isActive = btn.dataset.quizMode === mode;
+      btn.classList.toggle('active', isActive);
+      btn.setAttribute('aria-checked', isActive ? 'true' : 'false');
+    });
+
+    const caption = document.getElementById('quiz-mode-caption');
+    if (caption) {
+      caption.textContent = mode === 'mc'
+        ? 'Pick the answer from 4 options. No Korean keyboard needed.'
+        : 'Type each answer yourself. Hangul answers need a Korean keyboard.';
+    }
+
+    // Variant card badges and descriptions follow the selected mode
+    document.querySelectorAll('[data-typed-label]').forEach(el => {
+      el.textContent = mode === 'mc' ? 'Multiple Choice' : el.dataset.typedLabel;
+    });
+    document.querySelectorAll('[data-mc-desc]').forEach(el => {
+      if (!el.dataset.typedDesc) el.dataset.typedDesc = el.textContent;
+      el.textContent = mode === 'mc' ? el.dataset.mcDesc : el.dataset.typedDesc;
+    });
+  },
+
+  setTipsExpanded(expanded) {
+    const body = document.getElementById('quiz-tips-body');
+    const toggle = document.getElementById('btn-quiz-tips-toggle');
+    if (body) body.hidden = !expanded;
+    if (toggle) {
+      toggle.textContent = expanded ? 'Hide Tips' : 'Show Tips';
+      toggle.setAttribute('aria-expanded', expanded ? 'true' : 'false');
+    }
+  },
+
+  // Tips are shown expanded the first time a user opens Multiple Choice mode, then collapsed behind "Show Tips".
+  // (Type Answer mode has no tips panel, so it is unchanged.)
+  initMcTips() {
+    const seenKey = 'hangulHub.tipsSeen.mc';
+    const seen = this.storageGet(seenKey) === '1';
+    this.setTipsExpanded(!seen);
+    if (!seen) this.storageSet(seenKey, '1');
+  },
+
+  /* ==========================================================================
+     MULTIPLE CHOICE OPTION BUILDER
+     ========================================================================== */
+
+  normalizeMcAnswer(text) {
+    return String(text == null ? '' : text).normalize('NFC').trim().toLowerCase();
+  },
+
+  // Full track dataset for a variant: distractors come from here, never just the current batch.
+  getMcPool(variant) {
+    if (variant.startsWith('jamo')) return this.getJamoQuizList('all');
+    if (variant.startsWith('syl')) return this.getSyllableQuizList('all');
+    if (variant.startsWith('vocab')) return this.getVocabQuizList('all');
+    return [];
+  },
+
+  // Length used to match distractors to the correct answer:
+  // Hangul answers and romanization answers count syllable blocks (romanization uses the item's Hangul form),
+  // English meanings count words.
+  getMcLengthUnits(item, variant) {
+    const { prompt, expected } = this.getQuizPromptAnswer(item, variant);
+    const countBlocks = (s) => Array.from(String(s).replace(/\s+/g, '')).length;
+    if (variant === 'vocab-hangul-to-eng') {
+      return String(expected).trim().split(/\s+/).filter(w => /[a-z0-9]/i.test(w)).length;
+    }
+    if (variant.endsWith('hangul-to-rom')) return countBlocks(prompt);
+    return countBlocks(expected); // *-rom-to-hangul
+  },
+
+  // Eligible, de-duplicated distractor candidates for one item (correct answer and ambiguous readings excluded).
+  getMcCandidates(item, variant, pool) {
+    const { expected } = this.getQuizPromptAnswer(item, variant);
+    const normExpected = this.normalizeMcAnswer(expected);
+
+    // Jamo carry a second valid reading in final position (e.g. ㄱ = g initially, k finally).
+    // Exclude options that would be "right in another position" so every card has one unambiguous answer.
+    const excluded = new Set([normExpected]);
+    if (variant === 'jamo-hangul-to-rom' && item.romanization_final) {
+      excluded.add(this.normalizeMcAnswer(item.romanization_final));
+    }
+    const promptReading = variant === 'jamo-rom-to-hangul' ? this.normalizeMcAnswer(item.romanization_initial) : null;
+
+    const seen = new Set();
+    const candidates = [];
+    for (const cand of pool) {
+      if (cand === item) continue;
+      if (promptReading && this.normalizeMcAnswer(cand.romanization_final) === promptReading) continue;
+      const answer = this.getQuizPromptAnswer(cand, variant).expected;
+      const norm = this.normalizeMcAnswer(answer);
+      if (!norm || excluded.has(norm) || seen.has(norm)) continue;
+      seen.add(norm);
+      candidates.push({ text: answer, norm, units: this.getMcLengthUnits(cand, variant) });
+    }
+    return candidates;
+  },
+
+  // Builds 4 shuffled options (1 correct + 3 distractors) for an item.
+  // Distractors are drawn at random from the full track dataset, matching the correct answer's length
+  // (same syllable-block or word count) wherever possible; otherwise the nearest lengths are used and a warning is logged.
+  buildMcOptions(item, variant, pool = this.getMcPool(variant)) {
+    const { prompt, expected } = this.getQuizPromptAnswer(item, variant);
+    const targetUnits = this.getMcLengthUnits(item, variant);
+    const targetChars = this.normalizeMcAnswer(expected).length;
+    const charTolerance = Math.max(1, Math.round(targetChars * 0.3));
+
+    const ranked = this.shuffleArray(this.getMcCandidates(item, variant, pool))
+      .map(c => ({
+        ...c,
+        unitDiff: Math.abs(c.units - targetUnits),
+        charMiss: Math.abs(c.norm.length - targetChars) <= charTolerance ? 0 : 1
+      }))
+      // Same length first, then closest character length; ties stay in random order (stable sort)
+      .sort((a, b) => (a.unitDiff - b.unitDiff) || (a.charMiss - b.charMiss));
+
+    const distractors = ranked.slice(0, 3);
+    const usedLengthFallback = distractors.some(d => d.unitDiff > 0);
+    if (usedLengthFallback) {
+      console.warn(`[Hangul Hub] Multiple Choice: not enough same-length distractors for "${prompt}" (${variant}); used nearest lengths.`);
+    }
+
+    const options = this.shuffleArray([
+      { text: expected, isCorrect: true },
+      ...distractors.map(d => ({ text: d.text, isCorrect: false }))
+    ]);
+
+    return { options, expected, usedLengthFallback };
+  },
+
+  /* ==========================================================================
+     MULTIPLE CHOICE BATCH (card grid, answered in any order)
+     ========================================================================== */
+
+  escapeHtml(text) {
+    return String(text)
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;');
+  },
+
+  getQuizVariantTitle() {
+    const variantTitles = {
+      'jamo-hangul-to-rom': 'Jamo: Hangul → Romanization',
+      'jamo-rom-to-hangul': 'Jamo: Romanization → Hangul',
+      'syl-hangul-to-rom': 'Syllables: Hangul → Romanization',
+      'syl-rom-to-hangul': 'Syllables: Romanization → Hangul',
+      'vocab-hangul-to-rom': 'Vocabulary: Hangul → Romanization',
+      'vocab-rom-to-hangul': 'Vocabulary: Romanization → Hangul',
+      'vocab-hangul-to-eng': 'Vocabulary: Hangul → English Meaning'
+    };
+    const variant = this.state.activeQuizVariant;
+    let categoryLabel = '';
+    if (variant.startsWith('jamo')) {
+      categoryLabel = this.getCategoryNameLabel(this.state.activeJamoQuizCategory);
+    } else if (variant.startsWith('syl')) {
+      categoryLabel = this.getCategoryNameLabel(this.state.activeSyllableQuizCategory);
+    } else if (variant.startsWith('vocab')) {
+      categoryLabel = this.getCategoryNameLabel(this.state.activeVocabQuizCategory);
+    }
+    return `${variantTitles[variant]}${categoryLabel}${this.state.isRetryRound ? ' (Retry Round)' : ''}`;
+  },
+
+  startMcBatch() {
+    const variant = this.state.activeQuizVariant;
+    const pool = this.getMcPool(variant);
+
+    // Counters and progress reset at every batch start (new quiz, Retry Missed, Start New Batch)
+    this.state.quizMcAnswered = 0;
+    this.state.quizScore = 0;
+    this.state.quizMissedItems = [];
+    this.state.quizMcCards = this.state.quizItems.map(item => {
+      const { prompt } = this.getQuizPromptAnswer(item, variant);
+      const { options, expected } = this.buildMcOptions(item, variant, pool);
+      return { item, prompt, expected, options, answered: false };
+    });
+
+    this.navigateTo('quiz-mc');
+    this.initMcTips();
+    this.renderMcBatch();
+  },
+
+  renderMcBatch() {
+    const variant = this.state.activeQuizVariant;
+    const cards = this.state.quizMcCards;
+
+    const instructions = {
+      'hangul-to-rom': 'Pick the romanization for each card.',
+      'rom-to-hangul': 'Pick the Hangul for each card.',
+      'hangul-to-eng': 'Pick the English meaning for each card.'
+    };
+    const directionKey = Object.keys(instructions).find(k => variant.endsWith(k));
+
+    document.getElementById('quiz-mc-title').textContent = `${this.getQuizVariantTitle()} · Multiple Choice`;
+    document.getElementById('quiz-mc-subtitle').textContent = instructions[directionKey] || '';
+
+    const results = document.getElementById('quiz-mc-results');
+    if (results) results.style.display = 'none';
+
+    const hasHangul = (s) => /[ᄀ-ᇿ㄰-㆏가-힯]/.test(s);
+
+    document.getElementById('quiz-mc-card-grid').innerHTML = cards.map((card, cardIdx) => {
+      const longest = Math.max(...card.options.map(o => Array.from(o.text).length));
+      const visualWidth = Math.max(...card.options.map(o =>
+        Array.from(o.text).reduce((w, ch) => w + (hasHangul(ch) ? 1.8 : 1), 0)
+      ));
+      const sizeClass = visualWidth >= 17 ? 'opt-lg' : (longest >= 6 ? 'opt-md' : '');
+      const promptClass = Array.from(card.prompt).length > 6 ? 'mc-card-prompt is-long' : 'mc-card-prompt';
+
+      const buttons = card.options.map((opt, optIdx) => `
+          <button type="button" class="quiz-mc-btn mc-opt" data-card="${cardIdx}" data-opt="${optIdx}">${this.escapeHtml(opt.text)}</button>`).join('');
+
+      return `
+        <article class="mc-card ${sizeClass}" id="mc-card-${cardIdx}" aria-label="Card ${cardIdx + 1}">
+          <div class="${promptClass}">${this.escapeHtml(card.prompt)}</div>
+          <div class="mc-card-options">${buttons}
+          </div>
+        </article>`;
+    }).join('');
+
+    this.updateMcProgress();
+  },
+
+  updateMcProgress() {
+    const total = this.state.quizMcCards.length;
+    const answered = this.state.quizMcAnswered;
+    document.getElementById('quiz-mc-progress-text').textContent = `${answered} / ${total} answered`;
+    document.getElementById('quiz-mc-score-text').textContent = `Score: ${this.state.quizScore}`;
+    document.getElementById('quiz-mc-progress-fill').style.width = total ? `${(answered / total) * 100}%` : '0%';
+  },
+
+  handleMcGridSelect(cardIdx, optIdx) {
+    const card = this.state.quizMcCards[cardIdx];
+    if (!card || card.answered) return;
+
+    const chosen = card.options[optIdx];
+    if (!chosen) return;
+    card.answered = true;
+    this.state.quizMcAnswered++;
+
+    // Lock the card immediately
+    const cardEl = document.getElementById(`mc-card-${cardIdx}`);
+    const buttons = cardEl ? cardEl.querySelectorAll('button.mc-opt') : [];
+    buttons.forEach(btn => { btn.disabled = true; });
+
+    const chosenBtn = buttons[optIdx];
+    const correctIdx = card.options.findIndex(o => o.isCorrect);
+
+    if (chosen.isCorrect) {
+      this.state.quizScore++;
+      if (cardEl) cardEl.classList.add('feedback-correct');
+      if (chosenBtn) chosenBtn.classList.add('selected-correct');
+    } else {
+      if (cardEl) cardEl.classList.add('feedback-incorrect');
+      if (chosenBtn) chosenBtn.classList.add('selected-incorrect');
+      if (buttons[correctIdx]) buttons[correctIdx].classList.add('selected-correct');
+      this.state.quizMissedItems.push({
+        item: card.item,
+        prompt: card.prompt,
+        expected: card.expected,
+        userAnswer: chosen.text
+      });
+    }
+
+    this.updateMcProgress();
+
+    if (this.state.quizMcAnswered === this.state.quizMcCards.length) {
+      this.showMcResults();
+    }
+  },
+
+  showMcResults() {
+    const total = this.state.quizMcCards.length;
+    const score = this.state.quizScore;
+    const pct = total ? Math.round((score / total) * 100) : 0;
+
+    document.getElementById('quiz-mc-score-circle').textContent = `${pct}%`;
+    document.getElementById('quiz-mc-score-heading').textContent = (pct === 100) ? '🎉 Perfect Score!' : 'Quiz Completed!';
+    document.getElementById('quiz-mc-score-detail').textContent = `You scored ${score} out of ${total} correct.`;
+
+    const retryBtn = document.getElementById('btn-quiz-mc-retry-missed');
+    if (retryBtn) {
+      const missed = this.state.quizMissedItems.length;
+      retryBtn.style.display = missed > 0 ? 'inline-flex' : 'none';
+      retryBtn.textContent = `🔄 Retry Missed (${missed})`;
+    }
+
+    const results = document.getElementById('quiz-mc-results');
+    if (!results) return;
+    results.style.display = 'block';
+
+    // Scroll the banner into view, keeping it clear of the sticky header
+    const header = document.querySelector('.app-header');
+    const headerHeight = header ? header.getBoundingClientRect().height : 0;
+    const top = results.getBoundingClientRect().top + window.scrollY - headerHeight - 16;
+    window.scrollTo({ top: Math.max(0, top), behavior: 'smooth' });
   },
 
   confirmQuitQuiz() {
@@ -666,17 +1047,15 @@ const App = {
     }
   },
 
-  getQuizItemDetails(item, variant) {
+  // Prompt and the answer typed mode checks against, per variant. Shared by typed mode and Multiple Choice.
+  getQuizPromptAnswer(item, variant) {
     let prompt = '';
     let expected = '';
     let isDirection2 = false; // Direction 2 = Romanization -> Hangul (requires Korean IME)
-    let isMultipleChoice = false;
-    let choices = [];
 
     if (variant === 'jamo-hangul-to-rom') {
       prompt = item.jamo;
       expected = item.type === 'consonant' ? (item.romanization_initial || '') : item.romanization_initial;
-      isDirection2 = false;
     } else if (variant === 'jamo-rom-to-hangul') {
       prompt = item.type === 'consonant' ? (item.romanization_initial || '(silent initial)') : item.romanization_initial;
       expected = item.jamo;
@@ -684,7 +1063,6 @@ const App = {
     } else if (variant === 'syl-hangul-to-rom') {
       prompt = item.composed;
       expected = item.expected_romanization;
-      isDirection2 = false;
     } else if (variant === 'syl-rom-to-hangul') {
       prompt = item.expected_romanization;
       expected = item.composed;
@@ -692,7 +1070,6 @@ const App = {
     } else if (variant === 'vocab-hangul-to-rom') {
       prompt = item.hangul;
       expected = item.romanization;
-      isDirection2 = false;
     } else if (variant === 'vocab-rom-to-hangul') {
       prompt = item.romanization;
       expected = item.hangul;
@@ -700,7 +1077,17 @@ const App = {
     } else if (variant === 'vocab-hangul-to-eng') {
       prompt = item.hangul;
       expected = item.english;
-      isDirection2 = false;
+    }
+
+    return { prompt, expected, isDirection2 };
+  },
+
+  getQuizItemDetails(item, variant) {
+    const { prompt, expected, isDirection2 } = this.getQuizPromptAnswer(item, variant);
+    let isMultipleChoice = false;
+    let choices = [];
+
+    if (variant === 'vocab-hangul-to-eng') {
       isMultipleChoice = true;
 
       // Deduplication check strictly on rendered English string (normalized lowercase trim)
@@ -2022,7 +2409,14 @@ const App = {
   }
 };
 
-// Initialize App when DOM is fully loaded
-document.addEventListener('DOMContentLoaded', () => {
-  App.init();
-});
+// Initialize App when DOM is fully loaded (guarded so Node tests can require this file)
+if (typeof document !== 'undefined') {
+  document.addEventListener('DOMContentLoaded', () => {
+    App.init();
+  });
+}
+
+// Node export for tests only (browsers have no `module`, so this never runs on the site)
+if (typeof module !== 'undefined' && module.exports) {
+  module.exports = { App };
+}

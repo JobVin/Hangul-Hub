@@ -1068,6 +1068,128 @@ kbd {
   word-break: break-word;
 }
 
+/* Answer Mode Toggle (reuses .hub-switcher-tabs / .hub-tab-btn pill styling) */
+.quiz-mode-toggle-wrapper {
+  margin-bottom: 0.75rem;
+}
+
+.quiz-mode-caption {
+  text-align: center;
+  color: var(--text-dim);
+  font-size: var(--font-sm);
+  font-weight: 600;
+  margin-bottom: 2rem;
+}
+
+/* Multiple Choice Batch (card grid answered in any order) */
+.quiz-mc-batch-container {
+  max-width: 1100px;
+  margin: 1.5rem auto 3rem auto;
+}
+
+.quiz-tips-box {
+  background-color: var(--bg-subtle);
+  border: 2px solid var(--border-color);
+  border-radius: var(--radius-md);
+  padding: 0.75rem 1rem;
+  margin-bottom: 1.25rem;
+}
+
+.quiz-tips-toggle {
+  border: none;
+  background: transparent;
+  color: var(--primary);
+  font-weight: 800;
+  font-size: var(--font-sm);
+  cursor: pointer;
+  padding: 0.25rem 0;
+}
+
+.quiz-tips-body {
+  margin-top: 0.4rem;
+  color: var(--text-muted);
+  font-size: var(--font-sm);
+  line-height: 1.55;
+}
+
+.mc-card-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 1rem;
+  align-items: start; /* cards shrink to their content */
+  grid-auto-flow: row dense; /* wide cards don't leave empty slots (card order is random anyway) */
+  margin-top: 1rem;
+}
+
+.mc-card {
+  background-color: var(--bg-card);
+  border: 2.5px solid var(--border-color);
+  border-radius: var(--radius-md);
+  padding: 1rem;
+  box-shadow: var(--shadow-sm);
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  min-width: 0;
+  transition: var(--transition-fast);
+}
+
+/* Long options need more room than one 240px column (desktop/tablet) */
+.mc-card.opt-lg {
+  grid-column: span 2;
+}
+
+.mc-card-prompt {
+  font-family: var(--font-hangul);
+  font-size: 2.6rem;
+  font-weight: 800;
+  color: var(--text-main);
+  line-height: 1.15;
+  text-align: center;
+  overflow-wrap: anywhere;
+}
+
+.mc-card-prompt.is-long {
+  font-size: 1.6rem;
+}
+
+.mc-card-options {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.quiz-mc-btn.mc-opt {
+  min-height: 36px;
+  padding: 0.45rem 0.8rem;
+  justify-content: center;
+  text-align: center;
+  white-space: nowrap;
+  font-family: var(--font-hangul);
+}
+
+/* Inside an answered card the card itself is tinted, so the chosen/correct options use the solid accent */
+.mc-card .quiz-mc-btn.selected-correct {
+  background-color: var(--teal);
+  border-color: var(--teal);
+  color: #ffffff;
+}
+
+.mc-card .quiz-mc-btn.selected-incorrect {
+  background-color: var(--rose);
+  border-color: var(--rose);
+  color: #ffffff;
+  text-decoration: line-through;
+}
+
+.quiz-mc-results {
+  margin-top: 2rem;
+}
+
+.quiz-mode-toggle-wrapper .hub-tab-btn {
+  white-space: nowrap;
+}
+
 /* Vocab Card Details */
 .vocab-card-rom {
   font-size: 1.05rem;
@@ -1724,6 +1846,38 @@ kbd {
 
   .quiz-input-group {
     flex-direction: column;
+  }
+
+  /* Multiple Choice grid on phones: 2 columns; cards with options of 6+ characters span both */
+  .mc-card-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.6rem;
+  }
+
+  .mc-card {
+    padding: 0.75rem;
+  }
+
+  .mc-card.opt-md,
+  .mc-card.opt-lg {
+    grid-column: 1 / -1;
+  }
+
+  .mc-card-prompt {
+    font-size: 2rem;
+  }
+
+  .mc-card-prompt.is-long {
+    font-size: 1.35rem;
+  }
+
+  .quiz-mc-btn.mc-opt {
+    min-height: 44px;
+    font-size: 0.95rem;
+  }
+
+  .quiz-mode-toggle-wrapper .hub-tab-btn {
+    padding: 0.6rem 1.1rem;
   }
 
   .writing-workspace-grid {

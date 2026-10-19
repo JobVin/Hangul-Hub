@@ -70,10 +70,10 @@
             <div class="stacked-symbol" style="color: var(--amber);">퀴즈</div>
             <div class="stacked-info">
               <div class="stacked-header">
-                <h3 class="stacked-title">Quiz Mode (Typed Recall)</h3>
-                <span class="track-badge amber-badge">4 Variants Available</span>
+                <h3 class="stacked-title">Quiz Mode</h3>
+                <span class="track-badge amber-badge">Multiple Choice or Typed</span>
               </div>
-              <p class="stacked-desc">Test Jamo and Syllable recall in both directions: Hangul to Romanization or Romanization to Hangul.</p>
+              <p class="stacked-desc">Test Jamo, Syllable and Vocabulary recall in both directions. Pick from 4 options, or type the answer yourself.</p>
             </div>
             <div class="stacked-action-btn" style="color: var(--amber);">Select Quiz Track →</div>
           </div>
@@ -278,8 +278,17 @@
         </div>
       </div>
 
+      <!-- ANSWER MODE TOGGLE (captured when a quiz starts; saved for next visit) -->
+      <div class="hub-switcher-wrapper quiz-mode-toggle-wrapper">
+        <div class="hub-switcher-tabs" role="radiogroup" aria-label="Answer mode">
+          <button type="button" class="hub-tab-btn active" data-quiz-mode="mc" id="quiz-mode-mc" role="radio" aria-checked="true">Multiple Choice</button>
+          <button type="button" class="hub-tab-btn" data-quiz-mode="typed" id="quiz-mode-typed" role="radio" aria-checked="false">Type Answer</button>
+        </div>
+      </div>
+      <p class="quiz-mode-caption" id="quiz-mode-caption">Pick the answer from 4 options. No Korean keyboard needed.</p>
+
       <div class="stacked-menu-container">
-        
+
         <!-- JAMO QUIZZES -->
         <div class="menu-section-header">
           <span class="section-badge amber-badge">Part 1 Quizzes</span>
@@ -302,9 +311,9 @@
             <div class="stacked-info">
               <div class="stacked-header">
                 <h3 class="stacked-title">Jamo: Hangul → Romanization</h3>
-                <span class="track-badge amber-badge" id="badge-jamo-hangul-to-rom">Type English</span>
+                <span class="track-badge amber-badge" id="badge-jamo-hangul-to-rom" data-typed-label="Type English">Type English</span>
               </div>
-              <p class="stacked-desc">See the Korean Jamo character (e.g. ㄱ) and type its English romanization (e.g. g).</p>
+              <p class="stacked-desc" data-mc-desc="See the Korean Jamo character (e.g. ㄱ) and pick its English romanization (e.g. g).">See the Korean Jamo character (e.g. ㄱ) and type its English romanization (e.g. g).</p>
             </div>
             <div class="stacked-action-btn" style="color: var(--amber);">Start Quiz →</div>
           </div>
@@ -315,9 +324,9 @@
             <div class="stacked-info">
               <div class="stacked-header">
                 <h3 class="stacked-title">Jamo: Romanization → Hangul</h3>
-                <span class="track-badge amber-badge" id="badge-jamo-rom-to-hangul">Type Korean</span>
+                <span class="track-badge amber-badge" id="badge-jamo-rom-to-hangul" data-typed-label="Type Korean">Type Korean</span>
               </div>
-              <p class="stacked-desc">See the English romanization (e.g. g) and type the corresponding Korean Jamo (e.g. ㄱ).</p>
+              <p class="stacked-desc" data-mc-desc="See the English romanization (e.g. g) and pick the corresponding Korean Jamo (e.g. ㄱ).">See the English romanization (e.g. g) and type the corresponding Korean Jamo (e.g. ㄱ).</p>
             </div>
             <div class="stacked-action-btn" style="color: var(--amber);">Start Quiz →</div>
           </div>
@@ -345,9 +354,9 @@
             <div class="stacked-info">
               <div class="stacked-header">
                 <h3 class="stacked-title">Syllables: Hangul → Romanization</h3>
-                <span class="track-badge amber-badge" id="badge-syl-hangul-to-rom">Type English</span>
+                <span class="track-badge amber-badge" id="badge-syl-hangul-to-rom" data-typed-label="Type English">Type English</span>
               </div>
-              <p class="stacked-desc">See the composed syllable block (e.g. 가 or 완) and type its English romanization (e.g. ga or wan).</p>
+              <p class="stacked-desc" data-mc-desc="See the composed syllable block (e.g. 가 or 완) and pick its English romanization (e.g. ga or wan).">See the composed syllable block (e.g. 가 or 완) and type its English romanization (e.g. ga or wan).</p>
             </div>
             <div class="stacked-action-btn" style="color: var(--amber);">Start Quiz →</div>
           </div>
@@ -358,9 +367,9 @@
             <div class="stacked-info">
               <div class="stacked-header">
                 <h3 class="stacked-title">Syllables: Romanization → Hangul</h3>
-                <span class="track-badge amber-badge" id="badge-syl-rom-to-hangul">Type Korean</span>
+                <span class="track-badge amber-badge" id="badge-syl-rom-to-hangul" data-typed-label="Type Korean">Type Korean</span>
               </div>
-              <p class="stacked-desc">See the English romanization (e.g. ga or wan) and type the composed Korean syllable (e.g. 가 or 완).</p>
+              <p class="stacked-desc" data-mc-desc="See the English romanization (e.g. ga or wan) and pick the composed Korean syllable (e.g. 가 or 완).">See the English romanization (e.g. ga or wan) and type the composed Korean syllable (e.g. 가 or 완).</p>
             </div>
             <div class="stacked-action-btn" style="color: var(--amber);">Start Quiz →</div>
           </div>
@@ -391,9 +400,9 @@
             <div class="stacked-info">
               <div class="stacked-header">
                 <h3 class="stacked-title">Vocabulary: Hangul → Romanization</h3>
-                <span class="track-badge amber-badge" id="badge-vocab-hangul-to-rom">Type English</span>
+                <span class="track-badge amber-badge" id="badge-vocab-hangul-to-rom" data-typed-label="Type English">Type English</span>
               </div>
-              <p class="stacked-desc">See the Korean word (e.g. 물 or 학교) and type its English romanization (e.g. mul or hakgyo).</p>
+              <p class="stacked-desc" data-mc-desc="See the Korean word (e.g. 물 or 학교) and pick its English romanization (e.g. mul or hakgyo).">See the Korean word (e.g. 물 or 학교) and type its English romanization (e.g. mul or hakgyo).</p>
             </div>
             <div class="stacked-action-btn" style="color: var(--amber);">Start Quiz →</div>
           </div>
@@ -404,9 +413,9 @@
             <div class="stacked-info">
               <div class="stacked-header">
                 <h3 class="stacked-title">Vocabulary: Romanization → Hangul</h3>
-                <span class="track-badge amber-badge" id="badge-vocab-rom-to-hangul">Type Korean</span>
+                <span class="track-badge amber-badge" id="badge-vocab-rom-to-hangul" data-typed-label="Type Korean">Type Korean</span>
               </div>
-              <p class="stacked-desc">See the English romanization (e.g. mul or hakgyo) and type the Korean word (e.g. 물 or 학교).</p>
+              <p class="stacked-desc" data-mc-desc="See the English romanization (e.g. mul or hakgyo) and pick the Korean word (e.g. 물 or 학교).">See the English romanization (e.g. mul or hakgyo) and type the Korean word (e.g. 물 or 학교).</p>
             </div>
             <div class="stacked-action-btn" style="color: var(--amber);">Start Quiz →</div>
           </div>
@@ -439,6 +448,12 @@
       </div>
 
       <div class="quiz-card-container">
+        <!-- Tips (Multiple Choice mode only: expanded on first visit, then collapsed behind "Show Tips") -->
+        <div class="quiz-tips-box" id="quiz-tips-box" style="display: none;">
+          <button type="button" class="quiz-tips-toggle" id="btn-quiz-tips-toggle" aria-expanded="false" aria-controls="quiz-tips-body">Show Tips</button>
+          <p class="quiz-tips-body" id="quiz-tips-body" hidden>Pick the correct answer for each card. Each answer is checked instantly, and if you pick the wrong one, the correct answer is highlighted so you can learn it. Your score appears after you answer the last card.</p>
+        </div>
+
         <!-- Progress Bar -->
         <div class="deck-progress-bar">
           <span class="progress-text" id="quiz-active-progress-text">Question 1 of 40</span>
@@ -466,7 +481,7 @@
             </div>
           </form>
 
-          <!-- Multiple Choice Container (Direction 3: English Meaning) -->
+          <!-- Multiple Choice Container (Multiple Choice mode, and Hangul → English Meaning in either mode) -->
           <div id="quiz-mc-container" class="quiz-mc-container" style="display: none;">
             <div class="quiz-mc-grid" id="quiz-mc-options"></div>
           </div>
@@ -512,7 +527,7 @@
           <button id="btn-quiz-retry-missed" class="ctrl-btn ctrl-btn-primary" onclick="App.startRetryRound()" style="display: none; background-color: var(--rose); border-color: var(--rose);">
             🔄 Retry Missed Items Only
           </button>
-          <button class="ctrl-btn" onclick="App.startQuizVariant(App.state.activeQuizVariant)">
+          <button class="ctrl-btn" onclick="App.startQuizVariant(App.state.activeQuizVariant, true)">
             🔁 Restart Full Quiz
           </button>
           <button class="ctrl-btn" onclick="App.navigateTo('quiz-select')">
