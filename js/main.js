@@ -1137,10 +1137,12 @@ const App = {
 
     const promptElem = document.getElementById('quiz-prompt-display');
     promptElem.textContent = prompt;
-    if (prompt.length > 5) {
-      promptElem.style.fontSize = '3.5rem';
+    if (prompt.length > 10) {
+      promptElem.style.fontSize = 'min(3.5rem, 8vw)';
+    } else if (prompt.length > 5) {
+      promptElem.style.fontSize = 'min(3.5rem, 11vw)';
     } else if (prompt.length > 3) {
-      promptElem.style.fontSize = '4.2rem';
+      promptElem.style.fontSize = 'min(4.2rem, 15vw)';
     } else {
       promptElem.style.fontSize = '5.5rem';
     }
@@ -1749,7 +1751,7 @@ const App = {
         <div class="list-section-header">
           <h3>${categoryTitles[catKey] || catKey}</h3>
         </div>
-        <div class="jamo-grid">
+        <div class="jamo-grid vocab-grid">
       `;
 
       items.forEach(item => {
@@ -1770,7 +1772,7 @@ const App = {
             <div class="vocab-card-eng">Meaning: <strong>${item.english}</strong></div>
             <div class="jamo-note" style="margin-top: 0.25rem;">${item.usage_note}</div>
             ${verbHtml}
-            <div style="margin-top: 0.75rem;"><span class="category-tag">${catKey.replace(/_/g, ' ')}</span></div>
+            <div class="vocab-card-tag" style="margin-top: 0.75rem;"><span class="category-tag">${catKey.replace(/_/g, ' ')}</span></div>
           </div>
         `;
       });
@@ -1835,11 +1837,11 @@ const App = {
     const frontElem = document.getElementById('vocab-card-front-char');
     frontElem.textContent = card.hangul;
     if (card.hangul.length > 5) {
-      frontElem.style.fontSize = '3.5rem';
+      frontElem.style.fontSize = 'min(3.5rem, 11vw)';
     } else if (card.hangul.length > 3) {
-      frontElem.style.fontSize = '4.5rem';
+      frontElem.style.fontSize = 'min(4.5rem, 14vw)';
     } else {
-      frontElem.style.fontSize = '6rem';
+      frontElem.style.fontSize = 'min(6rem, 22vw)';
     }
 
     // Back
@@ -1886,10 +1888,10 @@ const App = {
       if (point.forms && point.forms.length > 0) {
         formsRows = point.forms.map(f => `
           <tr>
-            <td><span class="grammar-form-pill">${f.form}</span></td>
-            <td>${f.condition}</td>
-            <td><strong>${f.example_word}</strong></td>
-            <td><strong style="color: var(--teal); font-size: 1.05rem;">${f.example_attached}</strong></td>
+            <td data-label="Form"><span class="grammar-form-pill">${f.form}</span></td>
+            <td data-label="Condition / Rule">${f.condition}</td>
+            <td data-label="Example Word"><strong>${f.example_word}</strong></td>
+            <td data-label="Attached Result"><strong style="color: var(--teal); font-size: 1.05rem;">${f.example_attached}</strong></td>
           </tr>
         `).join('');
       }

@@ -15,7 +15,7 @@
   
   <!-- Stylesheet -->
   <!-- ?v= forces browsers to load the matching CSS/JS after an update; change it whenever these files change -->
-  <link rel="stylesheet" href="css/styles.css?v=20261019-2">
+  <link rel="stylesheet" href="css/styles.css?v=20261019-4">
 </head>
 <body>
 
@@ -27,8 +27,8 @@
         <span class="brand-title-text">Hangul Hub</span>
       </a>
       <nav class="main-nav" aria-label="Main Navigation">
-        <a class="nav-link active" id="nav-practice-hub">Practice Hub</a>
-        <a class="nav-link" id="nav-learning-hub">Learning Hub</a>
+        <a class="nav-link active" id="nav-practice-hub">Practice<span class="nav-suffix"> Hub</span></a>
+        <a class="nav-link" id="nav-learning-hub">Learning<span class="nav-suffix"> Hub</span></a>
       </nav>
     </div>
   </header>
@@ -465,10 +465,13 @@
         </div>
 
         <!-- Question Card Box -->
-        <div class="quiz-question-box">
-          <div class="quiz-prompt-label" id="quiz-prompt-label">Translate into Romanization:</div>
-          <div class="quiz-prompt-display" id="quiz-prompt-display">ㄱ</div>
+        <div class="quiz-question-box quiz-split">
+          <div class="quiz-prompt-panel">
+            <div class="quiz-prompt-label" id="quiz-prompt-label">Translate into Romanization:</div>
+            <div class="quiz-prompt-display" id="quiz-prompt-display">ㄱ</div>
+          </div>
 
+          <div class="quiz-answer-panel">
           <!-- Keyboard Hint for Direction 2 -->
           <div class="keyboard-hint-box" id="quiz-keyboard-hint" style="display: none;">
             <span>⌨️ Requires a Korean (2-beolsik) keyboard enabled on your device.</span>
@@ -491,6 +494,7 @@
           <div id="quiz-feedback-box" class="quiz-feedback-box" style="display: none;">
             <div id="quiz-feedback-content"></div>
             <button id="btn-quiz-next" class="ctrl-btn ctrl-btn-primary" onclick="App.nextQuizQuestion()" style="margin-top: 1rem; width: 100%;">Next Question →</button>
+          </div>
           </div>
         </div>
       </div>
@@ -916,7 +920,7 @@
         </div>
       </div>
 
-      <div class="quiz-card-container" style="max-width: 680px;">
+      <div class="quiz-card-container sentence-card-container">
         <!-- Progress Bar -->
         <div class="deck-progress-bar">
           <span class="progress-text" id="sentence-progress-text">Sentence 1 of 20</span>
@@ -927,10 +931,13 @@
         </div>
 
         <!-- Question Card Box -->
-        <div class="quiz-question-box">
-          <div class="quiz-prompt-label">Compose the Korean Hangul sentence:</div>
-          <div class="sentence-prompt-display" id="sentence-prompt-display">Say 'I am a student.'</div>
+        <div class="quiz-question-box quiz-split">
+          <div class="quiz-prompt-panel">
+            <div class="quiz-prompt-label">Compose the Korean Hangul sentence:</div>
+            <div class="sentence-prompt-display" id="sentence-prompt-display">Say 'I am a student.'</div>
+          </div>
 
+          <div class="quiz-answer-panel">
           <!-- Keyboard Hint -->
           <div class="keyboard-hint-box" style="margin-top: 1rem;">
             <span>⌨️ Requires a Korean (2-beolsik) keyboard enabled on your device.</span>
@@ -969,6 +976,7 @@
                 </button>
               </div>
             </div>
+          </div>
           </div>
 
         </div>
@@ -1058,8 +1066,8 @@
   </footer>
 
   <!-- Scripts -->
-  <script src="js/data-loader.js?v=20261019-2"></script>
-  <script src="js/hangul-compose.js?v=20261019-2"></script>
-  <script src="js/main.js?v=20261019-2"></script>
+  <script src="js/data-loader.js?v=20261019-4"></script>
+  <script src="js/hangul-compose.js?v=20261019-4"></script>
+  <script src="js/main.js?v=20261019-4"></script>
 </body>
 </html>
